@@ -1,0 +1,31 @@
+{
+  "name": "attractive.js",
+  "version": "0.1.0",
+  "description": "A light-weight, Stimulus inspired library for basic actions",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "npm run build && open test/index.html",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Rails Designer",
+  "homepage": "https://railsdesigner.com/attractive-js/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rails-designer/attractive-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rails-designer/attractive-js/issues"
+  },
+  "module": "dist/stimulus.js",
+  "main": "dist/attractive.js",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^2.79.2",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}
