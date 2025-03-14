@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attractive.js - Data Attribute Tests</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="../dist/attractive.js"></script>
+</head>
+<body>
+  <h1>Data Attribute Functionality Tests</h1>
+  <p><a href="index.html">← Back to test index</a></p>
+
+  <div class="test-section">
+    <h2>Product Grid Sorting</h2>
+
+    <div class="filter-buttons">
+      <button data-action="addDataAttribute#sort=price" data-target="#product-grid">
+        Sort by Price
+      </button>
+      <button data-action="addDataAttribute#sort=date" data-target="#product-grid">
+        Sort by Date
+      </button>
+      <button data-action="removeDataAttribute#sort" data-target="#product-grid">
+        Clear Sort
+      </button>
+    </div>
+
+    <div id="product-grid" class="grid">
+      <p>Product grid that changes sort based on data-sort value</p>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Collapsible Panel</h2>
+
+    <button data-action="toggleDataAttribute#expanded" data-target="#panel">
+      Toggle Panel
+    </button>
+
+    <button data-action="addDataAttribute#expanded" data-target="#panel">
+      Add Panel
+    </button>
+
+    <button data-action="removeDataAttribute#expanded" data-target="#panel">
+      Remove Panel
+    </button>
+
+    <div id="panel" class="panel">
+      <p>This panel toggles between expanded/collapsed states</p>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Loading States</h2>
+
+    <div class="card" id="content">
+      <h3>Dynamic Content</h3>
+      <p>Content that can be reloaded</p>
+    </div>
+
+    <button
+      data-action="toggleDataAttribute#loading=lazy"
+      data-target="#content">
+      Reload Content
+    </button>
+  </div>
+</body>
+</html>

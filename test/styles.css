@@ -30,6 +30,10 @@ h2 {
   border-color: #ffc107;
 }
 
+.zoomIn {
+  scale: 1.05;
+}
+
 .hidden {
   display: none;
 }
