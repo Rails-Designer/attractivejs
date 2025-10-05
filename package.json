@@ -1,6 +1,6 @@
 {
   "name": "attractive.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A light-weight library for declarative DOM actions using data attributes",
   "scripts": {
     "build": "rollup -c",
@@ -8,24 +8,20 @@
     "test": "npm run build && open test/index.html",
     "prepublishOnly": "npm run build"
   },
-
   "author": "Rails Designer",
   "homepage": "https://railsdesigner.com/attractive-js/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rails-designer/attractive-js.git"
   },
-
   "bugs": {
     "url": "https://github.com/rails-designer/attractive-js/issues"
   },
-
   "module": "dist/attractive.js",
   "main": "dist/attractive.js",
   "files": [
     "dist"
   ],
-
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.1",
