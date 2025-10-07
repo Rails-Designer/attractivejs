@@ -9,15 +9,24 @@ class Attractive {
   #events;
   #observe;
 
-  constructor() {
-    Debug.log("Initializing…");
+  static get debug() {
+    return Debug.enabled;
+  }
 
+  static set debug(value) {
+    Debug.enabled = value;
+  }
+
+  constructor() {
     this.#events = new Events(actions);
     this.#observe = new Observer(element => this.#prepare(element));
   }
 
   activate(options = {}) {
-    const { element = document } = options;
+    const { element = document, debug = false } = options;
+
+    Debug.enabled = debug;
+    Debug.log("Initializing…");
 
     this.element = element;
     this.#observe.start("[data-action]");
