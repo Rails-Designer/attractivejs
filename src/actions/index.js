@@ -1,13 +1,15 @@
-import classActions from "./class";
 import attributeActions from "./attribute";
+import classActions from "./class";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
+import formActions from "./form";
 
 export const actions = {
-  class: classActions,
   attribute: attributeActions,
+  class: classActions,
   dataAttribute: dataAttributeActions,
-  dialog: dialogActions
+  dialog: dialogActions,
+  form: formActions
 };
 
 export const availableActions = (groups = []) => {

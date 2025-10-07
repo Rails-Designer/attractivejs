@@ -93,6 +93,14 @@ Attractive.js works by setting a `data-action` to an element, typically a button
 - `dialog#openModal`
 - `dialog#close`
 
+
+### Form
+
+Define a debounce (delay) for the submit action with `data-submit-delay="n"` (`n` is in ms).
+
+- `form#submit`
+- `form#reset`
+
 _More actions coming. See open issues._
 
 

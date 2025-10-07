@@ -1,10 +1,6 @@
 import ActionBase from "./base";
 
 class Dialog extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
-  }
-
   open() {
     this.#targets.forEach(target => target instanceof HTMLDialogElement && target.show());
   }
