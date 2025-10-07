@@ -1,6 +1,6 @@
 export default class Debug {
   static enabled = false;
-  static prefix = "[🧲]";
+  static prefix = "🧲 ";
 
   static log(...args) {
     if (this.enabled) console.log(this.prefix, ...args)

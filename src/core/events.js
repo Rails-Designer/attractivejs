@@ -39,13 +39,18 @@ class Events {
   #execute(action, { on: element }) {
     Debug.log("Execute action", action, "on", element, "…");
 
-    const [actionName, value = null] = action.includes("#") ? action.split("#") : [action];
+    const parts = action.split("#");
+    const [possibleAction, fallbackAction, fallbackValue] = parts;
 
-    if (!this.#actions[actionName] || typeof this.#actions[actionName] !== "function") return;
+    const actionName = this.#actions[possibleAction] ? possibleAction : (fallbackAction ?? action);
+    const value = this.#actions[possibleAction] ? parts.slice(1).join("#") : (fallbackValue ?? null);
 
-    const targetElement = element.dataset.target;
+    if (typeof this.#actions[actionName] !== "function") return;
 
-    this.#actions[actionName](element, { value: value, targetElement: targetElement });
+    this.#actions[actionName](element, {
+      value,
+      targetElement: element.dataset.target
+    });
 
     Debug.log("…", "executed action", action, "on", element);
   }

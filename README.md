@@ -21,21 +21,22 @@ Quick example:
 ```bash
 npm install attractivejs
 
-# Using importmap-rails
+# using importmap-rails
 ./bin/importmap pin attractivejs
 ```
 
 ```javascript
 import Attractive from "attractivejs"
 
-// Default usage
+// default usage (document as root)
 Attractive.activate();
 
-// With custom element
+// with custom element
 const element = document.getElementById("main");
 
 Attractive.activate({ element: element });
 
+// only with selected actions
 Attractive.activate({ element: element }).withActions(["class"]);
 ```
 
@@ -44,16 +45,16 @@ Attractive.activate({ element: element }).withActions(["class"]);
 
 ```html
 <script defer src="https://cdn.jsdelivr.net/npm/attractivejs@1.x.x/dist/cdn.min.js"></script>
-
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Default usage (document as root)
+    // default usage (document as root)
     Attractive.activate();
 
-    // Or with a custom element
+    // with custom element
     const element = document.querySelector("#main");
-
     Attractive.activate({ element: element });
+
+    // only with selected actions
     Attractive.activate({ element: element }).withActions(["class"]);
   });
 </script>
@@ -62,7 +63,7 @@ Attractive.activate({ element: element }).withActions(["class"]);
 
 ## Usage
 
-Attractive.js works by setting a `data-action` to an element, typically a button or a-element, and, optionally, a `data-target` attribute. The syntax for the `data-action` attribute is `action#value`, `data-target` accepts an `#id` or `.class`.
+Attractive.js works by setting a `data-action` to an element, typically a button or a-element, and, optionally, a `data-target` attribute (it defaults to the direct parent of the element with the `data-action`). The syntax for the `data-action` attribute is `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]`.
 
 
 ### Classes
@@ -86,7 +87,19 @@ Attractive.js works by setting a `data-action` to an element, typically a button
 - `toggleDataAttribute`
 
 
+### Dialog
+
+- `dialog#open`
+- `dialog#openModal`
+- `dialog#close`
+
 _More actions coming. See open issues._
+
+
+## Development/test
+
+Run `npm run test`.
+
 
 ## Release
 
