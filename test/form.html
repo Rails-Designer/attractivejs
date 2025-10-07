@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attractive.js - Dialog Tests</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="../dist/attractive.js"></script>
+</head>
+<body>
+  <h1>Form actions</h1>
+  <p><a href="index.html">← Back to test index</a></p>
+
+  <div class="test-section">
+    <h2>With explicit targets</h2>
+
+    <form id="form" method="post" action="#">
+      <label for="email">Email</label>
+      <input type="email" placeholder="Enter something to see it reset again">
+
+      <label for="name">Name</label>
+      <input type="text" value="Rails Designer">
+    </form>
+
+    <button type="button" data-action="form#reset" data-target="#form">
+      Reset form
+    </button>
+    (outside of form-element)
+  </div>
+
+  <div class="test-section">
+    <h2>With implicit targets</h2>
+
+    <form method="get" action="#">
+      <label for="framework">Framework (submits form on select)</label>
+      <select id="framework" name="framework" data-action="form#submit">
+        <option value="">Choose your JS library</option>
+        <option value="attractive">attractive.js</option>
+        <option value="turbo">turbo</option>
+        <option value="stimulus">stimulus</option>
+      </select>
+    </form>
+  </div>
+
+  <div class="test-section">
+    <h2>With implicit targets, and debounce/delay</h2>
+
+    <form method="get" action="#">
+      <label for="framework">Framework (submits form on select)</label>
+      <select id="framework" name="framework" data-action="form#submit" data-submit-delay="1000">
+        <option value="">Choose your JS library</option>
+        <option value="attractive">attractive.js</option>
+        <option value="turbo">turbo</option>
+        <option value="stimulus">stimulus</option>
+      </select>
+    </form>
+  </div>
+</body>
+</html>
