@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attractive.js - Dialog Tests</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="../dist/attractive.js"></script>
+</head>
+<body>
+  <h1>Dialog Functionality Tests</h1>
+  <p><a href="index.html">← Back to test index</a></p>
+
+  <div class="test-section">
+    <h2>Dialog Actions with explicit target</h2>
+
+    <button data-action="dialog#open" data-target="#dialog">
+      Open Dialog (show)
+    </button>
+
+    <button data-action="dialog#openModal" data-target="#dialog">
+      Open Dialog (showModal)
+    </button>
+
+    <dialog id="dialog">
+      <h2>Modal Heading</h2>
+      <p>This is a dialog. You can close it with the buttons below.</p>
+
+      <button data-action="dialog#close">Cancel</button>
+
+      <form method="dialog">
+        <button type="submit">Submit</button> (should close via form method; e.g. page redirect or similar
+      </form>
+    </dialog>
+  </div>
+
+  <div class="test-section">
+    <h2>Dialog Actions with implicat target (any `dialog` element)</h2>
+
+    <button data-action="dialog#open">
+      Open Dialog (show)
+    </button>
+
+    <button data-action="dialog#openModal">
+      Open Dialog (showModal)
+    </button>
+  </div>
+</body>
+</html>
