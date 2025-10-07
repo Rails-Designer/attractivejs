@@ -24,6 +24,27 @@ h2 {
   border-radius: 4px;
 }
 
+.card {
+  &[data-loading="lazy"] {
+    position: relative;
+
+    &::before {
+      content: "Loading";
+      position: absolute;
+      top: 0; left: 0;
+      background: white;
+    }
+  }
+}
+
+.panel {
+  border: 1px solid gray;
+
+  &[data-expanded] {
+  	border-color: red;
+  }
+}
+
 /* Classes for testing */
 .active {
   background-color: #ffeb3b;
