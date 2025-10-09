@@ -76,9 +76,10 @@ Including above script-tag is enough to get started. You can make tweaks to Attr
 
 Attractive.js works by setting a `data-action` to an element, typically a button or a-element, and, optionally, a `data-target` attribute (it defaults to the direct parent of the element with the `data-action`). The syntax for the `data-action` attribute is `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]`.
 
+
 ### Examples
 
-With an implicit target; the direct parent of the element with `data-action` is used.
+With an implicit target, the direct parent of the element with `data-action` is used.
 ```html
 <p>
   This element should toggle the `active` class when clicking the button below.
@@ -130,6 +131,29 @@ Setting an attribute and value.
 
 <button data-action="toggleAttribute#disabled=disabled" data-target="#input">
   Toggle disabled state
+</button>
+```
+
+
+### Events
+
+Actions run using default event listeners based on HTML element types. The system automatically assigns appropriate events:
+
+| Element | Default event |
+|:------------|:-------------|
+| `<a>`, `<button>` | `click` |
+| `<input type="text">` | `input` |
+| `<input type="checkbox">`, `<input type="radio">` | `change` |
+| `<input type="submit">`, `<input type="button">` | `click` |
+| `<select>` | `change` |
+| `<textarea>` | `input` |
+| `<form>` | `submit` |
+| Other elements | `click` |
+
+Custom events can be specified using the arrow syntax: `event->action`. For example:
+```html
+<button data-action="mouseover->addClass#highlight focus->addClass#active">
+  Hover or focus me
 </button>
 ```
 
