@@ -1,10 +1,11 @@
 import ActionBase from "./base";
+import { sanitize } from "./../helpers/sanitize";
 
 class Class extends ActionBase {
   constructor(currentElement, options = {}) {
     super(currentElement, options);
 
-    this.value = this.sanitize(options.value);
+    this.value = sanitize(options.value);
   }
 
   toggle() {
@@ -26,10 +27,6 @@ class Class extends ActionBase {
   }
 
   // private
-
-  sanitize(value) {
-    return value?.split(",").map(value => value.trim()).filter(Boolean);
-  }
 
   #toggleClasses({ forEach: target }) {
     this.value.forEach(className => target.classList.toggle(className));

@@ -8,7 +8,7 @@ class Attractive {
   #eventListeners = {};
   #events;
   #observe;
-  #onLoadActions = ["scrollTo"];
+  #onLoadActions = ["scrollTo", "intersect-once", "intersect-toggle"];
 
   static get debug() {
     return Debug.enabled;
