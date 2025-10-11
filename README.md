@@ -18,7 +18,7 @@ Quick example:
 
 ## Installation
 
-It is simple to get started with Attractive.js. Use it with NPM of directly using a CDN.
+Attractive.js can be installed via NPM or included directly using a CDN.
 
 
 ### Using NPM/importmap
@@ -31,18 +31,17 @@ npm install attractivejs
 ```
 
 ```javascript
-import Attractive from "attractivejs"
+import Attractive from "attractivejs";
 
 // default usage (document as root)
 Attractive.activate();
 
-// with custom element
+// selected element as root
 const element = document.getElementById("main");
-
 Attractive.activate({ element: element });
 
 // only with selected actions
-Attractive.activate({ element: element }).withActions(["class"]);
+Attractive.activate({ element: element }).withActions(["class", "attribute"]);
 ```
 
 
@@ -54,19 +53,19 @@ Attractive.activate({ element: element }).withActions(["class"]);
 </head>
 ```
 
-Including above script-tag is enough to get started. You can make tweaks to Attractive.js if needed:
+Including above script-tag is enough to get started. Configure Attractive.js if needed:
 ```html
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     // default usage (document as root)
     Attractive.activate();
 
-    // with custom element
+    // selected element as root
     const element = document.querySelector("#main");
     Attractive.activate({ element: element });
 
     // only with selected actions
-    Attractive.activate({ element: element }).withActions(["class"]);
+    Attractive.activate({ element: element }).withActions(["class", "attribute"]);
   });
 </script>
 ```
@@ -74,15 +73,15 @@ Including above script-tag is enough to get started. You can make tweaks to Attr
 
 ## Usage
 
-Attractive.js works by setting a `data-action` to an element, typically a button or a-element, and, optionally, a `data-target` attribute (it defaults to the direct parent of the element with the `data-action`). The syntax for the `data-action` attribute is `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]`.
+Attractive.js works by setting a `data-action` attribute to an element, typically a button or a-element, and, optionally, a `data-target` attribute (it defaults to the direct parent of the element with the `data-action` for most actions). The syntax for the `data-action` attribute is, most commonly, `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]` (anything that can be passed to `querySelectorAll()`.
 
 
 ### Examples
 
-With an implicit target, the direct parent of the element with `data-action` is used.
+Without a `data-target` attribute, the direct parent of the element with `data-action` is implicitly set.
 ```html
 <p>
-  This element should toggle the `active` class when clicking the button below.
+  This element should have the `active` class toggled when clicking the button below.
 
   <button data-action="toggleClass#active">
     Toggle
@@ -93,7 +92,7 @@ With an implicit target, the direct parent of the element with `data-action` is 
 With an explicit target.
 ```html
 <p id="target">
-  This element should toggle the `active` class when clicking the button below.
+  This element should have the `active` class toggled when clicking the button below.
 </p>
 
 <button data-action="toggleClass#active" data-target="#target">
@@ -104,7 +103,7 @@ With an explicit target.
 Defining multiple classes.
 ```html
 <p>
-  This element should toggle the `bg-red-100` and `border-red-300` classes when clicking the button below.
+  This element should have the `bg-red-100` and `border-red-300` classes toggled when clicking the button below.
 
   <button data-action="toggleClass#bg-red-100,border-red-300">
     Toggle
@@ -137,7 +136,7 @@ Setting an attribute and value.
 
 ### Events
 
-Actions run using default event listeners based on HTML element types. The system automatically assigns appropriate events:
+Actions run using default event listeners based on HTML element types. Attractive.js automatically assigns appropriate events.
 
 | Element | Default event |
 |:------------|:-------------|
@@ -160,7 +159,7 @@ Custom events can be specified using the arrow syntax: `event->action`. For exam
 
 ## Actions
 
-Attractive.js comes with a fixed set of common actions. _More actions coming. See open issues._
+Attractive.js comes with a fixed set of common actions.
 
 
 ### Classes
