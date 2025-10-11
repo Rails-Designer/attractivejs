@@ -1,25 +1,16 @@
 import ActionBase from "./base";
+import debounce from "./../helpers/debounce";
 
 class Form extends ActionBase {
   requestSubmit() {
     const submit = () => this.targets.forEach(target => target instanceof HTMLFormElement && target.requestSubmit());
-    const debounce = parseInt(this.currentElement.dataset.submitDelay) || 0;
+    const delay = parseInt(this.currentElement.dataset.submitDelay) || 0;
 
-    (debounce > 0) ? this.#debounce(submit, debounce) : submit();
+    (delay > 0) ? debounce(submit, delay) : submit();
   }
 
   reset() {
     this.targets.forEach(target => target instanceof HTMLFormElement && target.reset());
-  }
-
-  // private
-
-  static #debounceTimeout = null;
-
-  #debounce(callback, delay) {
-    clearTimeout(Form.#debounceTimeout);
-
-    Form.#debounceTimeout = setTimeout(callback, delay);
   }
 }
 
