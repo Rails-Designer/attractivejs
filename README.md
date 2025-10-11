@@ -198,6 +198,14 @@ Define a debounce (delay) for the submit action with `data-submit-delay="n"` (`n
 - `form#reset`
 
 
+### Clipboard
+
+Define a feedback duration with `data-copy-duration="n"` (`n` is in ms).
+
+- `copy#string`
+- `copy` (assumes a `data-target` to be copyable)
+
+
 ### ScrollTo
 
 - `scrollTo`
