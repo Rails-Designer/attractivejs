@@ -6,10 +6,10 @@ A light-weight library for declarative DOM actions using data attributes.
 
 Quick example:
 ```html
-<p>
+<p id="content">
   This element should toggle the `active` class when clicking the button below.
 
-  <button data-action="toggleClass#active">
+  <button data-action="toggleClass#active" data-target="#content">
     Toggle
   </button>
 </p>
@@ -73,39 +73,34 @@ Including above script-tag is enough to get started. Configure Attractive.js if 
 
 ## Usage
 
-Attractive.js works by setting a `data-action` attribute to an element, typically a button or a-element, and, optionally, a `data-target` attribute (it defaults to the direct parent of the element with the `data-action` for most actions). The syntax for the `data-action` attribute is, most commonly, `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]` (anything that can be passed to `querySelectorAll()`.
+Attractive.js works by setting a `data-action` attribute to an element, typically a button or a-element, and, optionally, a `data-target` attribute (by default, the action applies to the element itself). The syntax for the `data-action` attribute is, most commonly, `action#value`, `data-target` accepts an `#id`, `.class` or `[attribute="selector"]` (anything that can be passed to `querySelectorAll()`).
 
 
 ### Examples
 
-Without a `data-target` attribute, the direct parent of the element with `data-action` is implicitly set.
 ```html
-<p>
+<p id="content">
   This element should have the `active` class toggled when clicking the button below.
 
-  <button data-action="toggleClass#active">
+  <button data-action="toggleClass#active" data-target="#content">
     Toggle
   </button>
 </p>
 ```
 
-With an explicit target.
+Without an explicit target.
 ```html
-<p id="target">
-  This element should have the `active` class toggled when clicking the button below.
-</p>
-
-<button data-action="toggleClass#active" data-target="#target">
-  Toggle
+<button data-action="toggleClass#active">
+  Toggle (this button should have the `active` class toggled)
 </button>
 ```
 
 Defining multiple classes.
 ```html
-<p>
+<p id="content">
   This element should have the `bg-red-100` and `border-red-300` classes toggled when clicking the button below.
 
-  <button data-action="toggleClass#bg-red-100,border-red-300">
+  <button data-action="toggleClass#bg-red-100,border-red-300" data-target="#content">
     Toggle
   </button>
 </p>
@@ -203,7 +198,7 @@ Define a debounce (delay) for the submit action with `data-submit-delay="n"` (`n
 Define a feedback duration with `data-copy-duration="n"` (`n` is in ms).
 
 - `copy#string`
-- `copy` (assumes a `data-target` to be copyable)
+- `copy` (no value; assumes a `data-target` to be copyable)
 
 
 ### ScrollTo

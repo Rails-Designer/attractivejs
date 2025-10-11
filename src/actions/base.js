@@ -8,6 +8,6 @@ export default class ActionBase {
   }
 
   get targets() {
-    return this.targetElement ? Array.from(document.querySelectorAll(this.targetElement)) : [this.currentElement.parentElement];
+    return this.targetElement ? Array.from(document.querySelectorAll(this.targetElement)) : [this.currentElement];
   }
 }

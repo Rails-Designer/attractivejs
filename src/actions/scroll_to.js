@@ -11,11 +11,7 @@ class ScrollTo extends ActionBase {
   }
 
   scroll() {
-    if (this.currentElement.hasAttribute("data-target")) {
-      this.targets[0]?.scrollIntoView({ behavior: this.behavior });
-    } else {
-      this.currentElement.scrollIntoView({ behavior: this.behavior });
-    }
+    this.targets[0]?.scrollIntoView({ behavior: this.behavior });
   }
 }
 

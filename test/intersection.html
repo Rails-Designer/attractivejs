@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Attractive.js - Intersection Tests</title>
+  <title>Attractive.js - Intersection tests</title>
   <link rel="stylesheet" href="./styles.css">
   <style>
     .spacer {
@@ -43,7 +43,7 @@
     .content {
       padding: 2rem;
       border: 2px solid #ccc;
-      transition: background-color 300ms, border-color 300ms;
+      transition: background-color 300ms 800ms, border-color 300ms 800ms;
 
       &.playing {
         background-color: #e6fffa;
@@ -65,7 +65,7 @@
 <body>
   <header id="header">Sticky header</header>
 
-  <h1>Intersection Functionality Tests</h1>
+  <h1>Intersection</h1>
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="spacer">↓ Scroll down ↓</div>
@@ -73,7 +73,7 @@
   <div class="test-section">
     <h2>Add Class once on self (`intersect-once`)</h2>
 
-    <div id="reveal-box" class="reveal-box" data-action="intersect-once#animate-fade-in" data-target="#reveal-box">
+    <div class="reveal-box" data-action="intersect-once#animate-fade-in">
       This box should fade in once and stay visible.
     </div>
   </div>
@@ -92,8 +92,8 @@
   <div class="test-section">
     <h2>Toggle multiple classes on self (`intersect-toggle`)</h2>
 
-    <div id="content" class="content" data-action="intersect-toggle#playing,focus" data-target="content">
-      This player's state should toggle as it enters/leaves the viewport.
+    <div class="content" data-action="intersect-toggle#playing,focus">
+      This element should toggle as it enters/leaves the viewport.
     </div>
   </div>
 

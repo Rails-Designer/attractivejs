@@ -29,9 +29,9 @@
   <div class="test-section">
     <h2>With implicit targets</h2>
 
-    <form method="get" action="#">
+    <form id="preferences" method="get" action="#">
       <label for="framework">Framework (submits form on select)</label>
-      <select id="framework" name="framework" data-action="form#submit">
+      <select id="framework" name="framework" data-action="form#submit" data-target="#preferences">
         <option value="">Choose your JS library</option>
         <option value="attractive">attractive.js</option>
         <option value="turbo">turbo</option>
@@ -43,9 +43,9 @@
   <div class="test-section">
     <h2>With implicit targets, and debounce/delay</h2>
 
-    <form method="get" action="#">
+    <form id="more-preferences" method="get" action="#">
       <label for="framework">Framework (submits form on select, after a delay)</label>
-      <select id="framework" name="framework" data-action="form#submit" data-submit-delay="1000">
+      <select id="framework" name="framework" data-action="form#submit" data-target="#more-preferences" data-submit-delay="1000">
         <option value="">Choose your JS library</option>
         <option value="attractive">attractive.js</option>
         <option value="turbo">turbo</option>
