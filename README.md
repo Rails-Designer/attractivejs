@@ -198,6 +198,12 @@ Define a debounce (delay) for the submit action with `data-submit-delay="n"` (`n
 - `form#reset`
 
 
+### ScrollTo
+
+- `scrollTo`
+- `scrollTo#{auto,instant,smooth}` (`auto` is default using the value set via CSS)
+
+
 ## Development/test
 
 Run `npm run test`.

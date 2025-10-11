@@ -8,6 +8,7 @@ class Attractive {
   #eventListeners = {};
   #events;
   #observe;
+  #onLoadActions = ["scrollTo"];
 
   static get debug() {
     return Debug.enabled;
@@ -52,6 +53,15 @@ class Attractive {
 
     if (!actionValue) return;
 
+    const actions = actionValue.split(" ");
+    const onLoadActions = actions.filter(action => this.#onLoadActions.includes(action.split("#")[0]));
+
+    if (onLoadActions.length > 0) {
+      onLoadActions.forEach(action => this.#onLoadExecute({ action, on: element }));
+
+      return;
+    }
+
     const registeredEventTypes = new Set(
       actionValue.includes("->")
         ? EventTypes.identify({ by: actionValue })
@@ -79,6 +89,17 @@ class Attractive {
     const defaultEventType = EventTypes.getDefault({ from: element });
 
     this.#events.process(event, { on: element, using: defaultEventType });
+  }
+
+  #onLoadExecute({ action, on: element }) {
+    const [actionName, ...valueParts] = action.split("#");
+
+    if (typeof actions[actionName] !== "function") return;
+
+    const value = valueParts.length > 0 ? valueParts.join("#") : null;
+    const targetElement = element.dataset.target;
+
+    actions[actionName](element, { value, targetElement });
   }
 }
 
