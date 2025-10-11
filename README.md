@@ -206,6 +206,12 @@ Define a feedback duration with `data-copy-duration="n"` (`n` is in ms).
 - `copy` (assumes a `data-target` to be copyable)
 
 
+### ScrollTo
+
+- `scrollTo`
+- `scrollTo#{auto,instant,smooth}` (`auto` is default using the value set via CSS)
+
+
 ## Development/test
 
 Run `npm run test`.

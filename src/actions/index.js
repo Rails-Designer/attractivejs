@@ -4,6 +4,7 @@ import clipboardActions from "./clipboard";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import formActions from "./form";
+import scrollToActions from "./scroll_to";
 
 export const actions = {
   attribute: attributeActions,
@@ -11,7 +12,8 @@ export const actions = {
   clipboard: clipboardActions,
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
-  form: formActions
+  form: formActions,
+  scrollTo: scrollToActions
 };
 
 export const availableActions = (groups = []) => {
