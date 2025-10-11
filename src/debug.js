@@ -1,5 +1,5 @@
 export default class Debug {
-  static enabled = false;
+  static enabled = true; // ⚠️ TODO: revert
   static prefix = "🧲 ";
 
   static log(...args) {

@@ -4,6 +4,7 @@ import clipboardActions from "./clipboard";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import formActions from "./form";
+import intersectionActions from "./intersection";
 import scrollToActions from "./scroll_to";
 
 export const actions = {
@@ -13,6 +14,7 @@ export const actions = {
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
   form: formActions,
+  intersection: intersectionActions,
   scrollTo: scrollToActions
 };
 
