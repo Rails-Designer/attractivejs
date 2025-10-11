@@ -1,6 +1,6 @@
 {
   "name": "attractive.js",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A light-weight library for declarative DOM actions using data attributes",
   "scripts": {
     "build": "rollup -c",
