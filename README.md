@@ -38,10 +38,10 @@ Attractive.activate();
 
 // selected element as root
 const element = document.getElementById("main");
-Attractive.activate({ element: element });
+Attractive.activate({ on: element });
 
 // only with selected actions
-Attractive.activate({ element: element }).withActions(["class", "attribute"]);
+Attractive.activate({ on: element }).withActions(["class", "attribute"]);
 ```
 
 
@@ -62,10 +62,10 @@ Including above script-tag is enough to get started. Configure Attractive.js if 
 
     // selected element as root
     const element = document.querySelector("#main");
-    Attractive.activate({ element: element });
+    Attractive.activate({ on: element });
 
     // only with selected actions
-    Attractive.activate({ element: element }).withActions(["class", "attribute"]);
+    Attractive.activate({ on: element }).withActions(["class", "attribute"]);
   });
 </script>
 ```

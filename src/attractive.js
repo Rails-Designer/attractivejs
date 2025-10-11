@@ -24,12 +24,12 @@ class Attractive {
   }
 
   activate(options = {}) {
-    const { element = document, debug = false } = options;
+    const { on = document, debug = false } = options;
 
     Debug.enabled = debug;
     Debug.log("Initializing…");
 
-    this.element = element;
+    this.element = on;
     this.#observe.start("[data-action]");
     this.element.querySelectorAll("[data-action]").forEach(element => this.#prepare(element));
 

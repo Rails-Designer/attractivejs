@@ -12,10 +12,10 @@
   "homepage": "https://railsdesigner.com/attractive-js/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rails-designer/attractive-js.git"
+    "url": "git+https://github.com/rails-designer/attractive.js.git"
   },
   "bugs": {
-    "url": "https://github.com/rails-designer/attractive-js/issues"
+    "url": "https://github.com/rails-designer/attractive.js/issues"
   },
   "module": "dist/attractive.js",
   "main": "dist/attractive.js",
