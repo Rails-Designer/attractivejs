@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attractive.js - Clipboard Tests</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    input[data-copy-success="true"],
+    code[data-copy-success="true"] {
+      outline: 2px solid green !important;
+    }
+
+    input[data-copy-success="false"],
+    code[data-copy-success="false"] {
+      outline: 2px solid red !important;
+    }
+
+    input, code {
+      transition: outline 200ms ease-in-out;
+    }
+  </style>
+  <script src="../dist/attractive.js"></script>
+</head>
+<body>
+  <h1>Clipboard Functionality Tests</h1>
+  <p><a href="index.html">← Back to test index</a></p>
+
+  <div class="test-section">
+    <h2>Copy inline value</h2>
+
+    <button data-action="copy#https://railsdesigner.com/">
+      Copy my website URL
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h2>Copy from input</h2>
+
+    <input type="text" id="share-link" value="https://railsdesigner.com/articles/" readonly>
+    <button data-action="copy" data-target="#share-link">
+      Copy (highlight on success)
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h2>Copy from code (5s custom duration)</h2>
+
+    <p>Your access code is: <code id="access-code">abc-123-def-456</code></p>
+    <button data-action="copy" data-target="#access-code" data-copy-duration="5000">
+      Copy (highlight on success)
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h2>Failure</h2>
+
+    <p>Your API key is: <code id="api-key">abc-123-def-456</code></p>
+    <button id="failing-copy-button" data-action="copy" data-target="#api-key">
+      Copy (highlight on failure)
+    </button>
+  </div>
+
+  <script>
+    const previousContent = navigator.clipboard.writeText;
+
+    document.getElementById('failing-copy-button').addEventListener("click", () => {
+      navigator.clipboard.writeText = () => Promise.reject(new Error("You shall not pass"));
+
+      setTimeout(() => {
+        navigator.clipboard.writeText = previousContent;
+      }, 0);
+    });
+  </script>
+</body>
+</html>

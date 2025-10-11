@@ -1,5 +1,6 @@
 import attributeActions from "./attribute";
 import classActions from "./class";
+import clipboardActions from "./clipboard";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import formActions from "./form";
@@ -7,6 +8,7 @@ import formActions from "./form";
 export const actions = {
   attribute: attributeActions,
   class: classActions,
+  clipboard: clipboardActions,
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
   form: formActions
