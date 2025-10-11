@@ -6,11 +6,11 @@
   <script src="../dist/attractive.js"></script>
 </head>
 <body>
-  <h1>Attribute Functionality Tests</h1>
+  <h1>Attribute</h1>
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="test-section">
-    <h2>Toggle Disabled Attribute with Explicit Target</h2>
+    <h2>Toggle disabled attribute with explicit target</h2>
 
     <button data-action="toggleAttribute#disabled=disabled" data-target="#name">
       Toggle disabled State
@@ -30,12 +30,8 @@
   <div class="test-section">
     <h2>Add Hidden on Parent (Default Target)</h2>
 
-    <div>
-      <button data-action="addAttribute#hidden">
-        Toggle Parent Visibility
-      </button>
-
-      <p>The parent div should toggle visibility when the button is clicked.</p>
+    <div data-action="addAttribute#hidden">
+      The parent div should toggle visibility when this element is clicked.
     </div>
   </div>
 

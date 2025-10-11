@@ -6,21 +6,23 @@
   <script src="../dist/attractive.js"></script>
 </head>
 <body>
-  <h1>Data Attribute Functionality Tests</h1>
+  <h1>Data Attribute</h1>
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="test-section">
-    <h2>Product Grid Sorting</h2>
+    <h2>Product grid sorting</h2>
 
     <div class="filter-buttons">
       <button data-action="addDataAttribute#sort=price" data-target="#product-grid">
-        Sort by Price
+        Sort by price
       </button>
+
       <button data-action="addDataAttribute#sort=date" data-target="#product-grid">
-        Sort by Date
+        Sort by date
       </button>
+
       <button data-action="removeDataAttribute#sort" data-target="#product-grid">
-        Clear Sort
+        Clear sort
       </button>
     </div>
 
@@ -33,15 +35,15 @@
     <h2>Collapsible Panel</h2>
 
     <button data-action="toggleDataAttribute#expanded" data-target="#panel">
-      Toggle Expand Panel
+      Toggle expand panel
     </button>
 
     <button data-action="addDataAttribute#expanded" data-target="#panel">
-      Add Expand Panel
+      Add expand panel
     </button>
 
     <button data-action="removeDataAttribute#expanded" data-target="#panel">
-      Remove Expand Panel
+      Remove expand panel
     </button>
 
     <div id="panel" class="panel">
@@ -50,17 +52,16 @@
   </div>
 
   <div class="test-section">
-    <h2>Loading States</h2>
+    <h2>Loading states</h2>
 
     <div class="card" id="content">
-      <h3>Dynamic Content</h3>
+      <h3>Dynamic content</h3>
+
       <p>Content that can be reloaded</p>
     </div>
 
-    <button
-      data-action="toggleDataAttribute#loading=lazy"
-      data-target="#content">
-      Reload Content
+    <button data-action="toggleDataAttribute#loading=lazy" data-target="#content">
+      Reload content
     </button>
   </div>
 </body>

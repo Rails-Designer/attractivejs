@@ -3,10 +3,8 @@
 <head>
   <title>Attractive.js with Stimulus</title>
   <link rel="stylesheet" href="./styles.css">
-  <!-- Load Stimulus properly -->
   <script src="https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.umd.js"></script>
   <script>
-    // Initialize Stimulus
     (function() {
       const application = Stimulus.Application.start();
 
@@ -22,25 +20,26 @@
       console.log("Stimulus initialized");
     })();
   </script>
-  <!-- Load Attractive.js after Stimulus -->
   <script src="../dist/attractive.js"></script>
 </head>
 <body>
-  <h1>Attractive.js and Stimulus Compatibility Test</h1>
+  <h1>Attractive.js and Stimulus test</h1>
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="test-section">
-    <h2>Attractive.js Action</h2>
+    <h2>Attractive.js action</h2>
+
     <button data-action="toggleClass#active" data-target="#attractive-target">
       Toggle with Attractive.js
     </button>
+
     <div id="attractive-target" class="target">
       This element is controlled by Attractive.js
     </div>
   </div>
 
   <div class="test-section">
-    <h2>Stimulus Controller</h2>
+    <h2>Stimulus controller</h2>
 
     <div data-controller="toggle">
       <button data-action="click->toggle#toggle">
@@ -54,10 +53,10 @@
   </div>
 
   <div class="test-section">
-    <h2>Attractive.js with Event Prefix</h2>
+    <h2>Attractive.js with event prefix</h2>
 
     <button data-action="click->toggleClass#active" data-target="#prefixed-target">
-      Toggle with Event Prefix
+      Toggle
     </button>
 
     <div id="prefixed-target" class="target">
@@ -66,7 +65,7 @@
   </div>
 
   <div class="test-section">
-    <h2>Mixed Usage (with data-controller)</h2>
+    <h2>Mixed usage (with data-controller)</h2>
 
     <div data-controller="toggle">
       <button data-action="click->toggle#toggle toggleClass#active" data-target="#mixed-target">
