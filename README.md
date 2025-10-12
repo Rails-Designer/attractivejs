@@ -16,6 +16,17 @@ Quick example:
 ```
 
 
+**Sponsored By [Rails Designer](https://railsdesigner.com/)**
+
+<a href="https://railsdesigner.com/" target="_blank">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Rails-Designer/rails_icons/HEAD/.github/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Rails-Designer/rails_icons/HEAD/.github/logo-light.svg">
+    <img alt="Rails Designer" src="https://raw.githubusercontent.com/Rails-Designer/rails_icons/HEAD/.github/logo-light.svg" width="240" style="max-width: 100%;">
+  </picture>
+</a>
+
+
 ## Installation
 
 Attractive.js can be installed via NPM or included directly using a CDN.
@@ -24,10 +35,10 @@ Attractive.js can be installed via NPM or included directly using a CDN.
 ### Using NPM/importmap
 
 ```bash
-npm install attractivejs
+npm install attractive.js
 
 # using importmap-rails
-./bin/importmap pin attractivejs
+./bin/importmap pin attractive.js
 ```
 
 ```javascript
