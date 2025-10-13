@@ -60,7 +60,7 @@ Attractive.activate({ on: element }).withActions(["class", "attribute"]);
 
 ```html
 <head>
-  <script defer src="https://cdn.jsdelivr.net/npm/attractivejs@1.x.x/dist/cdn.min.js"></script>
+  <script defer src="//cdn.jsdelivr.net/npm/attractive.js"></script>
 </head>
 ```
 
