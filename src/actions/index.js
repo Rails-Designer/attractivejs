@@ -5,6 +5,7 @@ import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import formActions from "./form";
 import intersectionActions from "./intersection";
+import reloadActions from "./reload";
 import scrollToActions from "./scroll_to";
 
 export const actions = {
@@ -15,6 +16,7 @@ export const actions = {
   dialog: dialogActions,
   form: formActions,
   intersection: intersectionActions,
+  reload: reloadActions,
   scrollTo: scrollToActions
 };
 
