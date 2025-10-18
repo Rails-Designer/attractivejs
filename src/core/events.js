@@ -12,13 +12,29 @@ class Events {
   process(event, { on: element, using: defaultEventType }) {
     if (!element) return;
 
-    const action = element.dataset.action;
-    const actions = action.split(" ");
+    const actions = this.#splitActions(element.dataset.action);
 
     actions.forEach(action => this.#evaluate(action, { for: event, on: element, using: defaultEventType }));
   }
 
   // private
+
+  #splitActions(action) {
+    const result = [];
+    let currentAction = '';
+    let inBackticks = false;
+
+    [...action].forEach(character => {
+      if (character === "`") return inBackticks = !inBackticks;
+      if (character === " " && !inBackticks) return currentAction && (result.push(currentAction), currentAction = "");
+
+      currentAction += character;
+    });
+
+    if (currentAction) result.push(currentAction);
+
+    return result;
+  }
 
   #evaluate(action, { for: event, on: element, using: defaultEventType }) {
     Debug.log("Process action for", event.type, "on", element, "…");
