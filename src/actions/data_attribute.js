@@ -16,6 +16,12 @@ class DataAttribute extends ActionBase {
     this.targets.forEach(target => (this.attribute in target.dataset) ? delete target.dataset[this.attribute] : target.dataset[this.attribute] = this.value || "");
   }
 
+  cycle() {
+    if (!this.value) return;
+
+    this.targets.forEach(target => this.#cycleDataAttribute(target));
+  }
+
   add() {
     if (!this.attribute) return;
 
@@ -26,6 +32,14 @@ class DataAttribute extends ActionBase {
     if (!this.attribute) return;
 
     this.targets.forEach(target => delete target.dataset[this.attribute]);
+  }
+
+  // private
+
+  #cycleDataAttribute(target) {
+    const nextValue = this.cycledValue(target.dataset[this.attribute], this.value);
+
+    target.dataset[this.attribute] = nextValue;
   }
 }
 
@@ -38,6 +52,7 @@ export const action = (method) =>
 
 export default {
   toggleDataAttribute: action("toggle"),
+  cycleDataAttribute: action("cycle"),
   addDataAttribute: action("add"),
   removeDataAttribute: action("remove")
 };

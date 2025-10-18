@@ -4,6 +4,11 @@
   <title>Attractive.js - Class Tests</title>
   <link rel="stylesheet" href="./styles.css">
   <script src="../dist/attractive.js"></script>
+  <style>
+    .bg-red { background: red; }
+    .bg-black { background: black; }
+    .text-white { color: white; }
+  </style>
 </head>
 <body>
   <h1>Class</h1>
@@ -38,6 +43,18 @@
 
     <p id="container" class="target">
       This element should toggle the `active` and `zoomIn` classes when the button is clicked.
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>Cycle classes with explicit target</h2>
+
+    <button data-action="cycleClass#bg-red,bg-black" data-target="#door">
+      Cycle
+    </button>
+
+    <p id="door" class="target bg-red text-white">
+      Cycle through `bg-red` and `bg-black`.
     </p>
   </div>
 
