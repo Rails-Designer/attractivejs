@@ -14,6 +14,12 @@ class Class extends ActionBase {
     this.targets.forEach(target => this.#toggleClasses({ forEach: target }));
   }
 
+  cycle() {
+    if (!this.value || this.value.length === 0) return;
+
+    this.targets.forEach(target => this.#cycleClasses(target));
+  }
+
   add() {
     if (!this.value) return;
 
@@ -31,6 +37,14 @@ class Class extends ActionBase {
   #toggleClasses({ forEach: target }) {
     this.value.forEach(className => target.classList.toggle(className));
   }
+
+  #cycleClasses(target) {
+    const currentClass = this.value.find(className => target.classList.contains(className)) || "";
+    const nextClass = this.cycledValue(currentClass, this.value);
+
+    target.classList.remove(...this.value);
+    target.classList.add(nextClass);
+  }
 }
 
 export const action = (method) =>
@@ -42,6 +56,7 @@ export const action = (method) =>
 
 export default {
   toggleClass: action("toggle"),
+  cycleClass: action("cycle"),
   addClass: action("add"),
   removeClass: action("remove")
 };

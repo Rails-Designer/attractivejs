@@ -28,6 +28,16 @@
   </div>
 
   <div class="test-section">
+    <h2>Cycle between password- and text type</h2>
+
+    <button data-action="cycleAttribute#type=password,text" data-target="#password">
+      Cycle input type
+    </button>
+
+    <input type="password" id="password" value="my secret" class="name">
+  </div>
+
+  <div class="test-section">
     <h2>Add Hidden on Parent (Default Target)</h2>
 
     <div data-action="addAttribute#hidden">

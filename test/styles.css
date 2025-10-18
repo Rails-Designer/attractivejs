@@ -25,11 +25,22 @@ h2 {
 }
 
 .card {
-  &[data-loading="lazy"] {
+  &[data-loading="busy"] {
     position: relative;
 
     &::before {
       content: "Loading";
+      position: absolute;
+      top: 0; left: 0;
+      background: white;
+    }
+  }
+
+  &[data-loading="paused"] {
+    position: relative;
+
+    &::before {
+      content: "Waiting";
       position: absolute;
       top: 0; left: 0;
       background: white;

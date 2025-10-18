@@ -60,8 +60,22 @@
       <p>Content that can be reloaded</p>
     </div>
 
-    <button data-action="toggleDataAttribute#loading=lazy" data-target="#content">
+    <button data-action="toggleDataAttribute#loading=busy" data-target="#content">
       Reload content
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h2>Cycling states (busy and paused)</h2>
+
+    <div class="card" id="more-content">
+      <h3>Dynamic content</h3>
+
+      <p>Content that can be reloaded</p>
+    </div>
+
+    <button data-action="cycleDataAttribute#loading=busy,paused" data-target="#more-content">
+      Cycle states
     </button>
   </div>
 </body>
