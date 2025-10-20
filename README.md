@@ -4,12 +4,12 @@ A light-weight library for declarative DOM actions using data attributes.
 
 Quick example:
 ```html
+<button data-action="toggleClass#active" data-target="#content">
+  Toggle
+</button>
+
 <p id="content">
   This element should toggle the `active` class when clicking the button below.
-
-  <button data-action="toggleClass#active" data-target="#content">
-    Toggle
-  </button>
 </p>
 ```
 
