@@ -1,5 +1,5 @@
 {
-  "name": "attractive-js",
+  "name": "attractivejs",
   "version": "0.6.0",
   "description": "A light-weight library for declarative DOM actions using data attributes",
   "scripts": {
@@ -9,16 +9,16 @@
     "prepublishOnly": "npm run build"
   },
   "author": "Rails Designer",
-  "homepage": "https://railsdesigner.com/attractive-js/",
+  "homepage": "https://attractivejs.railsdesigner.com/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rails-designer/attractive.js.git"
+    "url": "git+https://github.com/rails-designer/attractivejs.git"
   },
   "bugs": {
-    "url": "https://github.com/rails-designer/attractive.js/issues"
+    "url": "https://github.com/rails-designer/attractivejs/issues"
   },
-  "module": "dist/attractive.js",
-  "main": "dist/attractive.js",
+  "module": "dist/attractivejs",
+  "main": "dist/attractivejs",
   "files": [
     "dist"
   ],
