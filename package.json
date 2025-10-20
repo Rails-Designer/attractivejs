@@ -1,5 +1,5 @@
 {
-  "name": "attractive.js",
+  "name": "attractive-js",
   "version": "0.6.0",
   "description": "A light-weight library for declarative DOM actions using data attributes",
   "scripts": {
