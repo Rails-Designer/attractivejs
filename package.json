@@ -17,8 +17,8 @@
   "bugs": {
     "url": "https://github.com/rails-designer/attractivejs/issues"
   },
-  "module": "dist/attractivejs",
-  "main": "dist/attractivejs",
+  "module": "dist/attractive.js",
+  "main": "dist/attractive.js",
   "files": [
     "dist"
   ],
