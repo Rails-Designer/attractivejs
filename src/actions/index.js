@@ -1,6 +1,7 @@
 import attributeActions from "./attribute";
 import classActions from "./class";
 import clipboardActions from "./clipboard";
+import confirmActions from "./confirm";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import formActions from "./form";
@@ -12,6 +13,7 @@ export const actions = {
   attribute: attributeActions,
   class: classActions,
   clipboard: clipboardActions,
+  confirm: confirmActions,
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
   form: formActions,

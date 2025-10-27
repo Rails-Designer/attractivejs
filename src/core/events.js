@@ -12,16 +12,19 @@ class Events {
   process(event, { on: element, using: defaultEventType }) {
     if (!element) return;
 
-    const actions = this.#splitActions(element.dataset.action);
+    this.#splitActions(element.dataset.action).some(action => {
+      const result = this.#evaluate(action, { for: event, on: element, using: defaultEventType });
 
-    actions.forEach(action => this.#evaluate(action, { for: event, on: element, using: defaultEventType }));
+      return result === false;
+    });
   }
 
   // private
 
   #splitActions(action) {
     const result = [];
-    let currentAction = '';
+
+    let currentAction = "";
     let inBackticks = false;
 
     [...action].forEach(character => {
@@ -44,31 +47,36 @@ class Events {
 
       if (eventName !== event.type) return;
 
-      this.#execute(actionPart, { on: element });
-    } else if (event.type === defaultEventType) {
-      this.#execute(action, { on: element });
+      action = actionPart;
+    } else if (event.type !== defaultEventType) {
+      return;
     }
 
     Debug.log("…", "processed action for", event.type, "on", element);
+
+    return this.#execute(action, { on: element, for: event });
   }
 
-  #execute(action, { on: element }) {
+  #execute(action, { on: element, for: event }) {
     Debug.log("Execute action", action, "on", element, "…");
 
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
-
     const actionName = this.#actions[possibleAction] ? possibleAction : (fallbackAction ?? action);
-    const value = this.#actions[possibleAction] ? parts.slice(1).join("#") : (fallbackValue ?? null);
 
     if (typeof this.#actions[actionName] !== "function") return;
 
-    this.#actions[actionName](element, {
+    const value = this.#actions[possibleAction] ? parts.slice(1).join("#") : (fallbackValue ?? null);
+    const result = this.#actions[actionName](element, {
       value,
       targetElement: element.dataset.target
     });
 
+    if (result === false && event) event.preventDefault();
+
     Debug.log("…", "executed action", action, "on", element);
+
+    return result;
   }
 }
 
