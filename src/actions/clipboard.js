@@ -32,9 +32,7 @@ class Clipboard extends ActionBase {
 
     this.targets.forEach(target => target.setAttribute(this.#attributeName, attributeValue));
 
-    debounce(() => {
-      this.targets.forEach(target => target.removeAttribute(this.#attributeName));
-    }, this.duration);
+    debounce(() => this.targets.forEach(target => target.removeAttribute(this.#attributeName)), this.duration);
   }
 
   get #attributeName() {
