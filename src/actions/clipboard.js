@@ -6,9 +6,6 @@ class Clipboard extends ActionBase {
     super(currentElement, options);
 
     this.value = options.value;
-
-    const duration = currentElement.dataset.copyDuration;
-    this.duration = duration ? parseInt(duration) : 2000;
   }
 
   async copy() {
@@ -28,11 +25,13 @@ class Clipboard extends ActionBase {
   // private
 
   #setFeedback(succeeded) {
-    const attributeValue = String(succeeded);
+    const duration = this.currentElement.dataset.copyDuration;
 
-    this.targets.forEach(target => target.setAttribute(this.#attributeName, attributeValue));
+    this.targets.forEach(target => target.setAttribute(this.#attributeName, succeeded));
 
-    debounce(() => this.targets.forEach(target => target.removeAttribute(this.#attributeName)), this.duration);
+    if (!duration) return;
+
+    debounce(() => this.targets.forEach(target => target.removeAttribute(this.#attributeName)), parseInt(duration));
   }
 
   get #attributeName() {
