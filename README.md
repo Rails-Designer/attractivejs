@@ -9,7 +9,7 @@ Quick example:
 </button>
 
 <p id="content">
-  This element should toggle the `active` class when clicking the button below.
+  This element should toggle the `active` class.
 </p>
 ```
 
