@@ -1,5 +1,6 @@
 import ActionBase from "./base";
 import { CSRF } from "./request/csrf";
+import debounce from "./../helpers/debounce";
 
 class Request extends ActionBase {
     constructor(currentElement, options = {}) {
@@ -21,6 +22,8 @@ class Request extends ActionBase {
         );
       }
 
+      this.#setFeedback("busy");
+
       try {
         const response = await fetch(this.value, { method: "GET" });
 
@@ -31,9 +34,12 @@ class Request extends ActionBase {
         const html = await response.text();
         this.targets.forEach(target => target.innerHTML = html);
 
+        this.#setFeedback("success");
+
         return response;
       } catch (error) {
         console.error("GET request failed:", error);
+        this.#setFeedback("error");
 
         throw error;
       }
@@ -65,12 +71,33 @@ class Request extends ActionBase {
       }
     }
 
+    #setFeedback(state) {
+      const attributeName = `data-request-${state}`;
+      const duration = this.currentElement.dataset.requestDuration;
+
+      this.targets.forEach(target => {
+        target.removeAttribute("data-request-success");
+        target.removeAttribute("data-request-error");
+        target.removeAttribute("data-request-busy");
+
+        target.setAttribute(attributeName, "");
+      });
+
+      if (!duration || state === "busy") return;
+
+      debounce(() => {
+        this.targets.forEach(target => target.removeAttribute(attributeName));
+      }, parseInt(duration));
+    }
+
     #fetch(method) {
       if (!this.value) {
         console.warn("No URL provided in the action value");
 
         return;
       }
+
+      this.#setFeedback("busy");
 
       return fetch(this.value, {
         method: method,
@@ -81,7 +108,22 @@ class Request extends ActionBase {
 
         body: JSON.stringify(this.#body)
       })
-      .catch(error => console.error(`${method} request failed:`, error));
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        this.#setFeedback("success");
+
+        return response;
+      })
+      .catch(error => {
+        console.error(`${method} request failed:`, error);
+
+        this.#setFeedback("error");
+
+        throw error;
+      });
   }
 
   get #body() {

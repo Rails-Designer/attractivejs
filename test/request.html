@@ -3,6 +3,33 @@
 <head>
   <title>Attractive.js - Request Method Tests</title>
   <link rel="stylesheet" href="./styles.css">
+  <style>
+    [data-request-success] {
+      outline: 2px solid green !important;
+    }
+
+    [data-request-error] {
+      outline: 2px solid red !important;
+    }
+
+    [data-request-busy] {
+      outline: 2px solid orange !important;
+      opacity: 0.6;
+    }
+
+    button, select {
+      transition: outline 200ms ease-in-out, opacity 200ms ease-in-out;
+    }
+
+    .loading-text {
+      display: none;
+    }
+
+    #content:has([data-request-busy]) ~ .loading-text,
+    #content[data-request-busy] ~ .loading-text {
+      display: inline;
+    }
+  </style>
   <script src="../dist/attractive.js"></script>
 </head>
 <body>
@@ -12,18 +39,19 @@
   <div class="test-section">
     <h2>Load external path</h2>
 
-    <button type="button" data-action="get#/test/request/get.html" data-target="#content">
+    <button type="button" data-action="get#/test/request/get.html" data-target="#content" data-request-duration="2000">
       Get
     </button>
 
     <div id="content"></div>
+    <span class="loading-text">Loading...</span>
   </div>
 
   <div class="test-section">
     <h2>Example using Select Value</h2>
     <label for="theme">Theme:</label>
 
-    <select id="theme" name="theme" data-action="post#/">
+    <select id="theme" name="theme" data-action="post#/" data-request-duration="2000">
       <option value="light">Light</option>
       <option value="dark">Dark</option>
     </select>
@@ -32,7 +60,7 @@
   <div class="test-section">
     <h2>Example that Fails</h2>
 
-    <button data-action="post#">Create post</button>
+    <button data-action="post#" data-request-duration="2000">Create post</button>
   </div>
 </body>
 </html>
