@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attractive.js - ScrollTo Tests</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .scroll-container {
+      height: 200px;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      overflow-y: scroll;
+
+      & li,
+      & div {
+        padding: 8px 0;
+      }
+    }
+
+    .target-item {
+      background-color: #ffecb3;
+    }
+  </style>
+  <script src="../dist/attractive.js"></script>
+</head>
+<body>
+  <h1>ScrollTo</h1>
+  <p><a href="index.html">← Back to test index</a></p>
+
+  <div class="test-section">
+    <h2>Self-scrolling into view (smooth)</h2>
+
+    <ul class="scroll-container">
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li>Item 3</li>
+      <li>Item 4</li>
+      <li>Item 5</li>
+      <li>Item 6</li>
+      <li>Item 7</li>
+      <li>Item 8</li>
+      <li>Item 9</li>
+      <li>Item 10</li>
+      <li>Item 11</li>
+      <li>Item 12</li>
+      <li>Item 13</li>
+      <li>Item 14</li>
+      <li class="target-item" data-action="scrollTo#smooth">Item 15 (target)</li>
+      <li>Item 16</li>
+      <li>Item 17</li>
+      <li>Item 18</li>
+      <li>Item 19</li>
+      <li>Item 20</li>
+    </ul>
+  </div>
+
+  <div class="test-section">
+    <h2>Container scrolling to target (instant)</h2>
+
+    <nav class="scroll-container" data-action="scrollTo#instant" data-target="#active-nav-item">
+      <ul>
+        <li>Dashboard</li>
+        <li>Analytics</li>
+        <li>Reports</li>
+        <li>Integrations</li>
+        <li class="target-item" id="active-nav-item">Users (target)</li>
+        <li>Audit Log</li>
+        <li>Settings</li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="test-section">
+    <h2>Self-scrolling into view (auto/default)</h2>
+
+    <div class="scroll-container">
+      <div>Chapter 1</div>
+      <div>Chapter 2</div>
+      <div>Chapter 3</div>
+      <div>Chapter 4</div>
+      <div>Chapter 5</div>
+      <div>Chapter 6</div>
+      <div>Chapter 7</div>
+      <div>Chapter 8</div>
+      <div>Chapter 9</div>
+      <div class="target-item" data-action="scrollTo">Chapter 10 (target)</div>
+      <div>Chapter 11</div>
+      <div>Chapter 12</div>
+    </div>
+  </div>
+</body>
+</html>

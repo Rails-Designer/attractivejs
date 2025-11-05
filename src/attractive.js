@@ -8,6 +8,7 @@ class Attractive {
   #eventListeners = {};
   #events;
   #observe;
+  #onLoadActions = ["scrollTo", "intersect-once", "intersect-toggle"];
 
   static get debug() {
     return Debug.enabled;
@@ -23,12 +24,12 @@ class Attractive {
   }
 
   activate(options = {}) {
-    const { element = document, debug = false } = options;
+    const { on = document, debug = false } = options;
 
     Debug.enabled = debug;
     Debug.log("Initializing…");
 
-    this.element = element;
+    this.element = on;
     this.#observe.start("[data-action]");
     this.element.querySelectorAll("[data-action]").forEach(element => this.#prepare(element));
 
@@ -51,6 +52,15 @@ class Attractive {
     const actionValue = element.dataset.action;
 
     if (!actionValue) return;
+
+    const actions = actionValue.split(" ");
+    const onLoadActions = actions.filter(action => this.#onLoadActions.includes(action.split("#")[0]));
+
+    if (onLoadActions.length > 0) {
+      onLoadActions.forEach(action => this.#onLoadExecute({ action, on: element }));
+
+      return;
+    }
 
     const registeredEventTypes = new Set(
       actionValue.includes("->")
@@ -79,6 +89,17 @@ class Attractive {
     const defaultEventType = EventTypes.getDefault({ from: element });
 
     this.#events.process(event, { on: element, using: defaultEventType });
+  }
+
+  #onLoadExecute({ action, on: element }) {
+    const [actionName, ...valueParts] = action.split("#");
+
+    if (typeof actions[actionName] !== "function") return;
+
+    const value = valueParts.length > 0 ? valueParts.join("#") : null;
+    const targetElement = element.dataset.target;
+
+    actions[actionName](element, { value, targetElement });
   }
 }
 

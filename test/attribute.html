@@ -6,11 +6,11 @@
   <script src="../dist/attractive.js"></script>
 </head>
 <body>
-  <h1>Attribute Functionality Tests</h1>
+  <h1>Attribute</h1>
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="test-section">
-    <h2>Toggle Disabled Attribute with Explicit Target</h2>
+    <h2>Toggle disabled attribute with explicit target</h2>
 
     <button data-action="toggleAttribute#disabled=disabled" data-target="#name">
       Toggle disabled State
@@ -20,7 +20,7 @@
       Add disabled State
     </button>
 
-    <button data-action="removeAttribute#disabled#disabled" data-target="#name">
+    <button data-action="removeAttribute#disabled=disabled" data-target="#name">
       Remove disabled State
     </button>
 
@@ -28,19 +28,25 @@
   </div>
 
   <div class="test-section">
-    <h2>Add Hidden on Parent (Default Target)</h2>
+    <h2>Cycle between password- and text type</h2>
 
-    <div>
-      <button data-action="addAttribute#hidden">
-        Toggle Parent Visibility
-      </button>
+    <button data-action="cycleAttribute#type=password,text" data-target="#password">
+      Cycle input type
+    </button>
 
-      <p>The parent div should toggle visibility when the button is clicked.</p>
+    <input type="password" id="password" value="my secret" class="name">
+  </div>
+
+  <div class="test-section">
+    <h2>Add Hidden on default target</h2>
+
+    <div data-action="addAttribute#hidden">
+      This div should add `hidden` attribute when clicked.
     </div>
   </div>
 
   <div class="test-section">
-    <h2>Details/Summary with Multiple Events</h2>
+    <h2>Details/summary with multiple events</h2>
 
     <button data-action="toggleAttribute#open" data-target="#details">Toggle open</button>
 
