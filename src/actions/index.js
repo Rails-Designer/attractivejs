@@ -20,7 +20,7 @@ export const actions = {
   form: formActions,
   intersection: intersectionActions,
   reload: reloadActions,
-  request: requestActions
+  request: requestActions,
   scrollTo: scrollToActions
 };
 

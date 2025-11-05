@@ -4,30 +4,41 @@
   <title>Attractive.js - Request Method Tests</title>
   <link rel="stylesheet" href="./styles.css">
   <style>
-    [data-request-success] {
-      outline: 2px solid green !important;
-    }
-
-    [data-request-error] {
-      outline: 2px solid red !important;
-    }
-
-    [data-request-busy] {
-      outline: 2px solid orange !important;
-      opacity: 0.6;
-    }
-
-    button, select {
-      transition: outline 200ms ease-in-out, opacity 200ms ease-in-out;
-    }
-
-    .loading-text {
+    #content:not([data-request-busy]) .loading-text {
       display: none;
     }
 
-    #content:has([data-request-busy]) ~ .loading-text,
-    #content[data-request-busy] ~ .loading-text {
-      display: inline;
+    [data-request-success="true"] {
+      outline: 2px solid green !important;
+    }
+
+    [data-request-success="false"] {
+      outline: 2px solid red !important;
+    }
+
+    button, select {
+      transition: outline 200ms ease-in-out;
+    }
+
+    .success-message,
+    .error-message {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    #newsletter-form[data-request-success="true"] .success-message {
+      display: block;
+      color: green;
+    }
+
+    #newsletter-form[data-request-success="false"] .error-message {
+      display: block;
+      color: red;
+    }
+
+    #newsletter-form[data-request-busy="true"] button {
+      opacity: .6;
+      pointer-events: none;
     }
   </style>
   <script src="../dist/attractive.js"></script>
@@ -39,12 +50,13 @@
   <div class="test-section">
     <h2>Load external path</h2>
 
-    <button type="button" data-action="get#/test/request/get.html" data-target="#content" data-request-duration="2000">
+    <button type="button" data-action="get#/test/request/get.html" data-target="#content" data-request-duration="3000">
       Get
     </button>
 
-    <div id="content"></div>
-    <span class="loading-text">Loading...</span>
+    <div id="content">
+      <span class="loading-text">Loading…</span>
+    </div>
   </div>
 
   <div class="test-section">
