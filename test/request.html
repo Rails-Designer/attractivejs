@@ -10,9 +10,13 @@
   <p><a href="index.html">← Back to test index</a></p>
 
   <div class="test-section">
-    <h2>Example that Fails</h2>
+    <h2>Load external path</h2>
 
-    <button data-action="post#">Create post</button>
+    <button type="button" data-action="get#/test/request/get.html" data-target="#content">
+      Get
+    </button>
+
+    <div id="content"></div>
   </div>
 
   <div class="test-section">
@@ -23,6 +27,12 @@
       <option value="light">Light</option>
       <option value="dark">Dark</option>
     </select>
+  </div>
+
+  <div class="test-section">
+    <h2>Example that Fails</h2>
+
+    <button data-action="post#">Create post</button>
   </div>
 </body>
 </html>

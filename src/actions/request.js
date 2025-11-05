@@ -8,15 +8,35 @@ class Request extends ActionBase {
       this.value = options.value;
     }
 
-    get() {
+    async get() {
       if (!this.value) {
         console.warn("No URL provided in the action value");
 
         return;
       }
 
-      return fetch(this.value, { method: "GET" })
-        .catch(error => console.error("GET request failed:", error));
+      if (this.#crossingOrigin({ with: this.value })) {
+        console.warn(
+          `Cross-origin request to: ${this.value}. Missing the correct CORS headers.`
+        );
+      }
+
+      try {
+        const response = await fetch(this.value, { method: "GET" });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const html = await response.text();
+        this.targets.forEach(target => target.innerHTML = html);
+
+        return response;
+      } catch (error) {
+        console.error("GET request failed:", error);
+
+        throw error;
+      }
     }
 
     post() {
@@ -32,6 +52,18 @@ class Request extends ActionBase {
     }
 
     // private
+
+    #crossingOrigin({ with: url }) {
+      try {
+        const requestUrl = new URL(url, window.location.href);
+
+        return requestUrl.origin !== window.location.origin;
+      } catch {
+        console.error("Invalid URL:", url);
+
+        return false;
+      }
+    }
 
     #fetch(method) {
       if (!this.value) {
