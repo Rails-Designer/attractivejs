@@ -1,82 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js - Data Attribute Tests</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="../dist/attractive.js"></script>
-</head>
-<body>
-  <h1>Data Attribute</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+  <head>
+    <title>Attractive.js - Data Attribute Tests</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="../dist/attractive.js"></script>
+  </head>
+  <body>
+    <h1>Data Attribute</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Product grid sorting</h2>
+    <div class="test-section">
+      <h2>Product grid sorting</h2>
 
-    <div class="filter-buttons">
-      <button data-action="addDataAttribute#sort=price" data-target="#product-grid">
-        Sort by price
+      <div class="filter-buttons">
+        <button
+          data-action="addDataAttribute#sort=price"
+          data-target="#product-grid"
+        >
+          Sort by price
+        </button>
+
+        <button
+          data-action="addDataAttribute#sort=date"
+          data-target="#product-grid"
+        >
+          Sort by date
+        </button>
+
+        <button
+          data-action="removeDataAttribute#sort"
+          data-target="#product-grid"
+        >
+          Clear sort
+        </button>
+      </div>
+
+      <div id="product-grid" class="grid">
+        <p>Product grid that changes sort based on data-sort value</p>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Collapsible Panel</h2>
+
+      <button data-action="toggleDataAttribute#expanded" data-target="#panel">
+        Toggle expand panel
       </button>
 
-      <button data-action="addDataAttribute#sort=date" data-target="#product-grid">
-        Sort by date
+      <button data-action="addDataAttribute#expanded" data-target="#panel">
+        Add expand panel
       </button>
 
-      <button data-action="removeDataAttribute#sort" data-target="#product-grid">
-        Clear sort
+      <button data-action="removeDataAttribute#expanded" data-target="#panel">
+        Remove expand panel
+      </button>
+
+      <div id="panel" class="panel">
+        <p>
+          This panel toggles between expanded/collapsed states (shown via a red
+          border)
+        </p>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Loading states</h2>
+
+      <div class="card" id="content">
+        <h3>Dynamic content</h3>
+
+        <p>Content that can be reloaded</p>
+      </div>
+
+      <button
+        data-action="toggleDataAttribute#loading=busy"
+        data-target="#content"
+      >
+        Reload content
       </button>
     </div>
 
-    <div id="product-grid" class="grid">
-      <p>Product grid that changes sort based on data-sort value</p>
+    <div class="test-section">
+      <h2>Cycling states (busy and paused)</h2>
+
+      <div class="card" id="more-content">
+        <h3>Dynamic content</h3>
+
+        <p>Content that can be reloaded</p>
+      </div>
+
+      <button
+        data-action="cycleDataAttribute#loading=busy,paused"
+        data-target="#more-content"
+      >
+        Cycle states
+      </button>
     </div>
-  </div>
-
-  <div class="test-section">
-    <h2>Collapsible Panel</h2>
-
-    <button data-action="toggleDataAttribute#expanded" data-target="#panel">
-      Toggle expand panel
-    </button>
-
-    <button data-action="addDataAttribute#expanded" data-target="#panel">
-      Add expand panel
-    </button>
-
-    <button data-action="removeDataAttribute#expanded" data-target="#panel">
-      Remove expand panel
-    </button>
-
-    <div id="panel" class="panel">
-      <p>This panel toggles between expanded/collapsed states (shown via a red border)</p>
-    </div>
-  </div>
-
-  <div class="test-section">
-    <h2>Loading states</h2>
-
-    <div class="card" id="content">
-      <h3>Dynamic content</h3>
-
-      <p>Content that can be reloaded</p>
-    </div>
-
-    <button data-action="toggleDataAttribute#loading=busy" data-target="#content">
-      Reload content
-    </button>
-  </div>
-
-  <div class="test-section">
-    <h2>Cycling states (busy and paused)</h2>
-
-    <div class="card" id="more-content">
-      <h3>Dynamic content</h3>
-
-      <p>Content that can be reloaded</p>
-    </div>
-
-    <button data-action="cycleDataAttribute#loading=busy,paused" data-target="#more-content">
-      Cycle states
-    </button>
-  </div>
-</body>
+  </body>
 </html>

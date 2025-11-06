@@ -1,48 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js - Dialog Tests</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="../dist/attractive.js"></script>
-</head>
-<body>
-  <h1>Dialog</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+  <head>
+    <title>Attractive.js - Dialog Tests</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="../dist/attractive.js"></script>
+  </head>
+  <body>
+    <h1>Dialog</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Dialog actions with explicit target</h2>
+    <div class="test-section">
+      <h2>Dialog actions with explicit target</h2>
 
-    <button data-action="dialog#open" data-target="#dialog">
-      Open dialog (show)
-    </button>
+      <button data-action="dialog#open" data-target="#dialog">
+        Open dialog (show)
+      </button>
 
-    <button data-action="dialog#openModal" data-target="#dialog">
-      Open dialog (showModal)
-    </button>
+      <button data-action="dialog#openModal" data-target="#dialog">
+        Open dialog (showModal)
+      </button>
 
-    <dialog id="dialog">
-      <h2>Modal Heading</h2>
-      <p>This is a dialog. You can close it with the buttons below.</p>
+      <dialog id="dialog">
+        <h2>Modal Heading</h2>
+        <p>This is a dialog. You can close it with the buttons below.</p>
 
+        <form method="dialog">
+          <button
+            type="button"
+            data-action="dialog#close"
+            data-target="#dialog"
+          >
+            Cancel
+          </button>
 
-      <form method="dialog">
-        <button type="button" data-action="dialog#close" data-target="#dialog">Cancel</button>
+          <button type="submit">Submit</button> (should close via form method;
+          e.g. page redirect or similar
+        </form>
+      </dialog>
+    </div>
 
-        <button type="submit">Submit</button> (should close via form method; e.g. page redirect or similar
-      </form>
-    </dialog>
-  </div>
+    <div class="test-section">
+      <h2>Dialog actions with implicit target (any `dialog` element)</h2>
 
-  <div class="test-section">
-    <h2>Dialog actions with implicit target (any `dialog` element)</h2>
+      <button data-action="dialog#open">Open dialog (show)</button>
 
-    <button data-action="dialog#open">
-      Open dialog (show)
-    </button>
-
-    <button data-action="dialog#openModal">
-      Open dialog (showModal)
-    </button>
-  </div>
-</body>
+      <button data-action="dialog#openModal">Open dialog (showModal)</button>
+    </div>
+  </body>
 </html>

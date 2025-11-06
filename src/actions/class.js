@@ -11,35 +11,37 @@ class Class extends ActionBase {
   toggle() {
     if (!this.value) return;
 
-    this.targets.forEach(target => this.#toggleClasses({ forEach: target }));
+    this.targets.forEach((target) => this.#toggleClasses({ forEach: target }));
   }
 
   cycle() {
     if (!this.value || this.value.length === 0) return;
 
-    this.targets.forEach(target => this.#cycleClasses(target));
+    this.targets.forEach((target) => this.#cycleClasses(target));
   }
 
   add() {
     if (!this.value) return;
 
-    this.targets.forEach(target => target.classList.add(...this.value));
+    this.targets.forEach((target) => target.classList.add(...this.value));
   }
 
   remove() {
     if (!this.value) return;
 
-    this.targets.forEach(target => target.classList.remove(...this.value));
+    this.targets.forEach((target) => target.classList.remove(...this.value));
   }
 
   // private
 
   #toggleClasses({ forEach: target }) {
-    this.value.forEach(className => target.classList.toggle(className));
+    this.value.forEach((className) => target.classList.toggle(className));
   }
 
   #cycleClasses(target) {
-    const currentClass = this.value.find(className => target.classList.contains(className)) || "";
+    const currentClass =
+      this.value.find((className) => target.classList.contains(className)) ||
+      "";
     const nextClass = this.cycledValue(currentClass, this.value);
 
     target.classList.remove(...this.value);
@@ -47,7 +49,8 @@ class Class extends ActionBase {
   }
 }
 
-export const action = (method) =>
+export const action =
+  (method) =>
   (element, options = {}) => {
     const instance = new Class(element, options);
 

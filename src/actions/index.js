@@ -26,7 +26,10 @@ export const actions = {
 
 export const availableActions = (groups = []) => {
   if (groups.length === 0) {
-    return Object.values(actions).reduce((all, group) => ({...all, ...group}), {});
+    return Object.values(actions).reduce(
+      (all, group) => ({ ...all, ...group }),
+      {}
+    );
   }
 
   return actions.reduce((selectedActions, group) => {
@@ -36,7 +39,7 @@ export const availableActions = (groups = []) => {
       return selectedActions;
     }
 
-    return {...selectedActions, ...groups[group]};
+    return { ...selectedActions, ...groups[group] };
   }, {});
 };
 

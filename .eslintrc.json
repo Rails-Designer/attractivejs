@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "standard",
-    "prettier"
-  ],
+  "extends": ["standard", "prettier"],
 
   "env": {
     "browser": true,

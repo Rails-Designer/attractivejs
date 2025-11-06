@@ -9,7 +9,8 @@ class Clipboard extends ActionBase {
   }
 
   async copy() {
-    const textToCopy = this.value || (this.targets[0]?.value ?? this.targets[0]?.textContent);
+    const textToCopy =
+      this.value || (this.targets[0]?.value ?? this.targets[0]?.textContent);
 
     if (textToCopy === undefined) return;
 
@@ -27,11 +28,19 @@ class Clipboard extends ActionBase {
   #setFeedback(succeeded) {
     const duration = this.currentElement.dataset.copyDuration;
 
-    this.targets.forEach(target => target.setAttribute(this.#attributeName, succeeded));
+    this.targets.forEach((target) =>
+      target.setAttribute(this.#attributeName, succeeded)
+    );
 
     if (!duration) return;
 
-    debounce(() => this.targets.forEach(target => target.removeAttribute(this.#attributeName)), parseInt(duration));
+    debounce(
+      () =>
+        this.targets.forEach((target) =>
+          target.removeAttribute(this.#attributeName)
+        ),
+      parseInt(duration)
+    );
   }
 
   get #attributeName() {
@@ -39,7 +48,8 @@ class Clipboard extends ActionBase {
   }
 }
 
-export const action = (method) =>
+export const action =
+  (method) =>
   (element, options = {}) => {
     const instance = new Clipboard(element, options);
 

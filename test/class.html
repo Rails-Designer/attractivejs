@@ -1,81 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js - Class Tests</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="../dist/attractive.js"></script>
-  <style>
-    .bg-red { background: red; }
-    .bg-black { background: black; }
-    .text-white { color: white; }
-  </style>
-</head>
-<body>
-  <h1>Class</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+  <head>
+    <title>Attractive.js - Class Tests</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="../dist/attractive.js"></script>
+    <style>
+      .bg-red {
+        background: red;
+      }
+      .bg-black {
+        background: black;
+      }
+      .text-white {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Class</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Add, remove, toggle class with explicit target</h2>
+    <div class="test-section">
+      <h2>Add, remove, toggle class with explicit target</h2>
 
-    <button data-action="addClass#active" data-target="#target">
-      Add
-    </button>
+      <button data-action="addClass#active" data-target="#target">Add</button>
 
-    <button data-action="removeClass#active" data-target="#target">
-      Remove
-    </button>
+      <button data-action="removeClass#active" data-target="#target">
+        Remove
+      </button>
 
-    <button data-action="toggleClass#active" data-target="#target">
-      Toggle
-    </button>
+      <button data-action="toggleClass#active" data-target="#target">
+        Toggle
+      </button>
 
-    <p id="target" class="target">
-      This element should toggle the `active` class when the button is clicked.
-    </p>
-  </div>
-
-  <div class="test-section">
-    <h2>Toggle classes with explicit target</h2>
-
-    <button data-action="toggleClass#,active,zoomIn," data-target="#container">
-      Toggle
-    </button>
-
-    <p id="container" class="target">
-      This element should toggle the `active` and `zoomIn` classes when the button is clicked.
-    </p>
-  </div>
-
-  <div class="test-section">
-    <h2>Cycle classes with explicit target</h2>
-
-    <button data-action="cycleClass#bg-red,bg-black" data-target="#door">
-      Cycle
-    </button>
-
-    <p id="door" class="target bg-red text-white">
-      Cycle through `bg-red` and `bg-black`.
-    </p>
-  </div>
-
-  <div class="test-section">
-    <h2>Add/remove class by hovering over element below</h2>
-
-    <div class="target" data-action="mouseover->addClass#highlight mouseout->removeClass#highlight">
-      <p>This div should add and remove the `highlight` class upon hover (useful! 🦉).</p>
+      <p id="target" class="target">
+        This element should toggle the `active` class when the button is
+        clicked.
+      </p>
     </div>
-  </div>
 
-  <div class="test-section">
-    <h2>Attractive.js with multiple events</h2>
+    <div class="test-section">
+      <h2>Toggle classes with explicit target</h2>
 
-    <button data-action="click->toggleClass#active,zoomIn mouseover->addClass#highlight mouseout->removeClass#highlight" data-target="#multi-event-target">
-      Hover and Click Me
-    </button>
+      <button
+        data-action="toggleClass#,active,zoomIn,"
+        data-target="#container"
+      >
+        Toggle
+      </button>
 
-    <div id="multi-event-target" class="target">
-      This element responds to multiple events
+      <p id="container" class="target">
+        This element should toggle the `active` and `zoomIn` classes when the
+        button is clicked.
+      </p>
     </div>
-  </div>
-</body>
+
+    <div class="test-section">
+      <h2>Cycle classes with explicit target</h2>
+
+      <button data-action="cycleClass#bg-red,bg-black" data-target="#door">
+        Cycle
+      </button>
+
+      <p id="door" class="target bg-red text-white">
+        Cycle through `bg-red` and `bg-black`.
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>Add/remove class by hovering over element below</h2>
+
+      <div
+        class="target"
+        data-action="mouseover->addClass#highlight mouseout->removeClass#highlight"
+      >
+        <p>
+          This div should add and remove the `highlight` class upon hover
+          (useful! 🦉).
+        </p>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Attractive.js with multiple events</h2>
+
+      <button
+        data-action="click->toggleClass#active,zoomIn mouseover->addClass#highlight mouseout->removeClass#highlight"
+        data-target="#multi-event-target"
+      >
+        Hover and Click Me
+      </button>
+
+      <div id="multi-event-target" class="target">
+        This element responds to multiple events
+      </div>
+    </div>
+  </body>
 </html>
