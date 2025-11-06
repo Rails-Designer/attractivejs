@@ -12,8 +12,12 @@ class Events {
   process(event, { on: element, using: defaultEventType }) {
     if (!element) return;
 
-    this.#splitActions(element.dataset.action).some(action => {
-      const result = this.#evaluate(action, { for: event, on: element, using: defaultEventType });
+    this.#splitActions(element.dataset.action).some((action) => {
+      const result = this.#evaluate(action, {
+        for: event,
+        on: element,
+        using: defaultEventType
+      });
 
       return result === false;
     });
@@ -27,9 +31,22 @@ class Events {
     let currentAction = "";
     let inBackticks = false;
 
-    [...action].forEach(character => {
-      if (character === "`") return inBackticks = !inBackticks;
-      if (character === " " && !inBackticks) return currentAction && (result.push(currentAction), currentAction = "");
+    [...action].forEach((character) => {
+      if (character === "`") {
+        inBackticks = !inBackticks;
+
+        return;
+      }
+
+      if (character === " " && !inBackticks) {
+        if (currentAction) {
+          result.push(currentAction);
+
+          currentAction = "";
+        }
+
+        return;
+      }
 
       currentAction += character;
     });
@@ -62,11 +79,15 @@ class Events {
 
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
-    const actionName = this.#actions[possibleAction] ? possibleAction : (fallbackAction ?? action);
+    const actionName = this.#actions[possibleAction]
+      ? possibleAction
+      : (fallbackAction ?? action);
 
     if (typeof this.#actions[actionName] !== "function") return;
 
-    const value = this.#actions[possibleAction] ? parts.slice(1).join("#") : (fallbackValue ?? null);
+    const value = this.#actions[possibleAction]
+      ? parts.slice(1).join("#")
+      : (fallbackValue ?? null);
     const result = this.#actions[actionName](element, {
       value,
       targetElement: element.dataset.target

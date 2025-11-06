@@ -12,8 +12,8 @@ class Intersection extends ActionBase {
   start() {
     if (this.classNames.length === 0) return;
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           this.#enterViewport(observer, entry.target);
         } else {
@@ -28,7 +28,7 @@ class Intersection extends ActionBase {
   // private
 
   #enterViewport(observer, observedElement) {
-    this.targets.forEach(target => target.classList.add(...this.classNames));
+    this.targets.forEach((target) => target.classList.add(...this.classNames));
 
     if (this.justOnce) {
       observer.unobserve(observedElement);
@@ -38,11 +38,14 @@ class Intersection extends ActionBase {
   #leaveViewport() {
     if (this.justOnce) return;
 
-    this.targets.forEach(target => target.classList.remove(...this.classNames));
+    this.targets.forEach((target) =>
+      target.classList.remove(...this.classNames)
+    );
   }
 }
 
-export const action = (actionName) =>
+export const action =
+  (actionName) =>
   (element, options = {}) => {
     const instance = new Intersection(element, { ...options, actionName });
 

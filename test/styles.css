@@ -1,5 +1,9 @@
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -31,7 +35,8 @@ h2 {
     &::before {
       content: "Loading";
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       background: white;
     }
   }
@@ -42,7 +47,8 @@ h2 {
     &::before {
       content: "Waiting";
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       background: white;
     }
   }
@@ -52,7 +58,7 @@ h2 {
   border: 1px solid gray;
 
   &[data-expanded] {
-  	border-color: red;
+    border-color: red;
   }
 }
 

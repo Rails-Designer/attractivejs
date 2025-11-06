@@ -15,7 +15,8 @@ class ScrollTo extends ActionBase {
   }
 }
 
-export const action = (method) =>
+export const action =
+  (method) =>
   (element, options = {}) => {
     const instance = new ScrollTo(element, options);
     return instance[method]();

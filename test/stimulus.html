@@ -1,110 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js with Stimulus</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.umd.js"></script>
-  <script>
-    (function() {
-      const application = Stimulus.Application.start();
+  <head>
+    <title>Attractive.js with Stimulus</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.umd.js"></script>
+    <script>
+      (function () {
+        const application = Stimulus.Application.start();
 
-      application.register("toggle", class extends Stimulus.Controller {
-        static targets = ["output"];
+        application.register(
+          "toggle",
+          class extends Stimulus.Controller {
+            static targets = ["output"];
 
-        toggle() {
-          this.outputTarget.classList.toggle("active");
-          console.log("Stimulus toggle action called");
-        }
-      });
+            toggle() {
+              this.outputTarget.classList.toggle("active");
+              console.log("Stimulus toggle action called");
+            }
+          }
+        );
 
-      console.log("Stimulus initialized");
-    })();
-  </script>
-  <script src="../dist/attractive.js"></script>
-</head>
-<body>
-  <h1>Attractive.js and Stimulus test</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+        console.log("Stimulus initialized");
+      })();
+    </script>
+    <script src="../dist/attractive.js"></script>
+  </head>
+  <body>
+    <h1>Attractive.js and Stimulus test</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Attractive.js action</h2>
+    <div class="test-section">
+      <h2>Attractive.js action</h2>
 
-    <button data-action="toggleClass#active" data-target="#attractive-target">
-      Toggle with Attractive.js
-    </button>
-
-    <div id="attractive-target" class="target">
-      This element is controlled by Attractive.js
-    </div>
-  </div>
-
-  <div class="test-section">
-    <h2>Stimulus controller</h2>
-
-    <div data-controller="toggle">
-      <button data-action="click->toggle#toggle">
-        Toggle with Stimulus
+      <button data-action="toggleClass#active" data-target="#attractive-target">
+        Toggle with Attractive.js
       </button>
 
-      <div data-toggle-target="output" class="target">
-        This element is controlled by Stimulus
-      </div>
-    </div>
-  </div>
-
-  <div class="test-section">
-    <h2>Attractive.js with event prefix</h2>
-
-    <button data-action="click->toggleClass#active" data-target="#prefixed-target">
-      Toggle
-    </button>
-
-    <div id="prefixed-target" class="target">
-      This element should toggle when clicked
-    </div>
-  </div>
-
-  <div class="test-section">
-    <h2>Mixed usage (with data-controller)</h2>
-
-    <div data-controller="toggle">
-      <button data-action="click->toggle#toggle toggleClass#active" data-target="#mixed-target">
-        This button has both Stimulus and Attractive.js actions
-      </button>
-
-      <div data-toggle-target="output" class="target">
-        This element should be controlled by Stimulus
-      </div>
-
-      <div id="mixed-target" class="target">
+      <div id="attractive-target" class="target">
         This element is controlled by Attractive.js
       </div>
     </div>
-  </div>
 
-  <div class="test-section">
-    <h2>Mixed Actions (without data-controller)</h2>
+    <div class="test-section">
+      <h2>Stimulus controller</h2>
 
-    <button data-action="click->nonexistent#action toggleClass#active" data-target="#truly-mixed-target">
-      This button has mixed actions but no controller
-    </button>
+      <div data-controller="toggle">
+        <button data-action="click->toggle#toggle">Toggle with Stimulus</button>
 
-    <div id="truly-mixed-target" class="target">
-      This element SHOULD be toggled by Attractive.js
+        <div data-toggle-target="output" class="target">
+          This element is controlled by Stimulus
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="test-section">
-    <h2>Dynamic Element Test</h2>
-    <button id="add-element-btn">Add New Element with Action</button>
-    <div id="dynamic-container"></div>
-  </div>
+    <div class="test-section">
+      <h2>Attractive.js with event prefix</h2>
 
-  <script>
-    // Test dynamic element addition
-    document.getElementById('add-element-btn').addEventListener('click', function() {
-      const container = document.getElementById('dynamic-container');
-      container.innerHTML = `
+      <button
+        data-action="click->toggleClass#active"
+        data-target="#prefixed-target"
+      >
+        Toggle
+      </button>
+
+      <div id="prefixed-target" class="target">
+        This element should toggle when clicked
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Mixed usage (with data-controller)</h2>
+
+      <div data-controller="toggle">
+        <button
+          data-action="click->toggle#toggle toggleClass#active"
+          data-target="#mixed-target"
+        >
+          This button has both Stimulus and Attractive.js actions
+        </button>
+
+        <div data-toggle-target="output" class="target">
+          This element should be controlled by Stimulus
+        </div>
+
+        <div id="mixed-target" class="target">
+          This element is controlled by Attractive.js
+        </div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Mixed Actions (without data-controller)</h2>
+
+      <button
+        data-action="click->nonexistent#action toggleClass#active"
+        data-target="#truly-mixed-target"
+      >
+        This button has mixed actions but no controller
+      </button>
+
+      <div id="truly-mixed-target" class="target">
+        This element SHOULD be toggled by Attractive.js
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Dynamic Element Test</h2>
+      <button id="add-element-btn">Add New Element with Action</button>
+      <div id="dynamic-container"></div>
+    </div>
+
+    <script>
+      // Test dynamic element addition
+      document
+        .getElementById("add-element-btn")
+        .addEventListener("click", function () {
+          const container = document.getElementById("dynamic-container");
+          container.innerHTML = `
         <div class="test-section">
           <button data-action="toggleClass#active" data-target="#dynamic-target">
             Dynamic Toggle Button
@@ -114,7 +126,7 @@
           </div>
         </div>
       `;
-    });
-  </script>
-</body>
+        });
+    </script>
+  </body>
 </html>

@@ -3,16 +3,12 @@
 A light-weight library for declarative DOM actions using data attributes.
 
 Quick example:
+
 ```html
-<button data-action="toggleClass#active" data-target="#content">
-  Toggle
-</button>
+<button data-action="toggleClass#active" data-target="#content">Toggle</button>
 
-<p id="content">
-  This element should toggle the `active` class.
-</p>
+<p id="content">This element should toggle the `active` class.</p>
 ```
-
 
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
@@ -24,11 +20,9 @@ Quick example:
   </picture>
 </a>
 
-
 ## Documentation
 
 📑 [See the docs site (built with Perron)](https://attractivejs.railsdesigner.com/#get-started)
-
 
 ## Release
 
@@ -40,7 +34,6 @@ npm publish
 git push
 git push --tags
 ```
-
 
 ## License
 

@@ -32,7 +32,9 @@ class Request extends ActionBase {
       }
 
       const html = await response.text();
-      this.targets.forEach(target => target.innerHTML = html);
+      this.targets.forEach((target) => {
+        target.innerHTML = html;
+      });
 
       this.#setFeedback("success");
 
@@ -74,22 +76,24 @@ class Request extends ActionBase {
   #setFeedback(state) {
     const duration = this.currentElement.dataset.requestDuration;
 
-    this.targets.forEach(target => {
-      if (state === 'busy') {
-        target.setAttribute('data-request-busy', 'true');
+    this.targets.forEach((target) => {
+      if (state === "busy") {
+        target.setAttribute("data-request-busy", "true");
 
-        target.removeAttribute('data-request-success');
+        target.removeAttribute("data-request-success");
       } else {
-        target.removeAttribute('data-request-busy');
+        target.removeAttribute("data-request-busy");
 
-        target.setAttribute('data-request-success', state === 'success');
+        target.setAttribute("data-request-success", state === "success");
       }
     });
 
-    if (!duration || state === 'busy') return;
+    if (!duration || state === "busy") return;
 
     debounce(() => {
-      this.targets.forEach(target => target.removeAttribute('data-request-success'));
+      this.targets.forEach((target) =>
+        target.removeAttribute("data-request-success")
+      );
     }, parseInt(duration));
   }
 
@@ -100,10 +104,10 @@ class Request extends ActionBase {
       return;
     }
 
-    this.#setFeedback('busy');
+    this.#setFeedback("busy");
 
     return fetch(this.value, {
-      method: method,
+      method,
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": CSRF.get()
@@ -111,24 +115,25 @@ class Request extends ActionBase {
 
       body: JSON.stringify(this.#body)
     })
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
-        this.#setFeedback('success');
+        this.#setFeedback("success");
 
         return response;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`${method} request failed:`, error);
 
-        this.#setFeedback('error');
+        this.#setFeedback("error");
 
         throw error;
       });
   }
 
   get #body() {
-    let body = {};
+    const body = {};
     const target = this.targets[0];
 
     if (target instanceof HTMLFormElement) {
@@ -152,18 +157,22 @@ class Request extends ActionBase {
   }
 
   get #inputField() {
-    return this.currentElement instanceof HTMLInputElement ||
+    return (
+      this.currentElement instanceof HTMLInputElement ||
       this.currentElement instanceof HTMLSelectElement ||
-      this.currentElement instanceof HTMLTextAreaElement &&
-      this.currentElement.name
+      (this.currentElement instanceof HTMLTextAreaElement &&
+        this.currentElement.name)
+    );
   }
 }
 
-export const action = (method) => (element, options = {}) => {
-  const instance = new Request(element, options);
+export const action =
+  (method) =>
+  (element, options = {}) => {
+    const instance = new Request(element, options);
 
-  return instance[method]();
-};
+    return instance[method]();
+  };
 
 export default {
   get: action("get"),

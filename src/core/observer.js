@@ -9,11 +9,13 @@ class Observer {
   start(selector) {
     if (!window.MutationObserver) return;
 
-    this.#observer = new MutationObserver(mutations => {
+    this.#observer = new MutationObserver((mutations) => {
       const elements = new Set();
 
-      mutations.forEach(mutation => this.#processMutation(mutation, { for: selector, and: elements }));
-      elements.forEach(element => this.#callback(element));
+      mutations.forEach((mutation) =>
+        this.#processMutation(mutation, { for: selector, and: elements })
+      );
+      elements.forEach((element) => this.#callback(element));
     });
 
     this.#observer.observe(document.documentElement, {
@@ -35,7 +37,7 @@ class Observer {
   #processMutation(mutation, { for: selector, and: elements }) {
     if (mutation.type !== "childList") return;
 
-    mutation.addedNodes.forEach(node => {
+    mutation.addedNodes.forEach((node) => {
       this.#processNode(node, { for: selector, and: elements });
     });
   }
@@ -45,7 +47,7 @@ class Observer {
     if (node.matches && node.matches(selector)) elements.add(node);
     if (!node.querySelectorAll) return;
 
-    node.querySelectorAll(selector).forEach(element => elements.add(element));
+    node.querySelectorAll(selector).forEach((element) => elements.add(element));
   }
 }
 

@@ -1,51 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js - Attribute Tests</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="../dist/attractive.js"></script>
-</head>
-<body>
-  <h1>Reload</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+  <head>
+    <title>Attractive.js - Attribute Tests</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="../dist/attractive.js"></script>
+  </head>
+  <body>
+    <h1>Reload</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Reload turbo frame</h2>
+    <div class="test-section">
+      <h2>Reload turbo frame</h2>
 
-    <button data-action="reload" data-target="#turbo_frame">
-      Reload
-    </button>
+      <button data-action="reload" data-target="#turbo_frame">Reload</button>
 
-    <turbo-frame id="turbo_frame"></turbo-frame>
+      <turbo-frame id="turbo_frame"></turbo-frame>
 
-    <script>
-      class FrameElement extends HTMLElement {
-        reload() {
-          this.textContent = `Reloaded at ${new Date().toLocaleTimeString()}`;
+      <script>
+        class FrameElement extends HTMLElement {
+          reload() {
+            this.textContent = `Reloaded at ${new Date().toLocaleTimeString()}`;
+          }
         }
-      }
 
-      customElements.define("turbo-frame", FrameElement);
-    </script>
-  </div>
+        customElements.define("turbo-frame", FrameElement);
+      </script>
+    </div>
 
-  <div class="test-section">
-    <h2>Reload page with no target set</h2>
+    <div class="test-section">
+      <h2>Reload page with no target set</h2>
 
-    <button data-action="reload">
-      Reload
-    </button>
-  </div>
+      <button data-action="reload">Reload</button>
+    </div>
 
-  <div class="test-section">
-    <h2>Reload page with no valid turbo frame target</h2>
+    <div class="test-section">
+      <h2>Reload page with no valid turbo frame target</h2>
 
-    <button data-action="reload" data-target="#no_turbo_frame">
-      Reload
-    </button>
+      <button data-action="reload" data-target="#no_turbo_frame">Reload</button>
 
-    <div id="no_turbo_frame"></div>
-  </div>
-</body>
-</body>
+      <div id="no_turbo_frame"></div>
+    </div>
+  </body>
 </html>

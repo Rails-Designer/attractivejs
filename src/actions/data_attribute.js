@@ -13,37 +13,47 @@ class DataAttribute extends ActionBase {
   toggle() {
     if (!this.attribute) return;
 
-    this.targets.forEach(target => (this.attribute in target.dataset) ? delete target.dataset[this.attribute] : target.dataset[this.attribute] = this.value || "");
+    this.targets.forEach((target) => {
+      this.attribute in target.dataset
+        ? delete target.dataset[this.attribute]
+        : (target.dataset[this.attribute] = this.value || "");
+    });
   }
 
   cycle() {
     if (!this.value) return;
 
-    this.targets.forEach(target => this.#cycleDataAttribute(target));
+    this.targets.forEach((target) => this.#cycleDataAttribute(target));
   }
 
   add() {
     if (!this.attribute) return;
 
-    this.targets.forEach(target => target.dataset[this.attribute] = this.value || "");
+    this.targets.forEach((target) => {
+      target.dataset[this.attribute] = this.value || "";
+    });
   }
 
   remove() {
     if (!this.attribute) return;
 
-    this.targets.forEach(target => delete target.dataset[this.attribute]);
+    this.targets.forEach((target) => delete target.dataset[this.attribute]);
   }
 
   // private
 
   #cycleDataAttribute(target) {
-    const nextValue = this.cycledValue(target.dataset[this.attribute], this.value);
+    const nextValue = this.cycledValue(
+      target.dataset[this.attribute],
+      this.value
+    );
 
     target.dataset[this.attribute] = nextValue;
   }
 }
 
-export const action = (method) =>
+export const action =
+  (method) =>
   (element, options = {}) => {
     const instance = new DataAttribute(element, options);
 

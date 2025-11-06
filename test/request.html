@@ -1,78 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Attractive.js - Request Method Tests</title>
-  <link rel="stylesheet" href="./styles.css">
-  <style>
-    #content:not([data-request-busy]) .loading-text {
-      display: none;
-    }
+  <head>
+    <title>Attractive.js - Request Method Tests</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      #content:not([data-request-busy]) .loading-text {
+        display: none;
+      }
 
-    [data-request-success="true"] {
-      outline: 2px solid green !important;
-    }
+      [data-request-success="true"] {
+        outline: 2px solid green !important;
+      }
 
-    [data-request-success="false"] {
-      outline: 2px solid red !important;
-    }
+      [data-request-success="false"] {
+        outline: 2px solid red !important;
+      }
 
-    button, select {
-      transition: outline 200ms ease-in-out;
-    }
+      button,
+      select {
+        transition: outline 200ms ease-in-out;
+      }
 
-    .success-message,
-    .error-message {
-      display: none;
-      margin-top: 1rem;
-    }
+      .success-message,
+      .error-message {
+        display: none;
+        margin-top: 1rem;
+      }
 
-    #newsletter-form[data-request-success="true"] .success-message {
-      display: block;
-      color: green;
-    }
+      #newsletter-form[data-request-success="true"] .success-message {
+        display: block;
+        color: green;
+      }
 
-    #newsletter-form[data-request-success="false"] .error-message {
-      display: block;
-      color: red;
-    }
+      #newsletter-form[data-request-success="false"] .error-message {
+        display: block;
+        color: red;
+      }
 
-    #newsletter-form[data-request-busy="true"] button {
-      opacity: .6;
-      pointer-events: none;
-    }
-  </style>
-  <script src="../dist/attractive.js"></script>
-</head>
-<body>
-  <h1>Request Method Functionality Tests</h1>
-  <p><a href="index.html">← Back to test index</a></p>
+      #newsletter-form[data-request-busy="true"] button {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+    </style>
+    <script src="../dist/attractive.js"></script>
+  </head>
+  <body>
+    <h1>Request Method Functionality Tests</h1>
+    <p><a href="index.html">← Back to test index</a></p>
 
-  <div class="test-section">
-    <h2>Load external path</h2>
+    <div class="test-section">
+      <h2>Load external path</h2>
 
-    <button type="button" data-action="get#/test/request/get.html" data-target="#content" data-request-duration="3000">
-      Get
-    </button>
+      <button
+        type="button"
+        data-action="get#/test/request/get.html"
+        data-target="#content"
+        data-request-duration="3000"
+      >
+        Get
+      </button>
 
-    <div id="content">
-      <span class="loading-text">Loading…</span>
+      <div id="content">
+        <span class="loading-text">Loading…</span>
+      </div>
     </div>
-  </div>
 
-  <div class="test-section">
-    <h2>Example using Select Value</h2>
-    <label for="theme">Theme:</label>
+    <div class="test-section">
+      <h2>Example using Select Value</h2>
+      <label for="theme">Theme:</label>
 
-    <select id="theme" name="theme" data-action="post#/" data-request-duration="2000">
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-    </select>
-  </div>
+      <select
+        id="theme"
+        name="theme"
+        data-action="post#/"
+        data-request-duration="2000"
+      >
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
 
-  <div class="test-section">
-    <h2>Example that Fails</h2>
+    <div class="test-section">
+      <h2>Example that Fails</h2>
 
-    <button data-action="post#" data-request-duration="2000">Create post</button>
-  </div>
-</body>
+      <button data-action="post#" data-request-duration="2000">
+        Create post
+      </button>
+    </div>
+  </body>
 </html>

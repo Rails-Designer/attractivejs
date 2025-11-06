@@ -1,7 +1,7 @@
 /**
  * 🧲 Attractive.js — A light-weight library for declarative DOM actions using data attributes
-*/
-import Attractive from "./attractive"
+ */
+import Attractive from "./attractive";
 
 const activateAttractive = (element = document) => {
   if (window.Attractive && window.Attractive._initialized) return;

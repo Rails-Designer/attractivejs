@@ -1,8 +1,10 @@
+/* global FrameElement */
+
 import ActionBase from "./base";
 
 class Reload extends ActionBase {
   reload() {
-    this.targets.forEach(target => {
+    this.targets.forEach((target) => {
       this.#isTurboFrame(target) ? target.reload() : window.location.reload();
     });
   }
@@ -14,7 +16,8 @@ class Reload extends ActionBase {
   }
 }
 
-export const action = (method) =>
+export const action =
+  (method) =>
   (element, options = {}) => {
     const instance = new Reload(element, options);
 

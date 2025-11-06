@@ -20,7 +20,7 @@ class Attractive {
 
   constructor() {
     this.#events = new Events(actions);
-    this.#observe = new Observer(element => this.#prepare(element));
+    this.#observe = new Observer((element) => this.#prepare(element));
   }
 
   activate(options = {}) {
@@ -31,7 +31,9 @@ class Attractive {
 
     this.element = on;
     this.#observe.start("[data-action]");
-    this.element.querySelectorAll("[data-action]").forEach(element => this.#prepare(element));
+    this.element
+      .querySelectorAll("[data-action]")
+      .forEach((element) => this.#prepare(element));
 
     Debug.log("…initialized");
 
@@ -54,10 +56,14 @@ class Attractive {
     if (!actionValue) return;
 
     const actions = actionValue.split(" ");
-    const onLoadActions = actions.filter(action => this.#onLoadActions.includes(action.split("#")[0]));
+    const onLoadActions = actions.filter((action) =>
+      this.#onLoadActions.includes(action.split("#")[0])
+    );
 
     if (onLoadActions.length > 0) {
-      onLoadActions.forEach(action => this.#onLoadExecute({ action, on: element }));
+      onLoadActions.forEach((action) =>
+        this.#onLoadExecute({ action, on: element })
+      );
 
       return;
     }
@@ -68,7 +74,9 @@ class Attractive {
         : [EventTypes.getDefault({ from: element })]
     );
 
-    registeredEventTypes.forEach(event => this.#addEventListeners({ for: event }));
+    registeredEventTypes.forEach((event) =>
+      this.#addEventListeners({ for: event })
+    );
   }
 
   #addEventListeners({ for: eventType }) {
