@@ -28,8 +28,21 @@ class Events {
     let inBackticks = false;
 
     [...action].forEach(character => {
-      if (character === "`") return inBackticks = !inBackticks;
-      if (character === " " && !inBackticks) return currentAction && (result.push(currentAction), currentAction = "");
+      if (character === "`") {
+        inBackticks = !inBackticks;
+
+        return;
+      }
+
+      if (character === " " && !inBackticks) {
+        if (currentAction) {
+          result.push(currentAction);
+
+          currentAction = "";
+        }
+
+        return;
+      }
 
       currentAction += character;
     });

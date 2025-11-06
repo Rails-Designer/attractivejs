@@ -1,3 +1,5 @@
+/* global FrameElement */
+
 import ActionBase from "./base";
 
 class Reload extends ActionBase {

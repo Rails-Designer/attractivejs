@@ -32,7 +32,9 @@ class Request extends ActionBase {
       }
 
       const html = await response.text();
-      this.targets.forEach(target => target.innerHTML = html);
+      this.targets.forEach(target => {
+        target.innerHTML = html
+      });
 
       this.#setFeedback("success");
 
@@ -103,7 +105,7 @@ class Request extends ActionBase {
     this.#setFeedback('busy');
 
     return fetch(this.value, {
-      method: method,
+      method,
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": CSRF.get()
@@ -128,7 +130,7 @@ class Request extends ActionBase {
   }
 
   get #body() {
-    let body = {};
+    const body = {};
     const target = this.targets[0];
 
     if (target instanceof HTMLFormElement) {
