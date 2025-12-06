@@ -4,6 +4,7 @@ import clipboardActions from "./clipboard";
 import confirmActions from "./confirm";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
+import elementActions from "./element";
 import formActions from "./form";
 import intersectionActions from "./intersection";
 import reloadActions from "./reload";
@@ -17,6 +18,7 @@ export const actions = {
   confirm: confirmActions,
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
+  element: elementActions,
   form: formActions,
   intersection: intersectionActions,
   reload: reloadActions,
