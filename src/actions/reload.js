@@ -1,5 +1,3 @@
-/* global FrameElement */
-
 import ActionBase from "./base";
 
 class Reload extends ActionBase {
@@ -12,7 +10,7 @@ class Reload extends ActionBase {
   // private
 
   #isTurboFrame(target) {
-    return target instanceof FrameElement;
+    return target.tagName === "TURBO-FRAME" && typeof target.reload === "function";
   }
 }
 
