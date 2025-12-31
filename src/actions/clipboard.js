@@ -26,20 +26,20 @@ class Clipboard extends ActionBase {
   // private
 
   #setFeedback(succeeded) {
-    const duration = this.currentElement.dataset.copyDuration;
+    const delay = parseInt(this.currentElement.dataset.copyDelay);
 
     this.targets.forEach((target) =>
       target.setAttribute(this.#attributeName, succeeded)
     );
 
-    if (!duration) return;
+    if (!delay) return;
 
     debounce(
       () =>
         this.targets.forEach((target) =>
           target.removeAttribute(this.#attributeName)
         ),
-      parseInt(duration)
+      delay
     );
   }
 

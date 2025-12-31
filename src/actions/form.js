@@ -3,13 +3,18 @@ import debounce from "./../helpers/debounce";
 
 class Form extends ActionBase {
   requestSubmit() {
+    const delay = parseInt(this.currentElement.dataset.submitDelay) || 0;
+
     const submit = () =>
       this.targets.forEach(
         (target) => target instanceof HTMLFormElement && target.requestSubmit()
       );
-    const delay = parseInt(this.currentElement.dataset.submitDelay) || 0;
 
-    delay > 0 ? debounce(submit, delay) : submit();
+    if (delay) {
+      debounce(submit, delay);
+    } else {
+      submit();
+    }
   }
 
   reset() {
