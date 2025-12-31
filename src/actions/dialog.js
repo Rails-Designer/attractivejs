@@ -2,29 +2,21 @@ import ActionBase from "./base";
 
 class Dialog extends ActionBase {
   open() {
-    this.#targets.forEach(
+    this.targets.forEach(
       (target) => target instanceof HTMLDialogElement && target.show()
     );
   }
 
   openModal() {
-    this.#targets.forEach(
+    this.targets.forEach(
       (target) => target instanceof HTMLDialogElement && target.showModal()
     );
   }
 
   close() {
-    this.#targets.forEach(
+    this.targets.forEach(
       (target) => target instanceof HTMLDialogElement && target.close()
     );
-  }
-
-  // private
-
-  get #targets() {
-    return this.targetElement
-      ? Array.from(document.querySelectorAll(this.targetElement))
-      : Array.from(document.querySelectorAll("dialog"));
   }
 }
 
