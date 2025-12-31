@@ -26,34 +26,7 @@ class Events {
   // private
 
   #splitActions(action) {
-    const result = [];
-
-    let currentAction = "";
-    let inBackticks = false;
-
-    [...action].forEach((character) => {
-      if (character === "`") {
-        inBackticks = !inBackticks;
-
-        return;
-      }
-
-      if (character === " " && !inBackticks) {
-        if (currentAction) {
-          result.push(currentAction);
-
-          currentAction = "";
-        }
-
-        return;
-      }
-
-      currentAction += character;
-    });
-
-    if (currentAction) result.push(currentAction);
-
-    return result;
+    return action.split(" ").filter(action => action);
   }
 
   #evaluate(action, { for: event, on: element, using: defaultEventType }) {
