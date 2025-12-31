@@ -60,7 +60,8 @@ class Events {
     Debug.log("Process action for", event.type, "on", element, "…");
 
     if (action.includes("->")) {
-      const [eventName, actionPart] = action.split("->");
+      const [eventPart, actionPart] = action.split("->");
+      const eventName = eventPart.includes("@") ? eventPart.split("@")[1] : eventPart;
 
       if (eventName !== event.type) return;
 
