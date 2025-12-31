@@ -1,5 +1,4 @@
 import ActionBase from "./base";
-import debounce from "./../helpers/debounce";
 
 class Element extends ActionBase {
   add() {
@@ -26,7 +25,7 @@ class Element extends ActionBase {
     };
 
     if (delay) {
-      debounce(removeElements, delay);
+      setTimeout(removeElements, delay);
     } else {
       removeElements();
     }

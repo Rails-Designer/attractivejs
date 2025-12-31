@@ -1,6 +1,7 @@
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
 import Observer from "./core/observer";
+import Modifiers from "./core/modifiers";
 import actions, { availableActions } from "./actions";
 import Debug from "./debug";
 
@@ -80,6 +81,18 @@ class Attractive {
         const targetObject = target === "window" ? window : document;
 
         this.#addTargetedEventListener(eventType, targetObject, element);
+      });
+
+    const modifiers = actions
+      .filter(action => action.includes(":"))
+      .map(action => action.split(":")[1]);
+
+      modifiers.forEach(modifier => {
+        Modifiers.setup({
+          for: modifier,
+          on: element,
+          trigger: () => this.#events.process({ type: modifier }, { on: element, using: modifier })
+        });
       });
   }
 

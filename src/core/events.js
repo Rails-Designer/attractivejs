@@ -32,7 +32,13 @@ class Events {
   #evaluate(action, { for: event, on: element, using: defaultEventType }) {
     Debug.log("Process action for", event.type, "on", element, "…");
 
-    if (action.includes("->")) {
+    if (action.includes(":")) {
+      const [actionPart, modifier] = action.split(":");
+
+      if (event.type !== modifier) return;
+
+      action = actionPart;
+    } else if (action.includes("->")) {
       const [eventPart, actionPart] = action.split("->");
       const eventName = eventPart.includes("@") ? eventPart.split("@")[1] : eventPart;
 
