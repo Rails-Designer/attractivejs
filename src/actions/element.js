@@ -19,14 +19,14 @@ class Element extends ActionBase {
   }
 
   remove() {
-    const delay = this.currentElement.dataset.delay;
+    const delay = parseInt(this.currentElement.dataset.removeDelay);
 
     const removeElements = () => {
       this.targets.forEach((target) => target.remove());
     };
 
     if (delay) {
-      debounce(removeElements, parseInt(delay));
+      debounce(removeElements, delay);
     } else {
       removeElements();
     }
