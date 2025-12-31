@@ -6,10 +6,11 @@ import Debug from "./debug";
 
 class Attractive {
   #eventListeners = {};
-  #events;
-  #observe;
   #elementListeners = new WeakMap();
   #targetedEventListeners = new Map();
+  #events;
+  #targetedEvents = new Map();
+  #observe;
 
   static get debug() {
     return Debug.enabled;
@@ -78,7 +79,7 @@ class Attractive {
         const [target, eventType] = eventPart.split("@");
         const targetObject = target === "window" ? window : document;
 
-        this.#addTargetedEventListener(eventType, targetObject, element, action);
+        this.#addTargetedEventListener(eventType, targetObject, element);
       });
   }
 
@@ -88,17 +89,21 @@ class Attractive {
     if (!keys) return;
 
     keys.forEach(key => {
-      const [targetName, eventType] = key.split(":");
-      const stillNeeded = Array.from(document.querySelectorAll("[data-action]"))
-        .some(element => this.#elementListeners.get(element)?.has(key));
+      const events = this.#targetedEvents.get(key);
 
-      if (stillNeeded) return;
+      if (events) {
+        events.delete(element);
 
-      const processableElements = this.#targetedEventListeners.get(key);
-      const target = targetName === "window" ? window : document;
+        if (events.size === 0) {
+          const [targetName, eventType] = key.split(":");
+          const processElements = this.#targetedEventListeners.get(key);
+          const target = targetName === "window" ? window : document;
 
-      target.removeEventListener(eventType, processableElements);
-      this.#targetedEventListeners.delete(key);
+          target.removeEventListener(eventType, processElements);
+          this.#targetedEventListeners.delete(key);
+          this.#targetedEvents.delete(key);
+        }
+      }
     });
 
     this.#elementListeners.delete(element);
@@ -114,7 +119,7 @@ class Attractive {
     this.#eventListeners[eventType] = true;
   }
 
-  #addTargetedEventListener(eventType, target, element, action) {
+  #addTargetedEventListener(eventType, target, element) {
     const key = `${target === window ? "window" : "document"}:${eventType}`;
 
     if (!this.#elementListeners.has(element)) {
@@ -122,12 +127,19 @@ class Attractive {
     }
     this.#elementListeners.get(element).add(key);
 
+    if (!this.#targetedEvents.has(key)) {
+      this.#targetedEvents.set(key, new Set());
+    }
+    this.#targetedEvents.get(key).add(element);
+
     if (!this.#targetedEventListeners.has(key)) {
       const processElements = (event) => {
-        document.querySelectorAll("[data-action]").forEach(element => {
-          if (element.dataset.action.includes(action.split("->")[0])) {
-            this.#events.process(event, { on: element, using: eventType });
-          }
+        const elements = this.#targetedEvents.get(key);
+
+        if (!elements) return;
+
+        elements.forEach(element => {
+          this.#events.process(event, { on: element, using: eventType });
         });
       };
 
