@@ -1,21 +1,29 @@
 class Observer {
-  #callback;
+  #prepare;
+  #cleanup;
   #observer;
 
-  constructor(callback) {
-    this.#callback = callback;
+  constructor(prepare, cleanup = null) {
+    this.#prepare = prepare;
+    this.#cleanup = cleanup;
   }
 
   start(selector) {
     if (!window.MutationObserver) return;
 
     this.#observer = new MutationObserver((mutations) => {
-      const elements = new Set();
+      const added = new Set();
+      const removed = new Set();
 
       mutations.forEach((mutation) =>
-        this.#processMutation(mutation, { for: selector, and: elements })
+        this.#processMutation(mutation, { for: selector, elements: { added, removed } })
       );
-      elements.forEach((element) => this.#callback(element));
+
+      added.forEach((element) => this.#prepare(element));
+
+      if (this.#cleanup) {
+        removed.forEach((element) => this.#cleanup(element));
+      }
     });
 
     this.#observer.observe(document.documentElement, {
@@ -34,11 +42,15 @@ class Observer {
 
   // private
 
-  #processMutation(mutation, { for: selector, and: elements }) {
+  #processMutation(mutation, { for: selector, elements: { added, removed } }) {
     if (mutation.type !== "childList") return;
 
     mutation.addedNodes.forEach((node) => {
-      this.#processNode(node, { for: selector, and: elements });
+      this.#processNode(node, { for: selector, and: added });
+    });
+
+    mutation.removedNodes.forEach((node) => {
+      this.#processNode(node, { for: selector, and: removed });
     });
   }
 

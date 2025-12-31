@@ -82,7 +82,7 @@
     </div>
 
     <div class="test-section">
-      <h2>Attractive.js with multiple events</h2>
+      <h2>With multiple events</h2>
 
       <button
         data-action="click->toggleClass#active,zoomIn mouseover->addClass#highlight mouseout->removeClass#highlight"
@@ -94,6 +94,18 @@
       <div id="multi-event-target" class="target">
         This element responds to multiple events
       </div>
+    </div>
+
+    <div class="test-section" data-action="window@resize->addClass#active">
+      <h2>Added on self on window resize</h2>
+    </div>
+
+    <div class="test-section" data-action="window@resize->addClass#active" data-target="#resizedTarget">
+      <h2>Added on defined target on window resize</h2>
+
+      <p id="resizedTarget" class="target">
+        This element should add the `active` class on window resize.
+      </p>
     </div>
   </body>
 </html>

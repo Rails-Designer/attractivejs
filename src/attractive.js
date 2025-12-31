@@ -8,7 +8,8 @@ class Attractive {
   #eventListeners = {};
   #events;
   #observe;
-  #onLoadActions = ["scrollTo", "intersect-once", "intersect-toggle"];
+  #elementListeners = new WeakMap();
+  #targetedEventListeners = new Map();
 
   static get debug() {
     return Debug.enabled;
@@ -20,7 +21,10 @@ class Attractive {
 
   constructor() {
     this.#events = new Events(actions);
-    this.#observe = new Observer((element) => this.#prepare(element));
+    this.#observe = new Observer(
+      (element) => this.#prepare(element),
+      (element) => this.#cleanup(element)
+    );
   }
 
   activate(options = {}) {
@@ -56,17 +60,6 @@ class Attractive {
     if (!actionValue) return;
 
     const actions = actionValue.split(" ");
-    const onLoadActions = actions.filter((action) =>
-      this.#onLoadActions.includes(action.split("#")[0])
-    );
-
-    if (onLoadActions.length > 0) {
-      onLoadActions.forEach((action) =>
-        this.#onLoadExecute({ action, on: element })
-      );
-
-      return;
-    }
 
     const registeredEventTypes = new Set(
       actionValue.includes("->")
@@ -77,6 +70,38 @@ class Attractive {
     registeredEventTypes.forEach((event) =>
       this.#addEventListeners({ for: event })
     );
+
+    actions
+      .filter((action) => action.includes("@"))
+      .forEach((action) => {
+        const [eventPart] = action.split("->");
+        const [target, eventType] = eventPart.split("@");
+        const targetObject = target === "window" ? window : document;
+
+        this.#addTargetedEventListener(eventType, targetObject, element, action);
+      });
+  }
+
+  #cleanup(element) {
+    const keys = this.#elementListeners.get(element);
+
+    if (!keys) return;
+
+    keys.forEach(key => {
+      const [targetName, eventType] = key.split(":");
+      const stillNeeded = Array.from(document.querySelectorAll("[data-action]"))
+        .some(element => this.#elementListeners.get(element)?.has(key));
+
+      if (stillNeeded) return;
+
+      const processableElements = this.#targetedEventListeners.get(key);
+      const target = targetName === "window" ? window : document;
+
+      target.removeEventListener(eventType, processableElements);
+      this.#targetedEventListeners.delete(key);
+    });
+
+    this.#elementListeners.delete(element);
   }
 
   #addEventListeners({ for: eventType }) {
@@ -89,6 +114,28 @@ class Attractive {
     this.#eventListeners[eventType] = true;
   }
 
+  #addTargetedEventListener(eventType, target, element, action) {
+    const key = `${target === window ? "window" : "document"}:${eventType}`;
+
+    if (!this.#elementListeners.has(element)) {
+      this.#elementListeners.set(element, new Set());
+    }
+    this.#elementListeners.get(element).add(key);
+
+    if (!this.#targetedEventListeners.has(key)) {
+      const processElements = (event) => {
+        document.querySelectorAll("[data-action]").forEach(element => {
+          if (element.dataset.action.includes(action.split("->")[0])) {
+            this.#events.process(event, { on: element, using: eventType });
+          }
+        });
+      };
+
+      target.addEventListener(eventType, processElements);
+      this.#targetedEventListeners.set(key, processElements);
+    }
+  }
+
   #process(event) {
     const element = event.target.closest("[data-action]");
 
@@ -97,17 +144,6 @@ class Attractive {
     const defaultEventType = EventTypes.getDefault({ from: element });
 
     this.#events.process(event, { on: element, using: defaultEventType });
-  }
-
-  #onLoadExecute({ action, on: element }) {
-    const [actionName, ...valueParts] = action.split("#");
-
-    if (typeof actions[actionName] !== "function") return;
-
-    const value = valueParts.length > 0 ? valueParts.join("#") : null;
-    const targetElement = element.dataset.target;
-
-    actions[actionName](element, { value, targetElement });
   }
 }
 
