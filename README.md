@@ -22,7 +22,7 @@ Quick example:
 
 ## Documentation
 
-📑 [See the docs site (built with Perron)](https://attractivejs.railsdesigner.com/#get-started)
+📑 [See the docs site](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
 
 ## Release
 
