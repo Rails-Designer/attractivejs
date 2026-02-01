@@ -70,7 +70,8 @@ class Events {
       : (fallbackValue ?? null);
     const result = this.#actions[actionName](element, {
       value,
-      targetElement: element.dataset.target
+      target: element.dataset.target,
+      targets: element.dataset.targets
     });
 
     if (result === false && event) event.preventDefault();
