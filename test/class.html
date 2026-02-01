@@ -23,13 +23,13 @@
     <div class="test-section">
       <h2>Add, remove, toggle class with explicit target</h2>
 
-      <button data-action="addClass#active" data-target="#target">Add</button>
+      <button data-action="addClass#active" data-target="target">Add</button>
 
-      <button data-action="removeClass#active" data-target="#target">
+      <button data-action="removeClass#active" data-target="target">
         Remove
       </button>
 
-      <button data-action="toggleClass#active" data-target="#target">
+      <button data-action="toggleClass#active" data-target="target">
         Toggle
       </button>
 
@@ -44,7 +44,7 @@
 
       <button
         data-action="toggleClass#,active,zoomIn,"
-        data-target="#container"
+        data-target="container"
       >
         Toggle
       </button>
@@ -56,14 +56,18 @@
     </div>
 
     <div class="test-section">
-      <h2>Cycle classes with explicit target</h2>
+      <h2>Cycle classes with explicit targets</h2>
 
-      <button data-action="cycleClass#bg-red,bg-black" data-target="#door">
+      <button data-action="cycleClass#bg-red,bg-black" data-targets="[target='door']">
         Cycle
       </button>
 
-      <p id="door" class="target bg-red text-white">
+      <p target="door" class="target bg-red text-white">
         Cycle through `bg-red` and `bg-black`.
+      </p>
+
+      <p target="door" class="target bg-black text-white">
+        Cycle through `bg-black` and `bg-red`
       </p>
     </div>
 
@@ -86,7 +90,7 @@
 
       <button
         data-action="click->toggleClass#active,zoomIn mouseover->addClass#highlight mouseout->removeClass#highlight"
-        data-target="#multi-event-target"
+        data-target="multi-event-target"
       >
         Hover and Click Me
       </button>
@@ -100,7 +104,7 @@
       <h2>Added on self on window resize</h2>
     </div>
 
-    <div class="test-section" data-action="window@resize->addClass#active" data-target="#resizedTarget">
+    <div class="test-section" data-action="window@resize->addClass#active" data-target="resizedTarget">
       <h2>Added on defined target on window resize</h2>
 
       <p id="resizedTarget" class="target">
