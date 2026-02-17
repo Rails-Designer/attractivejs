@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import elementActions from '../src/actions/element.js';
+import elementActions from '../../src/actions/element.js';
 
 describe('Element Actions', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Element Actions', () => {
       const element = document.getElementById('trigger');
       const target = document.getElementById('target');
 
-      elementActions.add(element, { targetElement: '#target' });
+      elementActions.add(element, { target: 'target' });
 
       expect(target.children.length).toBe(1);
       expect(target.firstElementChild.textContent).toBe('Source content');
@@ -31,7 +31,7 @@ describe('Element Actions', () => {
       const element = document.getElementById('trigger');
       const target = document.getElementById('target');
 
-      elementActions.add(element, { targetElement: '#target' });
+      elementActions.add(element, { target: 'target' });
 
       expect(target.firstElementChild.textContent).toBe('Source content');
       expect(target.lastElementChild.textContent).toBe('existing');
@@ -46,7 +46,7 @@ describe('Element Actions', () => {
       const element = document.getElementById('trigger');
       const target = document.getElementById('target');
 
-      elementActions.add(element, { targetElement: '#target' });
+      elementActions.add(element, { target: 'target' });
 
       expect(target.innerHTML).toBe('<p>Template content</p>');
     });
@@ -59,7 +59,7 @@ describe('Element Actions', () => {
       const element = document.getElementById('trigger');
       const target = document.getElementById('target');
 
-      elementActions.add(element, { targetElement: '#target' });
+      elementActions.add(element, { target: 'target' });
 
       expect(target.children.length).toBe(0);
     });
@@ -73,7 +73,7 @@ describe('Element Actions', () => {
       `;
       const element = document.getElementById('trigger');
 
-      elementActions.remove(element, { targetElement: '#target' });
+      elementActions.remove(element, { target: 'target' });
 
       expect(document.getElementById('target')).toBeNull();
     });
@@ -86,7 +86,7 @@ describe('Element Actions', () => {
       `;
       const element = document.getElementById('trigger');
 
-      elementActions.remove(element, { targetElement: '#target' });
+      elementActions.remove(element, { target: 'target' });
 
       expect(document.getElementById('target')).not.toBeNull();
 

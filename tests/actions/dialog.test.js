@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import dialogActions from '../src/actions/dialog.js';
+import dialogActions from '../../src/actions/dialog.js';
 
 describe('Dialog Actions', () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('Dialog Actions', () => {
 
       dialog.show = vi.fn();
 
-      dialogActions.open(element, { targetElement: '#modal' });
+      dialogActions.open(element, { target: 'modal' });
 
       expect(dialog.show).toHaveBeenCalled();
     });
@@ -29,7 +29,7 @@ describe('Dialog Actions', () => {
       `;
       const element = document.getElementById('trigger');
 
-      dialogActions.open(element, { targetElement: '#not-dialog' });
+      dialogActions.open(element, { target: 'not-dialog' });
 
       expect(true).toBe(true);
     });
@@ -46,7 +46,7 @@ describe('Dialog Actions', () => {
 
       dialog.showModal = vi.fn();
 
-      dialogActions.openModal(element, { targetElement: '#modal' });
+      dialogActions.openModal(element, { target: 'modal' });
 
       expect(dialog.showModal).toHaveBeenCalled();
     });
@@ -63,7 +63,7 @@ describe('Dialog Actions', () => {
 
       dialog.close = vi.fn();
 
-      dialogActions.close(element, { targetElement: '#modal' });
+      dialogActions.close(element, { target: 'modal' });
 
       expect(dialog.close).toHaveBeenCalled();
     });
@@ -83,7 +83,7 @@ describe('Dialog Actions', () => {
       dialog1.show = vi.fn();
       dialog2.show = vi.fn();
 
-      dialogActions.open(element, { targetElement: 'dialog' });
+      dialogActions.open(element, { targets: 'dialog' });
 
       expect(dialog1.show).toHaveBeenCalled();
       expect(dialog2.show).toHaveBeenCalled();

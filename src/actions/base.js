@@ -15,6 +15,7 @@ export default class ActionBase {
 
     if (this.target) {
       const element = document.getElementById(this.target);
+
       return element ? [element] : [];
     }
 

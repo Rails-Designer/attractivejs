@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import confirmActions from '../src/actions/confirm.js';
+import confirmActions from '../../src/actions/confirm.js';
 
 describe('Confirm Actions', () => {
   let element;
@@ -7,6 +7,7 @@ describe('Confirm Actions', () => {
   beforeEach(() => {
     document.body.innerHTML = '<button id="trigger">Confirm</button>';
     element = document.getElementById('trigger');
+
     vi.clearAllMocks();
   });
 
