@@ -3,14 +3,22 @@ export default class ActionBase {
     if (!currentElement) throw new Error("Current element is required");
 
     this.currentElement = currentElement;
-    this.targetElement = options.targetElement;
+    this.target = options.target;
+    this.targetsSelector = options.targets;
     this.options = options;
   }
 
   get targets() {
-    return this.targetElement
-      ? Array.from(document.querySelectorAll(this.targetElement))
-      : [this.currentElement];
+    if (this.targetsSelector) {
+      return Array.from(document.querySelectorAll(this.targetsSelector));
+    }
+
+    if (this.target) {
+      const element = document.getElementById(this.target);
+      return element ? [element] : [];
+    }
+
+    return [this.currentElement];
   }
 
   cycledValue(currentValue, nextValues) {
