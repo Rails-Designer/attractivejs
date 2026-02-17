@@ -5,10 +5,13 @@ A light-weight library for declarative DOM actions using data attributes.
 Quick example:
 
 ```html
-<button data-action="toggleClass#active" data-target="#content">Toggle</button>
+<button data-action="toggleClass#active" data-target="content">Toggle</button>
 
 <p id="content">This element should toggle the `active` class.</p>
 ```
+
+There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addElement` and `removeElement`.
+
 
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
