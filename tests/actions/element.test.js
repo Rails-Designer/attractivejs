@@ -9,7 +9,7 @@ describe('Element Actions', () => {
   describe('add', () => {
     test('clones and adds element to target', () => {
       document.body.innerHTML = `
-        <button id="trigger" data-add-source="#source">Add</button>
+        <button id="trigger" data-add-source="source">Add</button>
         <div id="target"></div>
         <div id="source">Source content</div>
       `;
@@ -24,7 +24,7 @@ describe('Element Actions', () => {
 
     test('adds element at specified position', () => {
       document.body.innerHTML = `
-        <button id="trigger" data-add-source="#source" data-add-at="afterbegin">Add</button>
+        <button id="trigger" data-add-source="source" data-add-at="afterbegin">Add</button>
         <div id="target"><span>existing</span></div>
         <div id="source">Source content</div>
       `;
@@ -39,7 +39,7 @@ describe('Element Actions', () => {
 
     test('clones template content correctly', () => {
       document.body.innerHTML = `
-        <button id="trigger" data-add-source="#template">Add</button>
+        <button id="trigger" data-add-source="template">Add</button>
         <div id="target"></div>
         <template id="template"><p>Template content</p></template>
       `;
@@ -53,7 +53,7 @@ describe('Element Actions', () => {
 
     test('does nothing when no source found', () => {
       document.body.innerHTML = `
-        <button id="trigger" data-add-source="#nonexistent">Add</button>
+        <button id="trigger" data-add-source="nonexistent">Add</button>
         <div id="target"></div>
       `;
       const element = document.getElementById('trigger');

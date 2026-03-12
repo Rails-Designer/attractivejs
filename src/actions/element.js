@@ -8,7 +8,7 @@ class Element extends ActionBase {
     const sourceSelector = this.currentElement.dataset.addSource;
     if (!sourceSelector) return;
 
-    const source = document.querySelector(sourceSelector);
+    const source = document.getElementById(sourceSelector);
     if (!source) return;
 
     const clonedElement = this.#cloneSource(source);
