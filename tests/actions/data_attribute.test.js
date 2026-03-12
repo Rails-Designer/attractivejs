@@ -33,6 +33,19 @@ describe('DataAttribute Actions', () => {
     expect(element.dataset.flag).toBe('');
   });
 
+  test('setDataAttribute sets data attribute with value', () => {
+    dataAttributeActions.setDataAttribute(element, { value: 'status=active', target: "target" });
+
+    expect(element.dataset.status).toBe('active');
+  });
+
+  test('setDataAttribute sets empty data attribute when no value', () => {
+    dataAttributeActions.setDataAttribute(element, { value: 'flag', target: "target" });
+
+    expect(element.dataset.flag).toBe('');
+  });
+
+
   test('removeDataAttribute removes specified data attribute', () => {
     dataAttributeActions.removeDataAttribute(element, { value: 'existing', target: "target" });
 

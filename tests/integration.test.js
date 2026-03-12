@@ -76,25 +76,4 @@ describe('Integration', () => {
     const target = document.getElementById('target');
     expect(target.classList.contains('fallback')).toBe(true);
   });
-
-  // test('activation on specific element only observes that subtree', async () => {
-  //   document.body.innerHTML = `
-  //     <div id="outside" data-action="addClass#outside:mounted" data-target="result">Outside</div>
-
-  //     <div id="container">
-  //       <div data-action="addClass#inside:mounted" data-target="result">Inside container</div>
-  //     </div>
-
-  //     <div id="result">Target</div>
-  //   `;
-
-  //   // Only observe the container element
-  //   const container = document.getElementById('container');
-  //   Attractive.activate({ on: container });
-  //   await vi.runAllTimersAsync();
-
-  //   const result = document.getElementById('result');
-  //   expect(result.classList.contains('outside')).toBe(false); // Not observed
-  //   expect(result.classList.contains('inside')).toBe(true);   // Observed
-  // });
 });
