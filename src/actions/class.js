@@ -26,6 +26,15 @@ class Class extends ActionBase {
     this.targets.forEach((target) => target.classList.add(...this.value));
   }
 
+  set() {
+    if (!this.value) return;
+
+    this.targets.forEach((target) => {
+      target.className = "";
+      target.classList.add(...this.value);
+    });
+  }
+
   remove() {
     if (!this.value) return;
 
@@ -61,5 +70,6 @@ export default {
   toggleClass: action("toggle"),
   cycleClass: action("cycle"),
   addClass: action("add"),
+  setClass: action("set"),
   removeClass: action("remove")
 };

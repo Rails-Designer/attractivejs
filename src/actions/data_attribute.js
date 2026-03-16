@@ -34,6 +34,14 @@ class DataAttribute extends ActionBase {
     });
   }
 
+  set() {
+    if (!this.attribute) return;
+
+    this.targets.forEach((target) => {
+      target.dataset[this.attribute] = this.value || "";
+    });
+  }
+
   remove() {
     if (!this.attribute) return;
 
@@ -64,5 +72,6 @@ export default {
   toggleDataAttribute: action("toggle"),
   cycleDataAttribute: action("cycle"),
   addDataAttribute: action("add"),
+  setDataAttribute: action("set"),
   removeDataAttribute: action("remove")
 };
