@@ -2,17 +2,25 @@
 <html>
 <head>
   <script type="module">
-    import Attractive from "../dist/attractive.esm.js"
+    import Attractive from "../dist/attractive.min.js";
 
-    Attractive.activate({ debug: true })
+    Attractive.activate({ debug: true });
   </script>
 </head>
 <body>
-  <!--
-  Open http://localhost:8080/playground/
-  Run `npm run dev:serve` to start a server.
+  <h2>Toggle (on="" syntax)</h2>
+  <button on="toggleClass#active" on-target="toggleTarget">Toggle</button>
+  <p id="toggleTarget">This toggles the <code>active</code> class.</p>
 
-  Paste HTML snippets here to test actions.
-  -->
+  <h2>Copy (old data-action syntax — should warn once)</h2>
+  <button data-action="copy" data-target="copySource">Copy</button>
+  <input id="copySource" value="copied text" readonly />
+
+  <style>
+    .active {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </body>
 </html>

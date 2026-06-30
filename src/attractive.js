@@ -1,4 +1,4 @@
-import Registry from "./core/Registry";
+import Registry from "./core/registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
 import Modifiers from "./core/modifiers";
@@ -9,6 +9,8 @@ import { defaultModifiers } from "./core/modifier_definitions";
 import { defaultActions } from "./core/action_definitions";
 import Debug from "./debug";
 
+let defaultPrefix = "on";
+
 class Attractive {
   #registry = new Registry();
   #events;
@@ -18,6 +20,11 @@ class Attractive {
   #listeners;
   #controller;
   #initialized = false;
+  #prefix;
+
+  static configure(options = {}) {
+    if (options.prefix) defaultPrefix = options.prefix;
+  }
 
   /**
    * Toggle debug logging on or off.
@@ -37,8 +44,10 @@ class Attractive {
     return Debug.enabled;
   }
 
-  constructor() {
-    this.#events = new Events(this.#registry);
+  constructor(options = {}) {
+    this.#prefix = options.prefix || defaultPrefix;
+
+    this.#events = new Events(this.#registry, this.#prefix);
     this.#eventTypes = new EventTypes(this.#registry);
     this.#modifiers = new Modifiers(this.#registry);
     this.#listeners = new EventListeners((event, context) =>
@@ -47,6 +56,18 @@ class Attractive {
 
     this.#registerActions();
     this.#registerModifiers();
+  }
+
+  get actionAttribute() {
+    return this.#prefix;
+  }
+
+  get targetAttribute() {
+    return `${this.#prefix}-target`;
+  }
+
+  get targetsAttribute() {
+    return `${this.#prefix}-targets`;
   }
 
   /**
@@ -69,7 +90,8 @@ class Attractive {
       this.#eventTypes,
       this.#modifiers,
       this.#listeners,
-      on
+      on,
+      this.#prefix
     );
 
     this.#observe = new Observer(
@@ -77,9 +99,11 @@ class Attractive {
       (element) => this.#listeners.cleanup(element)
     );
 
-    this.#observe.start("[data-action]");
+    this.#observe.start(`[${this.actionAttribute}], [data-action]`);
 
-    const elements = on.querySelectorAll("[data-action]");
+    const elements = on.querySelectorAll(
+      `[${this.actionAttribute}], [data-action]`
+    );
 
     elements.forEach((element) => this.#controller.prepare(element));
 

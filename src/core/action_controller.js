@@ -1,3 +1,6 @@
+import Debug from "./../debug";
+import deprecation from "./deprecation";
+
 class ActionController {
   static #nonBubblingEvents = new Set([
     "mouseenter",
@@ -16,17 +19,63 @@ class ActionController {
   #modifiers;
   #listeners;
   #element;
+  #prefix;
 
-  constructor(events, eventTypes, modifiers, listeners, element) {
+  constructor(events, eventTypes, modifiers, listeners, element, prefix) {
     this.#events = events;
     this.#eventTypes = eventTypes;
     this.#modifiers = modifiers;
     this.#listeners = listeners;
     this.#element = element;
+    this.#prefix = prefix;
+  }
+
+  // private
+
+  #getActionValue(element) {
+    const value = element.getAttribute(this.#prefix);
+
+    if (value !== null) return value;
+
+    if (element.hasAttribute("data-action")) {
+      deprecation.warn("`data-action` is deprecated, use `on` instead.");
+    }
+
+    return element.getAttribute("data-action");
+  }
+
+  #getTargetValue(element) {
+    const value = element.getAttribute(`${this.#prefix}-target`);
+
+    if (value !== null) return value;
+
+    const legacy = element.getAttribute("data-target");
+
+    if (legacy !== null) {
+      deprecation.warn("`data-target` is deprecated, use `on-target` instead.");
+    }
+
+    return legacy;
+  }
+
+  #getTargetsValue(element) {
+    const value = element.getAttribute(`${this.#prefix}-targets`);
+
+    if (value !== null) return value;
+
+    const legacy = element.getAttribute("data-targets");
+
+    if (legacy !== null) {
+      deprecation.warn(
+        "`data-targets` is deprecated, use `on-targets` instead."
+      );
+    }
+
+    return legacy;
   }
 
   prepare(element) {
-    const actionValue = element.dataset.action;
+    const actionValue = this.#getActionValue(element);
 
     if (!actionValue) return;
 
@@ -87,7 +136,7 @@ class ActionController {
   process(event, context = null) {
     const element = context
       ? context.element
-      : event.target.closest("[data-action]");
+      : event.target.closest(`[${this.#prefix}], [data-action]`);
 
     if (!element) return;
 
@@ -95,7 +144,10 @@ class ActionController {
       ? context.eventType
       : this.#eventTypes.getDefault({ from: element });
 
-    this.#events.process(event, { on: element, using: defaultEventType });
+    this.#events.process(event, {
+      on: element,
+      using: defaultEventType
+    });
   }
 }
 

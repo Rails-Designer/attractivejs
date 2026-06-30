@@ -1,16 +1,23 @@
 import Debug from "./../debug";
+import deprecation from "./deprecation";
 
 class Events {
   #registry;
+  #prefix;
 
-  constructor(registry) {
+  constructor(registry, prefix) {
     this.#registry = registry;
+    this.#prefix = prefix;
   }
 
   process(event, { on: element, using: defaultEventType }) {
     if (!element) return;
 
-    this.#splitActions(element.dataset.action).some((action) => {
+    const actionValue = this.#getActionValue(element);
+
+    if (!actionValue) return;
+
+    this.#splitActions(actionValue).some((action) => {
       const result = this.#evaluate(action, {
         for: event,
         on: element,
@@ -22,6 +29,48 @@ class Events {
   }
 
   // private
+
+  #getActionValue(element) {
+    const value = element.getAttribute(this.#prefix);
+
+    if (value !== null) return value;
+
+    if (element.hasAttribute("data-action")) {
+      deprecation.warn("`data-action` is deprecated, use `on` instead.");
+    }
+
+    return element.getAttribute("data-action");
+  }
+
+  #getTargetValue(element) {
+    const value = element.getAttribute(`${this.#prefix}-target`);
+
+    if (value !== null) return value;
+
+    const legacy = element.getAttribute("data-target");
+
+    if (legacy !== null) {
+      deprecation.warn("`data-target` is deprecated, use `on-target` instead.");
+    }
+
+    return legacy;
+  }
+
+  #getTargetsValue(element) {
+    const value = element.getAttribute(`${this.#prefix}-targets`);
+
+    if (value !== null) return value;
+
+    const legacy = element.getAttribute("data-targets");
+
+    if (legacy !== null) {
+      deprecation.warn(
+        "`data-targets` is deprecated, use `on-targets` instead."
+      );
+    }
+
+    return legacy;
+  }
 
   #splitActions(action) {
     return action.split(" ").filter((action) => action);
@@ -85,12 +134,14 @@ class Events {
     try {
       result = actionFunction(element, {
         value,
-        target: element.dataset.target,
-        targets: element.dataset.targets
+        target: this.#getTargetValue(element),
+        targets: this.#getTargetsValue(element)
       });
     } catch (error) {
+      const targetId = element.id || this.#getTargetValue(element) || "";
+
       Debug.error(
-        `${actionName} on ${element.tagName.toLowerCase()}#${element.id || element.dataset.target || ""}: ${error.message}`
+        `${actionName} on ${element.tagName.toLowerCase()}#${targetId}: ${error.message}`
       );
 
       throw error;
@@ -98,7 +149,7 @@ class Events {
 
     const elapsed = (performance.now() - startTime).toFixed(2);
 
-    const targetId = element.id || element.dataset.target || "";
+    const targetId = element.id || this.#getTargetValue(element) || "";
     const target = targetId ? `#${targetId}` : "";
     const tag = element.tagName.toLowerCase();
 
