@@ -49,6 +49,20 @@ describe('Attribute Actions', () => {
     });
   });
 
+  describe('setAttribute', () => {
+    test('setAttribute sets attribute with value', () => {
+      attributeActions.setAttribute(element, { value: 'data-state=active', target: 'target' });
+
+      expect(element.getAttribute('data-state')).toBe('active');
+    });
+
+    test('setAttribute sets attribute without value', () => {
+      attributeActions.setAttribute(element, { value: 'hidden', target: 'target' });
+
+      expect(element.getAttribute('hidden')).toBe('');
+    });
+  });
+
   describe('removeAttribute', () => {
     test('removes existing attribute', () => {
       attributeActions.removeAttribute(element, { value: 'data-existing', target: 'target' });

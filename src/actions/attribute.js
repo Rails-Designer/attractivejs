@@ -34,6 +34,14 @@ class Attribute extends ActionBase {
     );
   }
 
+  set() {
+    if (!this.attribute) return;
+
+    this.targets.forEach((target) => {
+      target.setAttribute(this.attribute, this.value || "");
+    });
+  }
+
   remove() {
     if (!this.attribute) return;
 
@@ -64,6 +72,7 @@ const actions = {
   toggleAttribute: action("toggle"),
   cycleAttribute: action("cycle"),
   addAttribute: action("add"),
+  setAttribute: action("set"),
   removeAttribute: action("remove")
 };
 

@@ -28,6 +28,18 @@ describe('Class Actions', () => {
     expect([...element.classList]).toEqual(['existing', 'active', 'visible']);
   });
 
+  test('setClass sets multiple classes', () => {
+    classActions.setClass(element, { value: 'active,visible', target: "target" });
+
+    expect([...element.classList]).toEqual(['active', 'visible']);
+  });
+
+  test('setClass sets single class', () => {
+    classActions.setClass(element, { value: 'primary', target: "target" });
+
+    expect([...element.classList]).toEqual(['primary']);
+  });
+
   test('removeClass removes specified classes', () => {
     classActions.removeClass(element, { value: 'existing', target: "target" });
 
