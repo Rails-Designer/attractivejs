@@ -1,3 +1,5 @@
+import Debug from "./../debug";
+
 export default class ActionBase {
   constructor(currentElement, options = {}) {
     if (!currentElement) throw new Error("Current element is required");
@@ -15,6 +17,10 @@ export default class ActionBase {
 
     if (this.target) {
       const element = document.getElementById(this.target);
+
+      if (!element) {
+        Debug.warn(`Target "#${this.target}" not found`);
+      }
 
       return element ? [element] : [];
     }

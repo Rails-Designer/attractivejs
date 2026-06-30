@@ -26,8 +26,15 @@ const action =
     new Dialog(element, options)[method]();
   };
 
-export default {
+const actions = {
   open: action("open"),
   openModal: action("openModal"),
   close: action("close")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "dialog",
+  actions
 };

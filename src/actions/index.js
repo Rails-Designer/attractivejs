@@ -5,6 +5,7 @@ import confirmActions from "./confirm";
 import dataAttributeActions from "./data_attribute";
 import dialogActions from "./dialog";
 import elementActions from "./element";
+import focusActions from "./focus";
 import formActions from "./form";
 import intersectionActions from "./intersection";
 import reloadActions from "./reload";
@@ -19,6 +20,7 @@ export const actions = {
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
   element: elementActions,
+  focus: focusActions,
   form: formActions,
   intersection: intersectionActions,
   reload: reloadActions,
@@ -34,14 +36,16 @@ export const availableActions = (groups = []) => {
     );
   }
 
-  return actions.reduce((selectedActions, group) => {
-    if (!groups[group]) {
-      console.warn(`Action “${group}” not found`);
+  return groups.reduce((selectedActions, group) => {
+    const groupActions = actions[group];
+
+    if (!groupActions) {
+      console.warn(`Action "${group}" not found`);
 
       return selectedActions;
     }
 
-    return { ...selectedActions, ...groups[group] };
+    return { ...selectedActions, ...groupActions };
   }, {});
 };
 

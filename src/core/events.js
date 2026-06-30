@@ -1,12 +1,10 @@
 import Debug from "./../debug";
 
 class Events {
-  #actions;
+  #registry;
 
-  constructor(actions) {
-    Debug.log("Events with actions:", Object.keys(actions));
-
-    this.#actions = actions;
+  constructor(registry) {
+    this.#registry = registry;
   }
 
   process(event, { on: element, using: defaultEventType }) {
@@ -26,57 +24,89 @@ class Events {
   // private
 
   #splitActions(action) {
-    return action.split(" ").filter(action => action);
+    return action.split(" ").filter((action) => action);
   }
 
   #evaluate(action, { for: event, on: element, using: defaultEventType }) {
-    Debug.log("Process action for", event.type, "on", element, "…");
+    let hasCustomEvent = false;
 
-    if (action.includes(":")) {
-      const [actionPart, modifier] = action.split(":");
-
-      if (event.type !== modifier) return;
-
-      action = actionPart;
-    } else if (action.includes("->")) {
+    if (action.includes("->")) {
       const [eventPart, actionPart] = action.split("->");
-      const eventName = eventPart.includes("@") ? eventPart.split("@")[1] : eventPart;
+      const eventName = eventPart.includes("@")
+        ? eventPart.split("@")[1]
+        : eventPart;
 
       if (eventName !== event.type) return;
 
       action = actionPart;
-    } else if (event.type !== defaultEventType) {
-      return;
+      hasCustomEvent = true;
     }
 
-    Debug.log("…", "processed action for", event.type, "on", element);
+    if (action.includes(":")) {
+      const [actionPart, rawModifier] = action.split(":");
+      const modifierFunction = this.#registry.getModifier(rawModifier);
+
+      if (modifierFunction && modifierFunction.length === 1) {
+        const result = modifierFunction({ event, element });
+
+        if (!result) return;
+      } else if (event.type !== rawModifier) {
+        return;
+      }
+
+      action = actionPart;
+    } else if (!hasCustomEvent && event.type !== defaultEventType) {
+      return;
+    }
 
     return this.#execute(action, { on: element, for: event });
   }
 
   #execute(action, { on: element, for: event }) {
-    Debug.log("Execute action", action, "on", element, "…");
-
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
-    const actionName = this.#actions[possibleAction]
+    const actionName = this.#registry.hasAction(possibleAction)
       ? possibleAction
-      : (fallbackAction ?? action);
+      : this.#registry.hasAction(fallbackAction)
+        ? fallbackAction
+        : action;
 
-    if (typeof this.#actions[actionName] !== "function") return;
+    const actionFunction = this.#registry.getAction(actionName);
+    if (typeof actionFunction !== "function") return;
 
-    const value = this.#actions[possibleAction]
+    const value = this.#registry.hasAction(possibleAction)
       ? parts.slice(1).join("#")
       : (fallbackValue ?? null);
-    const result = this.#actions[actionName](element, {
-      value,
-      target: element.dataset.target,
-      targets: element.dataset.targets
-    });
+
+    const startTime = performance.now();
+
+    let result;
+
+    try {
+      result = actionFunction(element, {
+        value,
+        target: element.dataset.target,
+        targets: element.dataset.targets
+      });
+    } catch (error) {
+      Debug.error(
+        `${actionName} on ${element.tagName.toLowerCase()}#${element.id || element.dataset.target || ""}: ${error.message}`
+      );
+
+      throw error;
+    }
+
+    const elapsed = (performance.now() - startTime).toFixed(2);
+
+    const targetId = element.id || element.dataset.target || "";
+    const target = targetId ? `#${targetId}` : "";
+    const tag = element.tagName.toLowerCase();
+
+    Debug.log(
+      `${actionName} → ${tag}${target} (${elapsed}ms) [${event?.type}]`
+    );
 
     if (result === false && event) event.preventDefault();
-
-    Debug.log("…", "executed action", action, "on", element);
 
     return result;
   }

@@ -12,7 +12,6 @@ Quick example:
 
 There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addElement` and `removeElement`.
 
-
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
 <a href="https://railsdesigner.com/" target="_blank">
@@ -23,19 +22,22 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addEl
   </picture>
 </a>
 
+
 ## Documentation
 
-📑 [See the docs site](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
+📑 [See documentation](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
+
 
 ## Release
 
-Because I always forget how to do this and don't feel like pulling a third-party dependency for releasing.
-
 ```bash
-npm version patch # or minor, or major
-npm publish
-git push
-git push --tags
+npm run release  # patch bump (0.12.x → 0.12.y)
+npm run release -- minor  # minor bump (0.12.x → 0.13.0)
+npm run release -- major  # major bump (0.12.x → 1.0.0)
+
+# Pre-release (alpha)
+npm run release -- premajor --preid alpha  # 0.12.x → 1.0.0-alpha.0
+npm run release -- prerelease --preid alpha # 1.0.0-alpha.0 → 1.0.0-alpha.1
 ```
 
 ## License

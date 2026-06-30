@@ -1,3 +1,5 @@
+import Debug from "./../debug";
+
 class Observer {
   #prepare;
   #cleanup;
@@ -16,13 +18,32 @@ class Observer {
       const removed = new Set();
 
       mutations.forEach((mutation) =>
-        this.#processMutation(mutation, { for: selector, elements: { added, removed } })
+        this.#processMutation(mutation, {
+          for: selector,
+          elements: { added, removed }
+        })
       );
 
-      added.forEach((element) => this.#prepare(element));
+      added.forEach((element) => {
+        Debug.log(
+          "Element added:",
+          element.tagName.toLowerCase(),
+          "#" + (element.id || element.dataset.target || "")
+        );
+
+        this.#prepare(element);
+      });
 
       if (this.#cleanup) {
-        removed.forEach((element) => this.#cleanup(element));
+        removed.forEach((element) => {
+          Debug.log(
+            "Element removed:",
+            element.tagName.toLowerCase(),
+            "#" + (element.id || "")
+          );
+
+          this.#cleanup(element);
+        });
       }
     });
 

@@ -31,6 +31,13 @@ export const action =
   (element, options = {}) =>
     new Confirm(element, options)[method]();
 
-export default {
+const actions = {
   confirm: action("confirm")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "confirm",
+  actions
 };

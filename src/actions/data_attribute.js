@@ -60,9 +60,16 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   toggleDataAttribute: action("toggle"),
   cycleDataAttribute: action("cycle"),
   addDataAttribute: action("add"),
   removeDataAttribute: action("remove")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "dataAttribute",
+  actions
 };

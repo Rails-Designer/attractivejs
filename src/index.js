@@ -4,9 +4,7 @@
 import Attractive from "./attractive";
 
 const activateAttractive = (element = document) => {
-  if (window.Attractive && window.Attractive._initialized) return;
-
-  Attractive.activate({ element });
+  Attractive.activate({ on: element });
 };
 
 if (typeof document !== "undefined") {

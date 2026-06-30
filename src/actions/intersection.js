@@ -52,7 +52,14 @@ export const action =
     return instance.start();
   };
 
-export default {
+const actions = {
   "intersect-once": action("intersect-once"),
   "intersect-toggle": action("intersect-toggle")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "intersection",
+  actions
 };

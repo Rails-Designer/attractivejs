@@ -1,37 +1,21 @@
 class Modifiers {
-  #modifiers = {
-    mounted: (_, trigger) => {
-      trigger();
-    },
+  #registry;
 
-    now: (_, trigger) => {
-      trigger();
-    },
-
-    whenVisible: (element, trigger) => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            trigger();
-
-            observer.disconnect();
-          }
-        });
-      });
-
-      observer.observe(element);
-    },
-  };
+  constructor(registry) {
+    this.#registry = registry;
+  }
 
   setup({ for: modifier, on: element, trigger }) {
-    const setup = this.#modifiers[modifier];
+    const modifierFunction = this.#registry.getModifier(modifier);
 
-    if (!setup) return false;
+    if (!modifierFunction) return false;
 
-    setup(element, trigger);
+    if (modifierFunction.length === 1) return true;
+
+    modifierFunction(element, trigger);
 
     return true;
   }
 }
 
-export default new Modifiers();
+export default Modifiers;
