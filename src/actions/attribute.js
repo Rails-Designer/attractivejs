@@ -68,10 +68,17 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   toggleAttribute: action("toggle"),
   cycleAttribute: action("cycle"),
   addAttribute: action("add"),
   setAttribute: action("set"),
   removeAttribute: action("remove")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "attribute",
+  actions
 };

@@ -56,6 +56,13 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   copy: action("copy")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "clipboard",
+  actions
 };

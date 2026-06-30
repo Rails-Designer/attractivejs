@@ -48,7 +48,14 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   add: action("add"),
   remove: action("remove")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "element",
+  actions
 };

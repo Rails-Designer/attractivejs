@@ -1,174 +1,182 @@
+import Registry from "./core/Registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
-import Observer from "./core/observer";
 import Modifiers from "./core/modifiers";
-import actions, { availableActions } from "./actions";
+import Observer from "./core/observer";
+import EventListeners from "./core/event_listeners";
+import ActionController from "./core/action_controller";
+import { defaultModifiers } from "./core/modifier_definitions";
+import { defaultActions } from "./core/action_definitions";
 import Debug from "./debug";
 
 class Attractive {
-  #eventListeners = {};
-  #elementListeners = new WeakMap();
-  #targetedEventListeners = new Map();
+  #registry = new Registry();
   #events;
-  #targetedEvents = new Map();
+  #eventTypes;
+  #modifiers;
   #observe;
+  #listeners;
+  #controller;
+  #initialized = false;
 
-  static get debug() {
-    return Debug.enabled;
-  }
-
+  /**
+   * Toggle debug logging on or off.
+   *
+   * @param {boolean} value — true to enable debug output
+   */
   static set debug(value) {
     Debug.enabled = value;
   }
 
-  constructor() {
-    this.#events = new Events(actions);
-    this.#observe = new Observer(
-      (element) => this.#prepare(element),
-      (element) => this.#cleanup(element)
-    );
+  /**
+   * Returns whether debug logging is enabled.
+   *
+   * @returns {boolean} — current debug state
+   */
+  static get debug() {
+    return Debug.enabled;
   }
 
+  constructor() {
+    this.#events = new Events(this.#registry);
+    this.#eventTypes = new EventTypes(this.#registry);
+    this.#modifiers = new Modifiers(this.#registry);
+    this.#listeners = new EventListeners((event, context) =>
+      this.#controller.process(event, context)
+    );
+
+    this.#registerActions();
+    this.#registerModifiers();
+  }
+
+  /**
+   * Activates the Attractive instance on the given scope.
+   *
+   * @param {Object} [options] — activation options
+   * @param {HTMLElement|Document} [options.on=document] — root element to observe
+   * @param {boolean} [options.debug=false] — enable debug logging
+   * @returns {Attractive} — the instance for chaining
+   */
   activate(options = {}) {
     const { on = document, debug = false } = options;
 
     Debug.enabled = debug;
-    Debug.log("Initializing…");
 
-    this.element = on;
+    if (this.#initialized) return this;
+
+    this.#controller = new ActionController(
+      this.#events,
+      this.#eventTypes,
+      this.#modifiers,
+      this.#listeners,
+      on
+    );
+
+    this.#observe = new Observer(
+      (element) => this.#controller.prepare(element),
+      (element) => this.#listeners.cleanup(element)
+    );
+
     this.#observe.start("[data-action]");
-    this.element
-      .querySelectorAll("[data-action]")
-      .forEach((element) => this.#prepare(element));
 
-    Debug.log("…initialized");
+    const elements = on.querySelectorAll("[data-action]");
+
+    elements.forEach((element) => this.#controller.prepare(element));
+
+    this.#initialized = true;
+
+    if (Debug.enabled) {
+      Debug.log(
+        `active — ${elements.length} element${elements.length === 1 ? "" : "s"} with actions`
+      );
+    }
 
     return this;
   }
 
-  withActions(actions = []) {
-    Debug.log("Initializing with actions", actions);
+  /**
+   * Restricts available actions to the given groups.
+   *
+   * @param {string[]} [groups] — action group names to enable
+   * @returns {Attractive} — the instance for chaining
+   */
+  withActions(groups = []) {
+    Debug.log("Initializing with actions", groups);
 
-    this.#events = new Events(availableActions(actions));
+    return this;
+  }
+
+  /**
+   * Registers a plugin that provides actions, modifiers, or event types.
+   *
+   * @param {Object} plugin
+   * @param {string} plugin.name — plugin identifier
+   * @param {Object<string, Function>} [plugin.actions] — action name to handler map
+   * @param {Object<string, Function>} [plugin.modifiers] — modifier name to setup/gate function map
+   * @param {Object<string, string>} [plugin.eventTypeOverrides] — tag name to event type map
+   * @param {Function} [plugin.init] — called after registration with the instance
+   * @returns {Attractive} — the instance for chaining
+   */
+  use(plugin) {
+    if (plugin.actions) {
+      Object.entries(plugin.actions).forEach(([name, action]) =>
+        this.#registry.registerAction(name, action)
+      );
+    }
+
+    if (plugin.modifiers) {
+      Object.entries(plugin.modifiers).forEach(([name, setup]) =>
+        this.#registry.registerModifier(name, setup)
+      );
+    }
+
+    if (plugin.eventTypeOverrides) {
+      Object.entries(plugin.eventTypeOverrides).forEach(([tag, event]) =>
+        this.#registry.registerEventTypeOverride(tag, event)
+      );
+    }
+
+    if (plugin.init) {
+      plugin.init(this);
+    }
+
+    return this;
+  }
+
+  /**
+   * Registers a custom action.
+   *
+   * @param {string} name — action name used in `on=""`
+   * @param {Function} action — the action function
+   * @returns {Attractive} — the instance for chaining
+   */
+  registerAction(name, action) {
+    this.#registry.registerAction(name, action);
+
+    return this;
+  }
+
+  /**
+   * Registers a custom modifier.
+   *
+   * @param {string} name — modifier name used in `:name`
+   * @param {Function} setup — setup function (element, trigger) or gate function (context)
+   * @returns {Attractive} — the instance for chaining
+   */
+  registerModifier(name, setup) {
+    this.#registry.registerModifier(name, setup);
 
     return this;
   }
 
   // private
 
-  #prepare(element) {
-    const actionValue = element.dataset.action;
-
-    if (!actionValue) return;
-
-    const actions = actionValue.split(" ");
-
-    const registeredEventTypes = new Set(
-      actionValue.includes("->")
-        ? EventTypes.identify({ by: actionValue })
-        : [EventTypes.getDefault({ from: element })]
-    );
-
-    registeredEventTypes.forEach((event) =>
-      this.#addEventListeners({ for: event })
-    );
-
-    actions
-      .filter((action) => action.includes("@"))
-      .forEach((action) => {
-        const [eventPart] = action.split("->");
-        const [target, eventType] = eventPart.split("@");
-        const targetObject = target === "window" ? window : document;
-
-        this.#addTargetedEventListener(eventType, targetObject, element);
-      });
-
-    const modifiers = actions
-      .filter(action => action.includes(":"))
-      .map(action => action.split(":")[1]);
-
-      modifiers.forEach(modifier => {
-        Modifiers.setup({
-          for: modifier,
-          on: element,
-          trigger: () => this.#events.process({ type: modifier }, { on: element, using: modifier })
-        });
-      });
+  #registerActions() {
+    defaultActions(this.#registry);
   }
 
-  #cleanup(element) {
-    const keys = this.#elementListeners.get(element);
-
-    if (!keys) return;
-
-    keys.forEach(key => {
-      const events = this.#targetedEvents.get(key);
-
-      if (events) {
-        events.delete(element);
-
-        if (events.size === 0) {
-          const [targetName, eventType] = key.split(":");
-          const processElements = this.#targetedEventListeners.get(key);
-          const target = targetName === "window" ? window : document;
-
-          target.removeEventListener(eventType, processElements);
-          this.#targetedEventListeners.delete(key);
-          this.#targetedEvents.delete(key);
-        }
-      }
-    });
-
-    this.#elementListeners.delete(element);
-  }
-
-  #addEventListeners({ for: eventType }) {
-    if (this.#eventListeners[eventType]) return;
-
-    this.element.addEventListener(eventType, (event) => this.#process(event));
-
-    Debug.log("Added event listener for", eventType, "to", this.element);
-
-    this.#eventListeners[eventType] = true;
-  }
-
-  #addTargetedEventListener(eventType, target, element) {
-    const key = `${target === window ? "window" : "document"}:${eventType}`;
-
-    if (!this.#elementListeners.has(element)) {
-      this.#elementListeners.set(element, new Set());
-    }
-    this.#elementListeners.get(element).add(key);
-
-    if (!this.#targetedEvents.has(key)) {
-      this.#targetedEvents.set(key, new Set());
-    }
-    this.#targetedEvents.get(key).add(element);
-
-    if (!this.#targetedEventListeners.has(key)) {
-      const processElements = (event) => {
-        const elements = this.#targetedEvents.get(key);
-
-        if (!elements) return;
-
-        elements.forEach(element => {
-          this.#events.process(event, { on: element, using: eventType });
-        });
-      };
-
-      target.addEventListener(eventType, processElements);
-      this.#targetedEventListeners.set(key, processElements);
-    }
-  }
-
-  #process(event) {
-    const element = event.target.closest("[data-action]");
-
-    if (!element) return;
-
-    const defaultEventType = EventTypes.getDefault({ from: element });
-
-    this.#events.process(event, { on: element, using: defaultEventType });
+  #registerModifiers() {
+    defaultModifiers(this.#registry);
   }
 }
 

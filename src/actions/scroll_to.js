@@ -22,6 +22,13 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   scrollTo: action("scroll")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "scrollTo",
+  actions
 };

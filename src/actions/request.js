@@ -174,9 +174,16 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   get: action("get"),
   post: action("post"),
   patch: action("patch"),
   put: action("put")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "request",
+  actions
 };

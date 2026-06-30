@@ -30,7 +30,14 @@ const action =
     new Form(element, options)[method]();
   };
 
-export default {
+const actions = {
   submit: action("requestSubmit"),
   reset: action("reset")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "form",
+  actions
 };

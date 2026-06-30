@@ -1,16 +1,16 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
-import Attractive from '../src/index.js';
+import { describe, test, expect, beforeEach, vi } from "vitest";
+import Attractive from "../src/index.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
-describe('Integration', () => {
+describe("Integration", () => {
   beforeEach(() => {
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
     vi.clearAllTimers();
     vi.useFakeTimers();
   });
 
-  test('mounted modifier triggers addClass immediately when element is added to DOM', async () => {
+  test("mounted modifier triggers addClass immediately when element is added to DOM", async () => {
     Attractive.activate();
 
     document.body.innerHTML = `
@@ -21,26 +21,26 @@ describe('Integration', () => {
 
     await vi.runAllTimersAsync();
 
-    const target = document.getElementById('target');
-    expect(target.classList.contains('loaded')).toBe(true);
+    const target = document.getElementById("target");
+    expect(target.classList.contains("loaded")).toBe(true);
   });
 
-  test('custom event types', async () => {
+  test("custom event types", async () => {
     Attractive.activate();
 
-   document.body.innerHTML = `
+    document.body.innerHTML = `
       <button id="trigger" data-action="mouseenter->addClass#hovered">Hover me</button>
     `;
 
     await vi.runAllTimersAsync();
 
-    const trigger = document.getElementById('trigger');
-    trigger.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    const trigger = document.getElementById("trigger");
+    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
 
-    expect(trigger.classList.contains('hovered')).toBe(true);
+    expect(trigger.classList.contains("hovered")).toBe(true);
   });
 
-  test('whenVisible modifier triggers when element becomes visible', async () => {
+  test("whenVisible modifier triggers when element becomes visible", async () => {
     const mockObserve = vi.fn();
     const mockDisconnect = vi.fn();
 
@@ -62,7 +62,7 @@ describe('Integration', () => {
     expect(mockObserve).toHaveBeenCalled();
   });
 
-  test('fallback action syntax with hash', async () => {
+  test("fallback action syntax with hash", async () => {
     Attractive.activate();
 
     document.body.innerHTML = `
@@ -73,7 +73,142 @@ describe('Integration', () => {
 
     await vi.runAllTimersAsync();
 
-    const target = document.getElementById('target');
-    expect(target.classList.contains('fallback')).toBe(true);
+    const target = document.getElementById("target");
+    expect(target.classList.contains("fallback")).toBe(true);
+  });
+
+  test("once modifier allows action only on first click", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="addClass#toggled:once" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+
+    const button = document.getElementById("btn");
+    button.click();
+    expect(target.classList.contains("toggled")).toBe(true);
+
+    button.click();
+    const classListAfterSecond = target.classList.contains("toggled");
+    expect(classListAfterSecond).toBe(true);
+  });
+
+  test("whenOutside gate blocks action when clicking inside element", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
+        <div id="inner">Inside</div>
+      </div>
+      <span id="target">Target</span>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+
+    document.getElementById("inner").click();
+    expect(target.classList.contains("clicked")).toBe(false);
+  });
+
+  test("whenOutside gate allows action when clicking outside element", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
+        <div id="inner">Inside</div>
+      </div>
+      <div id="outside">Outside</div>
+      <span id="target">Target</span>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+
+    document.getElementById("outside").click();
+    expect(target.classList.contains("clicked")).toBe(true);
+  });
+
+  test("whenInView modifier triggers when element becomes visible", async () => {
+    let observerCallback;
+
+    global.IntersectionObserver = vi.fn().mockImplementation((callback) => {
+      observerCallback = callback;
+
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    });
+
+    document.body.innerHTML = `
+      <div data-action="addClass#visible:whenInView" data-target="target">
+        <span id="target">Target</span>
+      </div>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    if (observerCallback) {
+      observerCallback([{ isIntersecting: true }]);
+      await vi.runAllTimersAsync();
+    }
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("visible")).toBe(true);
+  });
+
+  test("focus action focuses the target element", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <button data-action="focus" data-target="inputField">Focus</button>
+      <input id="inputField" type="text">
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const input = document.getElementById("inputField");
+    const focusSpy = vi.spyOn(input, "focus");
+
+    document.querySelector("button").click();
+
+    expect(focusSpy).toHaveBeenCalled();
+  });
+
+  test("unregistered action name does not throw", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <button data-action="nonExistentAction">Click me</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    expect(() => {
+      document.querySelector("button").click();
+    }).not.toThrow();
+  });
+
+  test("preventDefault modifier stops default browser behavior", async () => {
+    Attractive.activate();
+
+    document.body.innerHTML = `
+      <a href="https://example.com" data-action="addClass#clicked:preventDefault" data-target="target">Click me</a>
+      <span id="target">Target</span>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+    const link = document.querySelector("a");
+
+    link.click();
+
+    expect(target.classList.contains("clicked")).toBe(true);
   });
 });

@@ -10,7 +10,9 @@ class Reload extends ActionBase {
   // private
 
   #isTurboFrame(target) {
-    return target.tagName === "TURBO-FRAME" && typeof target.reload === "function";
+    return (
+      target.tagName === "TURBO-FRAME" && typeof target.reload === "function"
+    );
   }
 }
 
@@ -22,7 +24,14 @@ export const action =
     return instance[method]();
   };
 
-export default {
+const actions = {
   reload: action("reload"),
   refresh: action("reload")
+};
+
+export default actions;
+
+export const plugin = {
+  name: "reload",
+  actions
 };

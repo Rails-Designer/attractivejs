@@ -6,14 +6,15 @@
     "build": "rollup -c",
     "dev": "npm-run-all --parallel dev:*",
     "dev:watch": "rollup -c -w",
-    "dev:serve": "npx http-server . -p 8080 -o /test",
+    "dev:serve": "npx http-server . -p 8080 -o /playground",
     "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "ci": "npm run lint && npm run format:check && npm run test:run",
+    "ci": "npm run lint && npm run format:check && npm test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "bash scripts/release.sh"
   },
   "author": "Rails Designer",
   "homepage": "https://attractivejs.railsdesigner.com/",
@@ -24,8 +25,14 @@
   "bugs": {
     "url": "https://github.com/rails-designer/attractivejs/issues"
   },
-  "module": "dist/attractive.js",
-  "main": "dist/attractive.js",
+  "module": "dist/attractive.esm.js",
+  "main": "dist/attractive.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/attractive.esm.js",
+      "require": "./dist/attractive.min.js"
+    }
+  },
   "files": [
     "dist"
   ],
