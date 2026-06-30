@@ -22,9 +22,9 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  scrollTo: action("scroll")
-};
+export const scrollTo = action("scroll");
+
+const actions = { scrollTo };
 
 export default actions;
 

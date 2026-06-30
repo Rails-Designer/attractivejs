@@ -1,4 +1,3 @@
-import Debug from "./../debug";
 import deprecation from "./deprecation";
 
 class ActionController {
@@ -20,6 +19,7 @@ class ActionController {
   #listeners;
   #element;
   #prefix;
+  #scope;
 
   constructor(events, eventTypes, modifiers, listeners, element, prefix) {
     this.#events = events;
@@ -28,6 +28,7 @@ class ActionController {
     this.#listeners = listeners;
     this.#element = element;
     this.#prefix = prefix;
+    this.#scope = element;
   }
 
   // private
@@ -139,6 +140,8 @@ class ActionController {
       : event.target.closest(`[${this.#prefix}], [data-action]`);
 
     if (!element) return;
+
+    if (!this.#scope.contains(element)) return;
 
     const defaultEventType = context
       ? context.eventType

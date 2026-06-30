@@ -56,9 +56,9 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  copy: action("copy")
-};
+export const copy = action("copy");
+
+const actions = { copy };
 
 export default actions;
 

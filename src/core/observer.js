@@ -4,10 +4,12 @@ class Observer {
   #prepare;
   #cleanup;
   #observer;
+  #scope;
 
-  constructor(prepare, cleanup = null) {
+  constructor(prepare, cleanup = null, scope = document.documentElement) {
     this.#prepare = prepare;
     this.#cleanup = cleanup;
+    this.#scope = scope;
   }
 
   start(selector) {
@@ -47,10 +49,7 @@ class Observer {
       }
     });
 
-    this.#observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true
-    });
+    this.#observer.observe(this.#scope, { childList: true, subtree: true });
 
     return this;
   }

@@ -24,10 +24,9 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  reload: action("reload"),
-  refresh: action("reload")
-};
+export const reload = action("reload");
+
+const actions = { reload, refresh: reload };
 
 export default actions;
 

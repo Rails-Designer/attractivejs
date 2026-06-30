@@ -6,7 +6,7 @@
     "build": "rollup -c",
     "dev": "npm-run-all --parallel dev:*",
     "dev:watch": "rollup -c -w",
-    "dev:serve": "npx http-server . -p 8080 -o /playground",
+    "dev:serve": "npx http-server . -p 8080",
     "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -31,10 +31,53 @@
     ".": {
       "import": "./dist/attractive.js",
       "require": "./dist/attractive.min.js"
+    },
+    "./actions": {
+      "import": "./src/actions/index.js"
+    },
+    "./actions/attribute": {
+      "import": "./src/actions/attribute.js"
+    },
+    "./actions/class": {
+      "import": "./src/actions/class.js"
+    },
+    "./actions/clipboard": {
+      "import": "./src/actions/clipboard.js"
+    },
+    "./actions/confirm": {
+      "import": "./src/actions/confirm.js"
+    },
+    "./actions/data-attribute": {
+      "import": "./src/actions/data_attribute.js"
+    },
+    "./actions/dialog": {
+      "import": "./src/actions/dialog.js"
+    },
+    "./actions/element": {
+      "import": "./src/actions/element.js"
+    },
+    "./actions/focus": {
+      "import": "./src/actions/focus.js"
+    },
+    "./actions/form": {
+      "import": "./src/actions/form.js"
+    },
+    "./actions/intersection": {
+      "import": "./src/actions/intersection.js"
+    },
+    "./actions/reload": {
+      "import": "./src/actions/reload.js"
+    },
+    "./actions/request": {
+      "import": "./src/actions/request.js"
+    },
+    "./actions/scroll-to": {
+      "import": "./src/actions/scroll_to.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "license": "MIT",
   "devDependencies": {

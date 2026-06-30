@@ -26,11 +26,11 @@ const action =
     new Dialog(element, options)[method]();
   };
 
-const actions = {
-  open: action("open"),
-  openModal: action("openModal"),
-  close: action("close")
-};
+export const open = action("open");
+export const openModal = action("openModal");
+export const close = action("close");
+
+const actions = { open, openModal, close };
 
 export default actions;
 

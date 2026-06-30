@@ -22,6 +22,20 @@ class Attractive {
   #initialized = false;
   #prefix;
 
+  static activate(options = {}) {
+    const instance = new this(options);
+
+    instance.activate(options);
+
+    return instance;
+  }
+
+  /**
+   * Configures the default prefix for all instances.
+   *
+   * @param {Object} options
+   * @param {string} options.prefix — default attribute prefix (default: "on")
+   */
   static configure(options = {}) {
     if (options.prefix) defaultPrefix = options.prefix;
   }
@@ -83,6 +97,14 @@ class Attractive {
 
     Debug.enabled = debug;
 
+    if (!on) {
+      Debug.error(
+        "scope element not found: activate() requires a valid DOM element"
+      );
+
+      return this;
+    }
+
     if (this.#initialized) return this;
 
     this.#controller = new ActionController(
@@ -96,7 +118,8 @@ class Attractive {
 
     this.#observe = new Observer(
       (element) => this.#controller.prepare(element),
-      (element) => this.#listeners.cleanup(element)
+      (element) => this.#listeners.cleanup(element),
+      on
     );
 
     this.#observe.start(`[${this.actionAttribute}], [data-action]`);
@@ -119,13 +142,17 @@ class Attractive {
   }
 
   /**
-   * Restricts available actions to the given groups.
+   * Restricts available actions to the given names.
    *
-   * @param {string[]} [groups] — action group names to enable
+   * @param {string[]} [actionNames] — action names to enable (all enabled if empty)
    * @returns {Attractive} — the instance for chaining
    */
-  withActions(groups = []) {
-    Debug.log("Initializing with actions", groups);
+  withActions(actionNames = []) {
+    Debug.log("Initializing with actions", actionNames);
+
+    if (actionNames.length > 0) {
+      this.#registry.setActiveActions(new Set(actionNames));
+    }
 
     return this;
   }
@@ -204,4 +231,4 @@ class Attractive {
   }
 }
 
-export default new Attractive();
+export default Attractive;

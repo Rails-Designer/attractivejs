@@ -68,12 +68,18 @@ export const action =
     return instance[method]();
   };
 
+export const toggleAttribute = action("toggle");
+export const cycleAttribute = action("cycle");
+export const addAttribute = action("add");
+export const setAttribute = action("set");
+export const removeAttribute = action("remove");
+
 const actions = {
-  toggleAttribute: action("toggle"),
-  cycleAttribute: action("cycle"),
-  addAttribute: action("add"),
-  setAttribute: action("set"),
-  removeAttribute: action("remove")
+  toggleAttribute,
+  cycleAttribute,
+  addAttribute,
+  setAttribute,
+  removeAttribute
 };
 
 export default actions;

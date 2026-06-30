@@ -31,9 +31,9 @@ export const action =
   (element, options = {}) =>
     new Confirm(element, options)[method]();
 
-const actions = {
-  confirm: action("confirm")
-};
+export const confirm = action("confirm");
+
+const actions = { confirm };
 
 export default actions;
 
