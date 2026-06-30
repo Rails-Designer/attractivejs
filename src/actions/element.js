@@ -5,14 +5,14 @@ class Element extends ActionBase {
     const target = this.targets[0];
     if (!target) return;
 
-    const sourceSelector = this.currentElement.dataset.addSource;
+    const sourceSelector = this.currentElement.dataset.elementSource;
     if (!sourceSelector) return;
 
     const source = document.getElementById(sourceSelector);
     if (!source) return;
 
     const clonedElement = this.#cloneSource(source);
-    const position = this.currentElement.dataset.addAt || "beforeend";
+    const position = this.currentElement.dataset.elementPosition || "beforeend";
 
     target.insertAdjacentElement(position, clonedElement);
   }

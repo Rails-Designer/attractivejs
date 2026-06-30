@@ -25,11 +25,11 @@
   "bugs": {
     "url": "https://github.com/rails-designer/attractivejs/issues"
   },
-  "module": "dist/attractive.esm.js",
+  "module": "dist/attractive.js",
   "main": "dist/attractive.min.js",
   "exports": {
     ".": {
-      "import": "./dist/attractive.esm.js",
+      "import": "./dist/attractive.js",
       "require": "./dist/attractive.min.js"
     }
   },
