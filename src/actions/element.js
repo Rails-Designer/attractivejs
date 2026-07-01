@@ -48,10 +48,10 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  add: action("add"),
-  remove: action("remove")
-};
+export const add = action("add");
+export const remove = action("remove");
+
+const actions = { add, remove };
 
 export default actions;
 

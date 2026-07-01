@@ -15,9 +15,9 @@ export const action =
   (element, options = {}) =>
     new Focus(element, options)[method]();
 
-const actions = {
-  focus: action("focus")
-};
+export const focus = action("focus");
+
+const actions = { focus };
 
 export default actions;
 

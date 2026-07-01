@@ -2,21 +2,36 @@ class Registry {
   #actions = new Map();
   #modifiers = new Map();
   #eventTypeOverrides = new Map();
+  #activeActions = null;
 
-  registerAction(name, action) {
-    this.#actions.set(name, action);
+  registerAction(name, action, group = null) {
+    this.#actions.set(name, { handler: action, group });
   }
 
   getAction(name) {
-    return this.#actions.get(name);
+    const entry = this.#actions.get(name);
+
+    return entry ? entry.handler : undefined;
   }
 
   hasAction(name) {
     return this.#actions.has(name);
   }
 
-  allActions() {
-    return this.#actions;
+  actionGroup(name) {
+    const entry = this.#actions.get(name);
+
+    return entry ? entry.group : null;
+  }
+
+  setActiveActions(actionNames) {
+    this.#activeActions = actionNames;
+  }
+
+  isAllowed(actionName) {
+    if (!this.#activeActions) return true;
+
+    return this.#activeActions.has(actionName);
   }
 
   registerModifier(name, setup) {

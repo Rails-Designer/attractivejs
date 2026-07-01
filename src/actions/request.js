@@ -174,12 +174,12 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  get: action("get"),
-  post: action("post"),
-  patch: action("patch"),
-  put: action("put")
-};
+export const get = action("get");
+export const post = action("post");
+export const patch = action("patch");
+export const put = action("put");
+
+const actions = { get, post, patch, put };
 
 export default actions;
 

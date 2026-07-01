@@ -66,13 +66,13 @@ export const action =
     return instance[method]();
   };
 
-const actions = {
-  toggleClass: action("toggle"),
-  cycleClass: action("cycle"),
-  addClass: action("add"),
-  setClass: action("set"),
-  removeClass: action("remove")
-};
+export const toggleClass = action("toggle");
+export const cycleClass = action("cycle");
+export const addClass = action("add");
+export const setClass = action("set");
+export const removeClass = action("remove");
+
+const actions = { toggleClass, cycleClass, addClass, setClass, removeClass };
 
 export default actions;
 

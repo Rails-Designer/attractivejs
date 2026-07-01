@@ -52,9 +52,12 @@ export const action =
     return instance.start();
   };
 
+export const intersectOnce = action("intersect-once");
+export const intersectToggle = action("intersect-toggle");
+
 const actions = {
-  "intersect-once": action("intersect-once"),
-  "intersect-toggle": action("intersect-toggle")
+  "intersect-once": intersectOnce,
+  "intersect-toggle": intersectToggle
 };
 
 export default actions;

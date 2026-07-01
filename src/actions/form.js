@@ -30,10 +30,10 @@ const action =
     new Form(element, options)[method]();
   };
 
-const actions = {
-  submit: action("requestSubmit"),
-  reset: action("reset")
-};
+export const submit = action("requestSubmit");
+export const reset = action("reset");
+
+const actions = { submit, reset };
 
 export default actions;
 

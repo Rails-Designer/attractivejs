@@ -120,6 +120,8 @@ class Events {
         ? fallbackAction
         : action;
 
+    if (!this.#registry.isAllowed(actionName)) return;
+
     const actionFunction = this.#registry.getAction(actionName);
     if (typeof actionFunction !== "function") return;
 

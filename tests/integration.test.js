@@ -3,15 +3,18 @@ import Attractive from "../src/index.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
+let app;
+
 describe("Integration", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     vi.clearAllTimers();
     vi.useFakeTimers();
+    app = new Attractive();
   });
 
   test("mounted modifier triggers addClass immediately when element is added to DOM", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <div data-action="addClass#loaded:mounted" data-target="target">
@@ -26,7 +29,7 @@ describe("Integration", () => {
   });
 
   test("custom event types", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <button id="trigger" data-action="mouseenter->addClass#hovered">Hover me</button>
@@ -49,7 +52,7 @@ describe("Integration", () => {
       disconnect: mockDisconnect
     }));
 
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <div data-action="addClass#visible:whenVisible" data-target="target">
@@ -63,7 +66,7 @@ describe("Integration", () => {
   });
 
   test("fallback action syntax with hash", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <button data-action="nonExistentAction#addClass#fallback:mounted" data-target="target">
@@ -78,7 +81,7 @@ describe("Integration", () => {
   });
 
   test("once modifier allows action only on first click", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <button id="btn" data-action="addClass#toggled:once" data-target="target">
@@ -100,7 +103,7 @@ describe("Integration", () => {
   });
 
   test("whenOutside gate blocks action when clicking inside element", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
@@ -118,7 +121,7 @@ describe("Integration", () => {
   });
 
   test("whenOutside gate allows action when clicking outside element", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
@@ -163,7 +166,7 @@ describe("Integration", () => {
   });
 
   test("focus action focuses the target element", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <button data-action="focus" data-target="inputField">Focus</button>
@@ -181,7 +184,7 @@ describe("Integration", () => {
   });
 
   test("unregistered action name does not throw", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <button data-action="nonExistentAction">Click me</button>
@@ -195,7 +198,7 @@ describe("Integration", () => {
   });
 
   test("preventDefault modifier stops default browser behavior", async () => {
-    Attractive.activate();
+    app.activate();
 
     document.body.innerHTML = `
       <a href="https://example.com" data-action="addClass#clicked:preventDefault" data-target="target">Click me</a>
