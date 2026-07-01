@@ -132,7 +132,7 @@ class ActionController {
         trigger: () =>
           this.#events.process(
             { type: modifier },
-            { on: element, using: defaultEventType }
+            { on: element, using: defaultEventType, triggeredBy: modifier }
           )
       });
     });

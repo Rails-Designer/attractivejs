@@ -401,4 +401,98 @@ describe("Integration", () => {
     const target = document.getElementById("target");
     expect(target.classList.contains("loaded")).toBe(true);
   });
+
+  test("action context includes event for event-triggered actions", async () => {
+    let receivedEvent;
+
+    app.registerAction("captureEvent", (element, { event }) => {
+      receivedEvent = event;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="captureEvent">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(receivedEvent).toBeInstanceOf(MouseEvent);
+    expect(receivedEvent.type).toBe("click");
+  });
+
+  test("action context includes dataset", async () => {
+    let receivedDataset;
+
+    app.registerAction("captureDataset", (element, { dataset }) => {
+      receivedDataset = dataset;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="captureDataset" data-custom="hello">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(receivedDataset.custom).toBe("hello");
+  });
+
+  test("dispatchEvent helper dispatches a CustomEvent", async () => {
+    let capturedEvent;
+
+    app.registerAction("dispatchTest", (element, { dispatchEvent }) => {
+      element.addEventListener("test-event", (event) => {
+        capturedEvent = event;
+      });
+
+      dispatchEvent("test-event", { key: "value" });
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="dispatchTest">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(capturedEvent).toBeInstanceOf(CustomEvent);
+    expect(capturedEvent.detail).toEqual({ key: "value" });
+  });
+
+  test("old-style handler destructuring still works", async () => {
+    let receivedValue = null;
+
+    app.registerAction("oldStyle", (element, { value }) => {
+      receivedValue = value;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="oldStyle#hello">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(receivedValue).toBe("hello");
+  });
 });

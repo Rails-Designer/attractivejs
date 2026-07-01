@@ -12,7 +12,10 @@ class Events {
     this.#hooks = hooks;
   }
 
-  async process(event, { on: element, using: defaultEventType }) {
+  async process(
+    event,
+    { on: element, using: defaultEventType, triggeredBy: modifier }
+  ) {
     if (!element) return;
 
     const actionValue = this.#getActionValue(element);
@@ -23,7 +26,8 @@ class Events {
       const result = await this.#evaluate(action, {
         for: event,
         on: element,
-        using: defaultEventType
+        using: defaultEventType,
+        triggeredBy: modifier
       });
 
       if (result === false) return false;
@@ -80,7 +84,7 @@ class Events {
 
   async #evaluate(
     action,
-    { for: event, on: element, using: defaultEventType }
+    { for: event, on: element, using: defaultEventType, triggeredBy: modifier }
   ) {
     let hasCustomEvent = false;
 
@@ -118,10 +122,14 @@ class Events {
       return;
     }
 
-    return await this.#execute(action, { on: element, for: event });
+    return await this.#execute(action, {
+      on: element,
+      for: event,
+      triggeredBy: modifier
+    });
   }
 
-  async #execute(action, { on: element, for: event }) {
+  async #execute(action, { on: element, for: event, triggeredBy: modifier }) {
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
     const actionName = this.#registry.hasAction(possibleAction)
@@ -151,6 +159,19 @@ class Events {
       event: event || null
     };
 
+    const actionContext = {
+      value,
+      target: this.#getTargetValue(element),
+      targets: this.#getTargetsValue(element),
+      event: event || null,
+      actionName,
+      triggeredBy: modifier || null,
+      dataset: element.dataset,
+      dispatchEvent: (name, detail = {}) => {
+        element.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));
+      }
+    };
+
     if (this.#hooks) {
       if (this.#hooks.runBefore(context) === false) {
         if (event) event.preventDefault();
@@ -164,11 +185,7 @@ class Events {
     let result;
 
     try {
-      result = await actionFunction(element, {
-        value,
-        target: this.#getTargetValue(element),
-        targets: this.#getTargetsValue(element)
-      });
+      result = await actionFunction(element, actionContext);
     } catch (error) {
       const targetId = element.id || this.#getTargetValue(element) || "";
 
