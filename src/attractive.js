@@ -1,3 +1,4 @@
+import Hooks from "./core/hooks";
 import Registry from "./core/registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
@@ -21,6 +22,7 @@ class Attractive {
   #controller;
   #initialized = false;
   #prefix;
+  #hooks = new Hooks();
 
   static activate(options = {}) {
     const instance = new this(options);
@@ -61,7 +63,7 @@ class Attractive {
   constructor(options = {}) {
     this.#prefix = options.prefix || defaultPrefix;
 
-    this.#events = new Events(this.#registry, this.#prefix);
+    this.#events = new Events(this.#registry, this.#prefix, this.#hooks);
     this.#eventTypes = new EventTypes(this.#registry);
     this.#modifiers = new Modifiers(this.#registry);
     this.#listeners = new EventListeners((event, context) =>
@@ -216,6 +218,43 @@ class Attractive {
    */
   registerModifier(name, setup) {
     this.#registry.registerModifier(name, setup);
+
+    return this;
+  }
+
+  /**
+   * Registers a callback that runs before each action.
+   * Return false to cancel the action.
+   *
+   * @param {Function} callback — receives { name, element, options, event }
+   * @returns {Attractive} — the instance for chaining
+   */
+  onBeforeAction(callback) {
+    this.#hooks.addBefore(callback);
+
+    return this;
+  }
+
+  /**
+   * Registers a callback that runs after each successful action.
+   *
+   * @param {Function} callback — receives { name, element, options, event, result }
+   * @returns {Attractive} — the instance for chaining
+   */
+  onAfterAction(callback) {
+    this.#hooks.addAfter(callback);
+
+    return this;
+  }
+
+  /**
+   * Registers a callback that runs when an action throws an error.
+   *
+   * @param {Function} callback — receives { name, element, options, event, error }
+   * @returns {Attractive} — the instance for chaining
+   */
+  onError(callback) {
+    this.#hooks.addError(callback);
 
     return this;
   }

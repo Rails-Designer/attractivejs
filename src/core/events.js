@@ -4,10 +4,12 @@ import deprecation from "./deprecation";
 class Events {
   #registry;
   #prefix;
+  #hooks;
 
-  constructor(registry, prefix) {
+  constructor(registry, prefix, hooks) {
     this.#registry = registry;
     this.#prefix = prefix;
+    this.#hooks = hooks;
   }
 
   process(event, { on: element, using: defaultEventType }) {
@@ -129,6 +131,26 @@ class Events {
       ? parts.slice(1).join("#")
       : (fallbackValue ?? null);
 
+    const context = {
+      name: actionName,
+      element,
+      options: {
+        value,
+        target: this.#getTargetValue(element),
+        targets: this.#getTargetsValue(element)
+      },
+
+      event: event || null
+    };
+
+    if (this.#hooks) {
+      if (this.#hooks.runBefore(context) === false) {
+        if (event) event.preventDefault();
+
+        return false;
+      }
+    }
+
     const startTime = performance.now();
 
     let result;
@@ -146,7 +168,15 @@ class Events {
         `${actionName} on ${element.tagName.toLowerCase()}#${targetId}: ${error.message}`
       );
 
+      if (this.#hooks) {
+        this.#hooks.runError({ ...context, error });
+      }
+
       throw error;
+    }
+
+    if (this.#hooks) {
+      this.#hooks.runAfter({ ...context, result });
     }
 
     const elapsed = (performance.now() - startTime).toFixed(2);
