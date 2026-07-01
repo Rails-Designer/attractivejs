@@ -2,6 +2,8 @@ import ActionBase from "./base";
 import { CSRF } from "./request/csrf";
 import debounce from "./../helpers/debounce";
 
+const activeRequests = new WeakMap();
+
 class Request extends ActionBase {
   constructor(currentElement, options = {}) {
     super(currentElement, options);
@@ -35,10 +37,19 @@ class Request extends ActionBase {
       );
     }
 
+    const previous = activeRequests.get(this.currentElement);
+    if (previous) previous.abort();
+
+    const controller = new AbortController();
+    activeRequests.set(this.currentElement, controller);
+
     this.#setFeedback("busy");
 
     try {
-      const response = await fetch(this.value, { method: "GET" });
+      const response = await fetch(this.value, {
+        method: "GET",
+        signal: controller.signal
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -50,9 +61,13 @@ class Request extends ActionBase {
       });
 
       this.#setFeedback("success");
+      activeRequests.delete(this.currentElement);
 
       return response;
     } catch (error) {
+      if (error.name === "AbortError") return;
+
+      activeRequests.delete(this.currentElement);
       this.#setFeedback("error");
 
       throw error;
@@ -129,10 +144,17 @@ class Request extends ActionBase {
       return;
     }
 
+    const previous = activeRequests.get(this.currentElement);
+    if (previous) previous.abort();
+
+    const controller = new AbortController();
+    activeRequests.set(this.currentElement, controller);
+
     this.#setFeedback("busy");
 
     return fetch(this.value, {
       method,
+      signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": CSRF.get()
@@ -145,10 +167,14 @@ class Request extends ActionBase {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         this.#setFeedback("success");
+        activeRequests.delete(this.currentElement);
 
         return response;
       })
       .catch((error) => {
+        if (error.name === "AbortError") return;
+
+        activeRequests.delete(this.currentElement);
         this.#setFeedback("error");
 
         throw error;

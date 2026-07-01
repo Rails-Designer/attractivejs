@@ -38,7 +38,10 @@ describe("Request Actions", () => {
         value: "/api/data"
       });
 
-      expect(fetch).toHaveBeenCalledWith("/api/data", { method: "GET" });
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/data",
+        expect.objectContaining({ method: "GET" })
+      );
       expect(target.innerHTML).toBe("<p>Response content</p>");
     });
 
@@ -183,14 +186,17 @@ describe("Request Actions", () => {
         value: "/api/users"
       });
 
-      expect(fetch).toHaveBeenCalledWith("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": null
-        },
-        body: JSON.stringify({ name: "John", email: "john@example.com" })
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/users",
+        expect.objectContaining({
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": null
+          },
+          body: JSON.stringify({ name: "John", email: "john@example.com" })
+        })
+      );
     });
 
     test("sends POST request with input field data", async () => {
@@ -207,14 +213,17 @@ describe("Request Actions", () => {
         value: "/api/messages"
       });
 
-      expect(fetch).toHaveBeenCalledWith("/api/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": null
-        },
-        body: JSON.stringify({ message: "Hello" })
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/messages",
+        expect.objectContaining({
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": null
+          },
+          body: JSON.stringify({ message: "Hello" })
+        })
+      );
     });
   });
 
