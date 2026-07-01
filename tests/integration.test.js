@@ -27,7 +27,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div data-action="addClass#loaded:mounted" data-target="target">
+      <div on="addClass#loaded:mounted" data-target="target">
         <span id="target">Target element</span>
       </div>
     `;
@@ -42,7 +42,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="trigger" data-action="mouseenter->addClass#hovered">Hover me</button>
+      <button id="trigger" on="mouseenter->addClass#hovered">Hover me</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -65,7 +65,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div data-action="addClass#visible:whenVisible" data-target="target">
+      <div on="addClass#visible:whenVisible" data-target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -79,7 +79,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="nonExistentAction#addClass#fallback:mounted" data-target="target">
+      <button on="nonExistentAction#addClass#fallback:mounted" data-target="target">
         <div id="target">Target</div>
       </button>
     `;
@@ -94,7 +94,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="addClass#toggled:once" data-target="target">
+      <button id="btn" on="addClass#toggled:once" data-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -116,7 +116,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
+      <div id="outer" on="window@click->addClass#clicked:whenOutside" data-target="target">
         <div id="inner">Inside</div>
       </div>
       <span id="target">Target</span>
@@ -134,7 +134,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div id="outer" data-action="window@click->addClass#clicked:whenOutside" data-target="target">
+      <div id="outer" on="window@click->addClass#clicked:whenOutside" data-target="target">
         <div id="inner">Inside</div>
       </div>
       <div id="outside">Outside</div>
@@ -159,7 +159,7 @@ describe("Integration", () => {
     });
 
     document.body.innerHTML = `
-      <div data-action="addClass#visible:whenInView" data-target="target">
+      <div on="addClass#visible:whenInView" data-target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -179,7 +179,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="focus" data-target="inputField">Focus</button>
+      <button on="focus" data-target="inputField">Focus</button>
       <input id="inputField" type="text">
     `;
 
@@ -197,7 +197,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="nonExistentAction">Click me</button>
+      <button on="nonExistentAction">Click me</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -211,7 +211,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <a href="https://example.com" data-action="addClass#clicked:preventDefault" data-target="target">Click me</a>
+      <a href="https://example.com" on="addClass#clicked:preventDefault" data-target="target">Click me</a>
       <span id="target">Target</span>
     `;
 
@@ -229,7 +229,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="toggleClass#toggled" data-target="target">
+      <button on="toggleClass#toggled" data-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -251,7 +251,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" data-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -266,7 +266,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" data-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -284,7 +284,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button data-action="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" data-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -310,7 +310,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="asyncAction">Async</button>
+      <button id="btn" on="asyncAction">Async</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -336,7 +336,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="asyncPrevent">Click</button>
+      <button id="btn" on="asyncPrevent">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -364,7 +364,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="first second">Multi</button>
+      <button id="btn" on="first second">Multi</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -386,7 +386,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="chainedTest:preventDefault">Click</button>
+      <button id="btn" on="chainedTest:preventDefault">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -402,7 +402,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="addClass#loaded:mounted:once" data-target="target">Click</button>
+      <button id="btn" on="addClass#loaded:mounted:once" data-target="target">Click</button>
       <span id="target">Target</span>
     `;
 
@@ -422,7 +422,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="captureEvent">Click</button>
+      <button id="btn" on="captureEvent">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -445,7 +445,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="captureDataset" data-custom="hello">Click</button>
+      <button id="btn" on="captureDataset" data-custom="hello">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -471,7 +471,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="dispatchTest">Click</button>
+      <button id="btn" on="dispatchTest">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -494,7 +494,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" data-action="oldStyle#hello">Click</button>
+      <button id="btn" on="oldStyle#hello">Click</button>
     `;
 
     await vi.runAllTimersAsync();
