@@ -3,7 +3,7 @@ import debounce from "./../helpers/debounce";
 
 class Form extends ActionBase {
   requestSubmit() {
-    const delay = parseInt(this.currentElement.dataset.formDelay) || 0;
+    const delay = parseInt(this.currentElement.dataset.formDebounce) || 0;
 
     const submit = () =>
       this.targets.forEach(

@@ -115,9 +115,13 @@ class ActionController {
         );
       });
 
-    const modifierNames = actionNames
-      .filter((action) => action.includes(":"))
-      .map((action) => action.split(":")[1]);
+    const modifierNames = [
+      ...new Set(
+        actionNames
+          .filter((action) => action.includes(":"))
+          .flatMap((action) => action.split(":").slice(1))
+      )
+    ];
 
     const defaultEventType = this.#eventTypes.getDefault({ from: element });
 
