@@ -214,4 +214,79 @@ describe("Integration", () => {
 
     expect(target.classList.contains("clicked")).toBe(true);
   });
+
+  test("deactivate removes event listeners", async () => {
+    app.activate();
+
+    document.body.innerHTML = `
+      <button data-action="toggleClass#toggled" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+
+    document.querySelector("button").click();
+    expect(target.classList.contains("toggled")).toBe(true);
+
+    app.deactivate();
+
+    document.querySelector("button").click();
+    expect(target.classList.contains("toggled")).toBe(true);
+  });
+
+  test("activate after deactivate works fresh", async () => {
+    app.activate();
+
+    document.body.innerHTML = `
+      <button data-action="addClass#toggled" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    app.deactivate();
+
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button data-action="addClass#toggled" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+
+    document.querySelector("button").click();
+
+    expect(target.classList.contains("toggled")).toBe(true);
+  });
+
+  test("restart chains deactivate and activate", async () => {
+    app.activate();
+
+    document.body.innerHTML = `
+      <button data-action="addClass#toggled" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    app.restart({ debug: true });
+
+    document.querySelector("button").click();
+
+    const target = document.getElementById("target");
+
+    expect(target.classList.contains("toggled")).toBe(true);
+  });
 });

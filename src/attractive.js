@@ -229,6 +229,39 @@ class Attractive {
   #registerModifiers() {
     defaultModifiers(this.#registry);
   }
+
+  /**
+   * Deactivates the instance, removing all event listeners and observer.
+   *
+   * @returns {Attractive} — the instance for chaining
+   */
+  deactivate() {
+    if (!this.#initialized) return this;
+
+    this.#listeners.removeAll();
+
+    if (this.#observe) {
+      this.#observe.stop();
+    }
+
+    this.#initialized = false;
+
+    Debug.log("deactivated");
+
+    return this;
+  }
+
+  /**
+   * Deactivates and reactivates the instance with optional new options.
+   *
+   * @param {Object} [options] — same options as activate()
+   * @returns {Attractive} — the instance for chaining
+   */
+  restart(options = {}) {
+    this.deactivate();
+
+    return this.activate(options);
+  }
 }
 
 export default Attractive;
