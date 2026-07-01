@@ -95,7 +95,7 @@ describe("Clipboard Actions", () => {
 
     test("removes feedback attribute after delay", async () => {
       document.body.innerHTML = `
-        <button id="trigger" data-clipboard-delay="100">Copy</button>
+        <button id="trigger" data-clipboard-feedback="100">Copy</button>
         <div id="target">Content</div>
       `;
       const element = document.getElementById("trigger");

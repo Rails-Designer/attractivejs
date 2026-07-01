@@ -365,4 +365,40 @@ describe("Integration", () => {
 
     expect(order).toEqual(["first"]);
   });
+
+  test("chained gate modifiers both evaluate correctly", async () => {
+    let callCount = 0;
+
+    app.registerAction("chainedTest", () => {
+      callCount++;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="chainedTest:preventDefault">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(callCount).toBe(1);
+  });
+
+  test("chained with setup modifier still works", async () => {
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="addClass#loaded:mounted:once" data-target="target">Click</button>
+      <span id="target">Target</span>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("loaded")).toBe(true);
+  });
 });

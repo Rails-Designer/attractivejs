@@ -26,7 +26,7 @@ class Clipboard extends ActionBase {
   // private
 
   #setFeedback(succeeded) {
-    const delay = parseInt(this.currentElement.dataset.clipboardDelay);
+    const delay = parseInt(this.currentElement.dataset.clipboardFeedback);
 
     this.targets.forEach((target) =>
       target.setAttribute(this.#attributeName, succeeded)

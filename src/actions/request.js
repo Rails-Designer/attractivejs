@@ -10,6 +10,19 @@ class Request extends ActionBase {
   }
 
   async get() {
+    const debounceDelay =
+      parseInt(this.currentElement.dataset.requestDebounce) || 0;
+
+    if (debounceDelay) {
+      debounce(() => this.#executeGet(), debounceDelay);
+
+      return;
+    }
+
+    return this.#executeGet();
+  }
+
+  async #executeGet() {
     if (!this.value) {
       console.warn("No URL provided in the action value");
 
@@ -73,7 +86,7 @@ class Request extends ActionBase {
   }
 
   #setFeedback(state) {
-    const duration = this.currentElement.dataset.requestDuration;
+    const duration = this.currentElement.dataset.requestFeedback;
 
     this.targets.forEach((target) => {
       if (state === "busy") {
@@ -97,6 +110,19 @@ class Request extends ActionBase {
   }
 
   #fetch(method) {
+    const debounceDelay =
+      parseInt(this.currentElement.dataset.requestDebounce) || 0;
+
+    if (debounceDelay) {
+      debounce(() => this.#executeFetch(method), debounceDelay);
+
+      return;
+    }
+
+    return this.#executeFetch(method);
+  }
+
+  #executeFetch(method) {
     if (!this.value) {
       console.warn("No URL provided in the action value");
 

@@ -97,15 +97,20 @@ class Events {
     }
 
     if (action.includes(":")) {
-      const [actionPart, rawModifier] = action.split(":");
-      const modifierFunction = this.#registry.getModifier(rawModifier);
+      const parts = action.split(":");
+      const actionPart = parts[0];
+      const modifiers = parts.slice(1);
 
-      if (modifierFunction && modifierFunction.length === 1) {
-        const result = modifierFunction({ event, element });
+      for (const rawModifier of modifiers) {
+        const modifierFunction = this.#registry.getModifier(rawModifier);
 
-        if (!result) return;
-      } else if (event.type !== rawModifier) {
-        return;
+        if (modifierFunction && modifierFunction.length === 1) {
+          const result = modifierFunction({ event, element });
+
+          if (!result) return;
+        } else if (event.type !== rawModifier) {
+          return;
+        }
       }
 
       action = actionPart;

@@ -15,7 +15,7 @@ class Confirm extends ActionBase {
   #setFeedback(confirmed) {
     this.currentElement.setAttribute("data-confirm-success", confirmed);
 
-    const duration = this.currentElement.dataset.confirmDuration;
+    const duration = this.currentElement.dataset.confirmFeedback;
 
     if (!duration) return;
 

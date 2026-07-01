@@ -26,7 +26,7 @@ describe("Form Actions", () => {
 
     test("submits form after delay", () => {
       document.body.innerHTML = `
-        <button id="trigger" data-form-delay="100">Submit</button>
+        <button id="trigger" data-form-debounce="100">Submit</button>
         <form id="target"></form>
       `;
       const element = document.getElementById("trigger");
