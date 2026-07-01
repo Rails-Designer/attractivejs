@@ -58,10 +58,23 @@ class Attractive {
     return Debug.enabled;
   }
 
+  static onError(error, message, detail) {
+    console.warn(`[attractive] ${message}`, error);
+
+    if (typeof window.onerror === "function") {
+      window.onerror(message, null, null, null, error);
+    }
+  }
+
   constructor(options = {}) {
     this.#prefix = options.prefix || defaultPrefix;
 
-    this.#events = new Events(this.#registry, this.#prefix, this.#hooks);
+    this.#events = new Events(
+      this.#registry,
+      this.#prefix,
+      this.#hooks,
+      (error, message, detail) => Attractive.onError(error, message, detail)
+    );
     this.#eventTypes = new EventTypes(this.#registry);
     this.#modifiers = new Modifiers(this.#registry);
     this.#listeners = new EventListeners((event, context) =>

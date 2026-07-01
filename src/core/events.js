@@ -5,11 +5,13 @@ class Events {
   #registry;
   #prefix;
   #hooks;
+  #onError;
 
-  constructor(registry, prefix, hooks) {
+  constructor(registry, prefix, hooks, onError) {
     this.#registry = registry;
     this.#prefix = prefix;
     this.#hooks = hooks;
+    this.#onError = onError;
   }
 
   async process(
@@ -188,16 +190,17 @@ class Events {
       result = await actionFunction(element, actionContext);
     } catch (error) {
       const targetId = element.id || this.#getTargetValue(element) || "";
+      const message = `${actionName} on ${element.tagName.toLowerCase()}#${targetId}: ${error.message}`;
 
-      Debug.error(
-        `${actionName} on ${element.tagName.toLowerCase()}#${targetId}: ${error.message}`
-      );
+      Debug.error(message);
 
       if (this.#hooks) {
         this.#hooks.runError({ ...context, error });
       }
 
-      throw error;
+      if (this.#onError) {
+        this.#onError(error, message, { actionName, element });
+      }
     }
 
     if (this.#hooks) {
