@@ -4,7 +4,7 @@
   <script type="module">
     import Attractive from "../dist/attractive.min.js";
 
-    new Attractive().activate();
+    Attractive.activate({ debug: true });
   </script>
 </head>
 <body>
@@ -17,6 +17,8 @@
   <input id="copySource" value="copied text" readonly />
 
   <style>
+    [open],
+    [data-open=true],
     .active {
       color: red;
       font-weight: bold;

@@ -6,8 +6,6 @@ import Modifiers from "./core/modifiers";
 import Observer from "./core/observer";
 import EventListeners from "./core/event_listeners";
 import ActionController from "./core/action_controller";
-import { defaultModifiers } from "./core/modifier_definitions";
-import { defaultActions } from "./core/action_definitions";
 import Debug from "./debug";
 
 let defaultPrefix = "on";
@@ -69,9 +67,6 @@ class Attractive {
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
     );
-
-    this.#registerActions();
-    this.#registerModifiers();
   }
 
   get actionAttribute() {
@@ -261,12 +256,28 @@ class Attractive {
 
   // private
 
-  #registerActions() {
-    defaultActions(this.#registry);
+  /**
+   * Registers the default built-in actions.
+   *
+   * @param {Function} actionsLoader — receives the registry to register actions
+   * @returns {Attractive} — the instance for chaining
+   */
+  registerActions(actionsLoader) {
+    actionsLoader(this.#registry);
+
+    return this;
   }
 
-  #registerModifiers() {
-    defaultModifiers(this.#registry);
+  /**
+   * Registers the default built-in modifiers.
+   *
+   * @param {Function} modifiersLoader — receives the registry to register modifiers
+   * @returns {Attractive} — the instance for chaining
+   */
+  registerModifiers(modifiersLoader) {
+    modifiersLoader(this.#registry);
+
+    return this;
   }
 
   /**
