@@ -40,7 +40,6 @@ class Request extends ActionBase {
 
       return response;
     } catch (error) {
-      console.error("GET request failed:", error);
       this.#setFeedback("error");
 
       throw error;
@@ -124,8 +123,6 @@ class Request extends ActionBase {
         return response;
       })
       .catch((error) => {
-        console.error(`${method} request failed:`, error);
-
         this.#setFeedback("error");
 
         throw error;
