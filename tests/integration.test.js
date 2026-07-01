@@ -484,6 +484,77 @@ describe("Integration", () => {
     expect(capturedEvent.detail).toEqual({ key: "value" });
   });
 
+  test("error from action does not bubble up as unhandled", async () => {
+    app.registerAction("thrower", () => {
+      throw new Error("boom");
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="thrower">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    expect(() => {
+      document.getElementById("btn").click();
+    }).not.toThrow();
+  });
+
+  test("instance onError hook fires when action throws", async () => {
+    const hook = vi.fn();
+    const error = new Error("boom");
+
+    app.registerAction("thrower", () => {
+      throw error;
+    });
+
+    app.onError(hook);
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="thrower">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(hook).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "thrower", error })
+    );
+  });
+
+  test("Attractive.onError global handler receives error context", async () => {
+    const handler = vi.fn();
+    const original = Attractive.onError;
+
+    Attractive.onError = handler;
+
+    app.registerAction("thrower", () => {
+      throw new Error("boom");
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="thrower">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.any(Error),
+      expect.stringContaining("thrower"),
+      expect.objectContaining({ actionName: "thrower" })
+    );
+
+    Attractive.onError = original;
+  });
+
   test("old-style handler destructuring still works", async () => {
     let receivedValue = null;
 
