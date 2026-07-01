@@ -1,5 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../src/index.js";
+import builtinActions from "../src/actions/index.js";
+import { defaultModifiers } from "../src/core/modifier_definitions.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -11,6 +13,14 @@ describe("Integration", () => {
     vi.clearAllTimers();
     vi.useFakeTimers();
     app = new Attractive();
+    app.registerActions((registry) => {
+      Object.entries(builtinActions).forEach(([name, action]) =>
+        registry.registerAction(name, action)
+      );
+    });
+    app.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
   });
 
   test("mounted modifier triggers addClass immediately when element is added to DOM", async () => {

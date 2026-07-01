@@ -32,47 +32,47 @@
       "import": "./dist/attractive.js",
       "require": "./dist/attractive.min.js"
     },
+    "./core": {
+      "import": "./dist/attractive.core.js"
+    },
     "./actions": {
-      "import": "./src/actions/index.js"
+      "import": "./dist/actions/index.js"
     },
     "./actions/attribute": {
-      "import": "./src/actions/attribute.js"
+      "import": "./dist/actions/attribute.js"
     },
     "./actions/class": {
-      "import": "./src/actions/class.js"
+      "import": "./dist/actions/class.js"
     },
     "./actions/clipboard": {
-      "import": "./src/actions/clipboard.js"
+      "import": "./dist/actions/clipboard.js"
     },
     "./actions/confirm": {
-      "import": "./src/actions/confirm.js"
+      "import": "./dist/actions/confirm.js"
     },
     "./actions/data-attribute": {
-      "import": "./src/actions/data_attribute.js"
+      "import": "./dist/actions/data-attribute.js"
     },
     "./actions/dialog": {
-      "import": "./src/actions/dialog.js"
+      "import": "./dist/actions/dialog.js"
     },
     "./actions/element": {
-      "import": "./src/actions/element.js"
+      "import": "./dist/actions/element.js"
     },
     "./actions/focus": {
-      "import": "./src/actions/focus.js"
+      "import": "./dist/actions/focus.js"
     },
     "./actions/form": {
-      "import": "./src/actions/form.js"
-    },
-    "./actions/intersection": {
-      "import": "./src/actions/intersection.js"
+      "import": "./dist/actions/form.js"
     },
     "./actions/reload": {
-      "import": "./src/actions/reload.js"
+      "import": "./dist/actions/reload.js"
     },
     "./actions/request": {
-      "import": "./src/actions/request.js"
+      "import": "./dist/actions/request.js"
     },
     "./actions/scroll-to": {
-      "import": "./src/actions/scroll_to.js"
+      "import": "./dist/actions/scroll-to.js"
     }
   },
   "files": [
