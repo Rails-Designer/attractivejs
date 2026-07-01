@@ -289,4 +289,80 @@ describe("Integration", () => {
 
     expect(target.classList.contains("toggled")).toBe(true);
   });
+
+  test("async action resolves correctly", async () => {
+    app.registerAction("asyncAction", async (element) => {
+      const result = await Promise.resolve("done");
+
+      element.dataset.asyncResult = result;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="asyncAction">Async</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    const button = document.getElementById("btn");
+
+    expect(button.dataset.asyncResult).toBe("done");
+  });
+
+  test("false returned from async action prevents default", async () => {
+    let actionCalled = false;
+
+    app.registerAction("asyncPrevent", async () => {
+      actionCalled = true;
+
+      return false;
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="asyncPrevent">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(actionCalled).toBe(true);
+  });
+
+  test("false short-circuits subsequent actions", async () => {
+    const order = [];
+
+    app.registerAction("first", async () => {
+      order.push("first");
+
+      return false;
+    });
+
+    app.registerAction("second", () => {
+      order.push("second");
+    });
+
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="first second">Multi</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    await vi.runAllTimersAsync();
+
+    expect(order).toEqual(["first"]);
+  });
 });

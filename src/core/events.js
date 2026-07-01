@@ -12,22 +12,22 @@ class Events {
     this.#hooks = hooks;
   }
 
-  process(event, { on: element, using: defaultEventType }) {
+  async process(event, { on: element, using: defaultEventType }) {
     if (!element) return;
 
     const actionValue = this.#getActionValue(element);
 
     if (!actionValue) return;
 
-    this.#splitActions(actionValue).some((action) => {
-      const result = this.#evaluate(action, {
+    for (const action of this.#splitActions(actionValue)) {
+      const result = await this.#evaluate(action, {
         for: event,
         on: element,
         using: defaultEventType
       });
 
-      return result === false;
-    });
+      if (result === false) return false;
+    }
   }
 
   // private
@@ -78,7 +78,10 @@ class Events {
     return action.split(" ").filter((action) => action);
   }
 
-  #evaluate(action, { for: event, on: element, using: defaultEventType }) {
+  async #evaluate(
+    action,
+    { for: event, on: element, using: defaultEventType }
+  ) {
     let hasCustomEvent = false;
 
     if (action.includes("->")) {
@@ -110,10 +113,10 @@ class Events {
       return;
     }
 
-    return this.#execute(action, { on: element, for: event });
+    return await this.#execute(action, { on: element, for: event });
   }
 
-  #execute(action, { on: element, for: event }) {
+  async #execute(action, { on: element, for: event }) {
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
     const actionName = this.#registry.hasAction(possibleAction)
@@ -156,7 +159,7 @@ class Events {
     let result;
 
     try {
-      result = actionFunction(element, {
+      result = await actionFunction(element, {
         value,
         target: this.#getTargetValue(element),
         targets: this.#getTargetsValue(element)
