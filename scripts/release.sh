@@ -20,4 +20,4 @@ fi
 
 npm publish --tag "$PUBLISH_TAG"
 git push
-git push --tags
+git push origin "v${VERSION}"
