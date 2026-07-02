@@ -10,6 +10,14 @@ else
   npm version "$@"
 fi
 
-npm publish
+PUBLISH_TAG="latest"
+VERSION=$(node -p "require('./package.json').version")
+
+if [[ "$VERSION" == *-* ]]; then
+  PUBLISH_TAG="${VERSION#*-}"
+  PUBLISH_TAG="${PUBLISH_TAG%.*}"
+fi
+
+npm publish --tag "$PUBLISH_TAG"
 git push
 git push --tags
