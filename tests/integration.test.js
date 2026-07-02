@@ -27,7 +27,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div on="addClass#loaded:mounted" data-target="target">
+      <div on="addClass#loaded:mounted" on-target="target">
         <span id="target">Target element</span>
       </div>
     `;
@@ -65,7 +65,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div on="addClass#visible:whenVisible" data-target="target">
+      <div on="addClass#visible:whenVisible" on-target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -79,7 +79,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="nonExistentAction#addClass#fallback:mounted" data-target="target">
+      <button on="nonExistentAction#addClass#fallback:mounted" on-target="target">
         <div id="target">Target</div>
       </button>
     `;
@@ -94,7 +94,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#toggled:once" data-target="target">
+      <button id="btn" on="addClass#toggled:once" on-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -116,7 +116,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div id="outer" on="window@click->addClass#clicked:whenOutside" data-target="target">
+      <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
         <div id="inner">Inside</div>
       </div>
       <span id="target">Target</span>
@@ -134,7 +134,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <div id="outer" on="window@click->addClass#clicked:whenOutside" data-target="target">
+      <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
         <div id="inner">Inside</div>
       </div>
       <div id="outside">Outside</div>
@@ -159,7 +159,7 @@ describe("Integration", () => {
     });
 
     document.body.innerHTML = `
-      <div on="addClass#visible:whenInView" data-target="target">
+      <div on="addClass#visible:whenInView" on-target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -179,7 +179,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="focus" data-target="inputField">Focus</button>
+      <button on="focus" on-target="inputField">Focus</button>
       <input id="inputField" type="text">
     `;
 
@@ -211,7 +211,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <a href="https://example.com" on="addClass#clicked:preventDefault" data-target="target">Click me</a>
+      <a href="https://example.com" on="addClass#clicked:preventDefault" on-target="target">Click me</a>
       <span id="target">Target</span>
     `;
 
@@ -229,7 +229,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="toggleClass#toggled" data-target="target">
+      <button on="toggleClass#toggled" on-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -251,7 +251,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" on-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -266,7 +266,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" on-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -284,7 +284,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" data-target="target">
+      <button on="addClass#toggled" on-target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -402,7 +402,7 @@ describe("Integration", () => {
     app.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#loaded:mounted:once" data-target="target">Click</button>
+      <button id="btn" on="addClass#loaded:mounted:once" on-target="target">Click</button>
       <span id="target">Target</span>
     `;
 
