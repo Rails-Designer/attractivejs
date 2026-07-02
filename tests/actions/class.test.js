@@ -1,56 +1,68 @@
-import { describe, test, expect, beforeEach } from 'vitest';
-import classActions from '../../src/actions/class.js';
+import { describe, test, expect, beforeEach } from "vitest";
+import classActions from "../../src/actions/class.js";
 
-describe('Class Actions', () => {
+describe("Class Actions", () => {
   let element;
 
   beforeEach(() => {
     document.body.innerHTML = '<div id="target" class="existing"></div>';
-    element = document.getElementById('target');
+    element = document.getElementById("target");
   });
 
-  test('toggleClass adds class when not present', () => {
-    classActions.toggleClass(element, { value: 'active', target: "target" });
+  test("toggleClass adds class when not present", () => {
+    classActions.toggleClass(element, { value: "active", target: "target" });
 
-    expect(element.classList.contains('active')).toBe(true);
+    expect(element.classList.contains("active")).toBe(true);
   });
 
-  test('toggleClass removes class when present', () => {
-    element.classList.add('active');
-    classActions.toggleClass(element, { value: 'active', target: "target" });
+  test("toggleClass removes class when present", () => {
+    element.classList.add("active");
+    classActions.toggleClass(element, { value: "active", target: "target" });
 
-    expect(element.classList.contains('active')).toBe(false);
+    expect(element.classList.contains("active")).toBe(false);
   });
 
-  test('addClass adds multiple classes', () => {
-    classActions.addClass(element, { value: 'active,visible', target: "target" });
+  test("addClass adds multiple classes", () => {
+    classActions.addClass(element, {
+      value: "active,visible",
+      target: "target"
+    });
 
-    expect([...element.classList]).toEqual(['existing', 'active', 'visible']);
+    expect([...element.classList]).toEqual(["existing", "active", "visible"]);
   });
 
-  test('setClass sets multiple classes', () => {
-    classActions.setClass(element, { value: 'active,visible', target: "target" });
+  test("setClass sets multiple classes", () => {
+    classActions.setClass(element, {
+      value: "active,visible",
+      target: "target"
+    });
 
-    expect([...element.classList]).toEqual(['active', 'visible']);
+    expect([...element.classList]).toEqual(["active", "visible"]);
   });
 
-  test('setClass sets single class', () => {
-    classActions.setClass(element, { value: 'primary', target: "target" });
+  test("setClass sets single class", () => {
+    classActions.setClass(element, { value: "primary", target: "target" });
 
-    expect([...element.classList]).toEqual(['primary']);
+    expect([...element.classList]).toEqual(["primary"]);
   });
 
-  test('removeClass removes specified classes', () => {
-    classActions.removeClass(element, { value: 'existing', target: "target" });
+  test("removeClass removes specified classes", () => {
+    classActions.removeClass(element, { value: "existing", target: "target" });
 
-    expect(element.classList.contains('existing')).toBe(false);
+    expect(element.classList.contains("existing")).toBe(false);
   });
 
-  test('cycleClass cycles through class array', () => {
-    classActions.cycleClass(element, { value: 'red,blue,green', target: "target" });
-    expect(element.classList.contains('red')).toBe(true);
+  test("cycleClass cycles through class array", () => {
+    classActions.cycleClass(element, {
+      value: "red,blue,green",
+      target: "target"
+    });
+    expect(element.classList.contains("red")).toBe(true);
 
-    classActions.cycleClass(element, { value: 'red,blue,green', target: "target" });
-    expect(element.classList.contains('blue')).toBe(true);
+    classActions.cycleClass(element, {
+      value: "red,blue,green",
+      target: "target"
+    });
+    expect(element.classList.contains("blue")).toBe(true);
   });
 });

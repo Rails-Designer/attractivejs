@@ -1,10 +1,7 @@
 import classActions from "./class";
 import clipboardActions from "./clipboard";
 import confirmActions from "./confirm";
-import {
-  default as attributeActions,
-  dataAttributeActions
-} from "./dom_attributes";
+import attributeActions, { dataAttributeActions } from "./dom_attributes";
 import dialogActions from "./dialog";
 import elementActions from "./element";
 import focusActions from "./focus";

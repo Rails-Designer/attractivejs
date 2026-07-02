@@ -1,28 +1,28 @@
 <!doctype html>
 <html>
-<head>
-  <script type="module">
-    import Attractive from "../dist/attractive.min.js";
+  <head>
+    <script type="module">
+      import Attractive from "../dist/attractive.min.js";
 
-    Attractive.activate({ debug: true });
-  </script>
-</head>
-<body>
-  <h2>Toggle (on="" syntax)</h2>
-  <button on="toggleClass#active" on-target="toggleTarget">Toggle</button>
-  <p id="toggleTarget">This toggles the <code>active</code> class.</p>
+      Attractive.activate({ debug: true });
+    </script>
+  </head>
+  <body>
+    <h2>Toggle (on="" syntax)</h2>
+    <button on="toggleClass#active" on-target="toggleTarget">Toggle</button>
+    <p id="toggleTarget">This toggles the <code>active</code> class.</p>
 
-  <h2>Copy (old data-action syntax — should warn once)</h2>
-  <button data-action="copy" data-target="copySource">Copy</button>
-  <input id="copySource" value="copied text" readonly />
+    <h2>Copy (old data-action syntax — should warn once)</h2>
+    <button data-action="copy" data-target="copySource">Copy</button>
+    <input id="copySource" value="copied text" readonly />
 
-  <style>
-    [open],
-    [data-open=true],
-    .active {
-      color: red;
-      font-weight: bold;
-    }
-  </style>
-</body>
+    <style>
+      [open],
+      [data-open="true"],
+      .active {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </body>
 </html>

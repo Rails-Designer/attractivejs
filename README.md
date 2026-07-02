@@ -25,11 +25,9 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addEl
   </picture>
 </a>
 
-
 ## Documentation
 
 📑 [See documentation](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
-
 
 ## Release
 
