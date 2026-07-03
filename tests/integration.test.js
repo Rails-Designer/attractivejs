@@ -8,26 +8,29 @@ import { elementAction } from "../src/actions/element.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
-let app;
+let attractive;
 
 describe("Integration", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     vi.clearAllTimers();
     vi.useFakeTimers();
-    app = new Attractive();
-    app.registerActions((registry) => {
+
+    attractive = new Attractive();
+
+    attractive.registerActions((registry) => {
       Object.entries(builtinActions).forEach(([name, action]) =>
         registry.registerAction(name, action)
       );
     });
-    app.registerModifiers((registry) => {
+
+    attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
   });
 
   test("mounted modifier triggers addClass immediately when element is added to DOM", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <div on="addClass#loaded:mounted" on-target="target">
@@ -42,7 +45,7 @@ describe("Integration", () => {
   });
 
   test("custom event types", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="trigger" on="mouseenter->addClass#hovered">Hover me</button>
@@ -65,7 +68,7 @@ describe("Integration", () => {
       disconnect: mockDisconnect
     }));
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <div on="addClass#visible:whenVisible" on-target="target">
@@ -79,7 +82,7 @@ describe("Integration", () => {
   });
 
   test("fallback action syntax with hash", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="nonExistentAction#addClass#fallback:mounted" on-target="target">
@@ -94,7 +97,7 @@ describe("Integration", () => {
   });
 
   test("once modifier allows action only on first click", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="addClass#toggled:once" on-target="target">
@@ -116,7 +119,7 @@ describe("Integration", () => {
   });
 
   test("whenOutside gate blocks action when clicking inside element", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
@@ -134,7 +137,7 @@ describe("Integration", () => {
   });
 
   test("whenOutside gate allows action when clicking outside element", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
@@ -171,6 +174,7 @@ describe("Integration", () => {
 
     if (observerCallback) {
       observerCallback([{ isIntersecting: true }]);
+
       await vi.runAllTimersAsync();
     }
 
@@ -179,7 +183,7 @@ describe("Integration", () => {
   });
 
   test("focus action focuses the target element", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="focus" on-target="inputField">Focus</button>
@@ -197,7 +201,7 @@ describe("Integration", () => {
   });
 
   test("unregistered action name does not throw", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="nonExistentAction">Click me</button>
@@ -211,7 +215,7 @@ describe("Integration", () => {
   });
 
   test("preventDefault modifier stops default browser behavior", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <a href="https://example.com" on="addClass#clicked:preventDefault" on-target="target">Click me</a>
@@ -229,7 +233,7 @@ describe("Integration", () => {
   });
 
   test("deactivate removes event listeners", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="toggleClass#toggled" on-target="target">
@@ -244,14 +248,14 @@ describe("Integration", () => {
     document.querySelector("button").click();
     expect(target.classList.contains("toggled")).toBe(true);
 
-    app.deactivate();
+    attractive.deactivate();
 
     document.querySelector("button").click();
     expect(target.classList.contains("toggled")).toBe(true);
   });
 
   test("activate after deactivate works fresh", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="addClass#toggled" on-target="target">
@@ -261,12 +265,12 @@ describe("Integration", () => {
 
     await vi.runAllTimersAsync();
 
-    app.deactivate();
+    attractive.deactivate();
 
     document.body.innerHTML = "";
     vi.clearAllTimers();
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="addClass#toggled" on-target="target">
@@ -284,7 +288,7 @@ describe("Integration", () => {
   });
 
   test("restart chains deactivate and activate", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button on="addClass#toggled" on-target="target">
@@ -294,7 +298,7 @@ describe("Integration", () => {
 
     await vi.runAllTimersAsync();
 
-    app.restart({ debug: true });
+    attractive.restart({ debug: true });
 
     document.querySelector("button").click();
 
@@ -304,13 +308,13 @@ describe("Integration", () => {
   });
 
   test("async action resolves correctly", async () => {
-    app.registerAction("asyncAction", async (element) => {
+    attractive.registerAction("asyncAction", async (element) => {
       const result = await Promise.resolve("done");
 
       element.dataset.asyncResult = result;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="asyncAction">Async</button>
@@ -330,13 +334,13 @@ describe("Integration", () => {
   test("false returned from async action prevents default", async () => {
     let actionCalled = false;
 
-    app.registerAction("asyncPrevent", async () => {
+    attractive.registerAction("asyncPrevent", async () => {
       actionCalled = true;
 
       return false;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="asyncPrevent">Click</button>
@@ -354,17 +358,17 @@ describe("Integration", () => {
   test("false short-circuits subsequent actions", async () => {
     const order = [];
 
-    app.registerAction("first", async () => {
+    attractive.registerAction("first", async () => {
       order.push("first");
 
       return false;
     });
 
-    app.registerAction("second", () => {
+    attractive.registerAction("second", () => {
       order.push("second");
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="first second">Multi</button>
@@ -382,11 +386,11 @@ describe("Integration", () => {
   test("chained gate modifiers both evaluate correctly", async () => {
     let callCount = 0;
 
-    app.registerAction("chainedTest", () => {
+    attractive.registerAction("chainedTest", () => {
       callCount++;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="chainedTest:preventDefault">Click</button>
@@ -402,7 +406,7 @@ describe("Integration", () => {
   });
 
   test("chained with setup modifier still works", async () => {
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="addClass#loaded:mounted:once" on-target="target">Click</button>
@@ -418,11 +422,11 @@ describe("Integration", () => {
   test("action context includes event for event-triggered actions", async () => {
     let receivedEvent;
 
-    app.registerAction("captureEvent", (element, { event }) => {
+    attractive.registerAction("captureEvent", (element, { event }) => {
       receivedEvent = event;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="captureEvent">Click</button>
@@ -441,11 +445,11 @@ describe("Integration", () => {
   test("action context includes dataset", async () => {
     let receivedDataset;
 
-    app.registerAction("captureDataset", (element, { dataset }) => {
+    attractive.registerAction("captureDataset", (element, { dataset }) => {
       receivedDataset = dataset;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="captureDataset" data-custom="hello">Click</button>
@@ -463,7 +467,7 @@ describe("Integration", () => {
   test("dispatchEvent helper dispatches a CustomEvent", async () => {
     let capturedEvent;
 
-    app.registerAction("dispatchTest", (element, { dispatchEvent }) => {
+    attractive.registerAction("dispatchTest", (element, { dispatchEvent }) => {
       element.addEventListener("test-event", (event) => {
         capturedEvent = event;
       });
@@ -471,7 +475,7 @@ describe("Integration", () => {
       dispatchEvent("test-event", { key: "value" });
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="dispatchTest">Click</button>
@@ -488,11 +492,11 @@ describe("Integration", () => {
   });
 
   test("error from action does not bubble up as unhandled", async () => {
-    app.registerAction("thrower", () => {
+    attractive.registerAction("thrower", () => {
       throw new Error("boom");
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="thrower">Click</button>
@@ -509,12 +513,12 @@ describe("Integration", () => {
     const hook = vi.fn();
     const error = new Error("boom");
 
-    app.registerAction("thrower", () => {
+    attractive.registerAction("thrower", () => {
       throw error;
     });
 
-    app.onError(hook);
-    app.activate();
+    attractive.onError(hook);
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="thrower">Click</button>
@@ -535,11 +539,11 @@ describe("Integration", () => {
 
     Attractive.onError = handler;
 
-    app.registerAction("thrower", () => {
+    attractive.registerAction("thrower", () => {
       throw new Error("boom");
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="thrower">Click</button>
@@ -561,11 +565,11 @@ describe("Integration", () => {
   test("old-style handler destructuring still works", async () => {
     let receivedValue = null;
 
-    app.registerAction("oldStyle", (element, { value }) => {
+    attractive.registerAction("oldStyle", (element, { value }) => {
       receivedValue = value;
     });
 
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="oldStyle#hello">Click</button>
@@ -584,17 +588,19 @@ describe("Integration", () => {
 describe("Core build with selective actions", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
+
     vi.clearAllTimers();
     vi.useFakeTimers();
   });
 
   test("use action registers all actions from a bundle", async () => {
-    const app = new CoreAttractive();
-    app.use(classAction);
-    app.registerModifiers((registry) => {
+    const attractive = new CoreAttractive();
+
+    attractive.use(classAction);
+    attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="addClass#active" on-target="target">
@@ -611,13 +617,15 @@ describe("Core build with selective actions", () => {
   });
 
   test("use action registers multiple bundles", async () => {
-    const app = new CoreAttractive();
-    app.use(classAction);
-    app.use(elementAction);
-    app.registerModifiers((registry) => {
+    const attractive = new CoreAttractive();
+
+    attractive.use(classAction);
+    attractive.use(elementAction);
+
+    attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <div id="container">
@@ -634,12 +642,14 @@ describe("Core build with selective actions", () => {
   });
 
   test("use accepts an array of action bundles", async () => {
-    const app = new CoreAttractive();
-    app.use([classAction, elementAction]);
-    app.registerModifiers((registry) => {
+    const attractive = new CoreAttractive();
+
+    attractive.use([classAction, elementAction]);
+
+    attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="addClass#active" on-target="target">
@@ -656,12 +666,14 @@ describe("Core build with selective actions", () => {
   });
 
   test("unregistered actions are not available", async () => {
-    const app = new CoreAttractive();
-    app.use(classAction);
-    app.registerModifiers((registry) => {
+    const attractive = new CoreAttractive();
+
+    attractive.use(classAction);
+
+    attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
-    app.activate();
+    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" on="copy">Copy</button>
