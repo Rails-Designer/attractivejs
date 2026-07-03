@@ -18,12 +18,6 @@ class Registry {
     return this.#actions.has(name);
   }
 
-  actionGroup(name) {
-    const entry = this.#actions.get(name);
-
-    return entry ? entry.group : null;
-  }
-
   setActiveActions(actionNames) {
     this.#activeActions = actionNames;
   }
