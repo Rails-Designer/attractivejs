@@ -20,15 +20,9 @@ class Dialog extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    new Dialog(element, options)[method]();
-  };
-
-export const open = activate("open");
-export const openModal = activate("openModal");
-export const close = activate("close");
+export const open = Dialog.actionFor("open");
+export const openModal = Dialog.actionFor("openModal");
+export const close = Dialog.actionFor("close");
 
 const actions = { open, openModal, close };
 

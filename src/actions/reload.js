@@ -16,15 +16,7 @@ class Reload extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    const instance = new Reload(element, options);
-
-    return instance[method]();
-  };
-
-export const reload = activate("reload");
+export const reload = Reload.actionFor("reload");
 
 const actions = { reload, refresh: reload };
 
