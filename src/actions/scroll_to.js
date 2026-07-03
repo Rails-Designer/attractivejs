@@ -15,20 +15,20 @@ class ScrollTo extends ActionBase {
   }
 }
 
-export const action =
+const activate =
   (method) =>
   (element, options = {}) => {
     const instance = new ScrollTo(element, options);
     return instance[method]();
   };
 
-export const scrollTo = action("scroll");
+export const scrollTo = activate("scroll");
 
 const actions = { scrollTo };
 
 export default actions;
 
-export const plugin = {
+export const scrollToAction = {
   name: "scrollTo",
   actions
 };

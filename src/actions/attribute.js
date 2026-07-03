@@ -4,5 +4,6 @@ export {
   addAttribute,
   setAttribute,
   removeAttribute,
+  attributeAction,
   default
 } from "./dom_attributes.js";

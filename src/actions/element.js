@@ -40,7 +40,7 @@ class Element extends ActionBase {
   }
 }
 
-export const action =
+const activate =
   (method) =>
   (element, options = {}) => {
     const instance = new Element(element, options);
@@ -48,14 +48,14 @@ export const action =
     return instance[method]();
   };
 
-export const add = action("add");
-export const remove = action("remove");
+export const add = activate("add");
+export const remove = activate("remove");
 
 const actions = { add, remove };
 
 export default actions;
 
-export const plugin = {
+export const elementAction = {
   name: "element",
   actions
 };
