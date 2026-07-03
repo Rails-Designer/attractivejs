@@ -49,8 +49,7 @@ class Class extends ActionBase {
 
   #cycleClasses(target) {
     const currentClass =
-      this.value.find((className) => target.classList.contains(className)) ||
-      "";
+      this.value.find((className) => target.classList.contains(className)) || "";
     const nextClass = this.cycledValue(currentClass, this.value);
 
     target.classList.remove(...this.value);
@@ -58,7 +57,7 @@ class Class extends ActionBase {
   }
 }
 
-export const action =
+const activate =
   (method) =>
   (element, options = {}) => {
     const instance = new Class(element, options);
@@ -66,17 +65,17 @@ export const action =
     return instance[method]();
   };
 
-export const toggleClass = action("toggle");
-export const cycleClass = action("cycle");
-export const addClass = action("add");
-export const setClass = action("set");
-export const removeClass = action("remove");
+export const toggleClass = activate("toggle");
+export const cycleClass = activate("cycle");
+export const addClass = activate("add");
+export const setClass = activate("set");
+export const removeClass = activate("remove");
 
 const actions = { toggleClass, cycleClass, addClass, setClass, removeClass };
 
 export default actions;
 
-export const plugin = {
+export const classAction = {
   name: "class",
   actions
 };

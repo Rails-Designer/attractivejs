@@ -7,5 +7,6 @@ export {
   cycleDataAttribute,
   addDataAttribute,
   setDataAttribute,
-  removeDataAttribute
+  removeDataAttribute,
+  dataAttributeAction
 } from "./dom_attributes.js";

@@ -108,7 +108,7 @@ class DataAttribute extends ActionBase {
   }
 }
 
-const action =
+const activate =
   (method, ClassType) =>
   (element, options = {}) => {
     const instance = new ClassType(element, options);
@@ -116,17 +116,17 @@ const action =
     return instance[method]();
   };
 
-export const toggleAttribute = action("toggle", Attribute);
-export const cycleAttribute = action("cycle", Attribute);
-export const addAttribute = action("add", Attribute);
-export const setAttribute = action("set", Attribute);
-export const removeAttribute = action("remove", Attribute);
+export const toggleAttribute = activate("toggle", Attribute);
+export const cycleAttribute = activate("cycle", Attribute);
+export const addAttribute = activate("add", Attribute);
+export const setAttribute = activate("set", Attribute);
+export const removeAttribute = activate("remove", Attribute);
 
-export const toggleDataAttribute = action("toggle", DataAttribute);
-export const cycleDataAttribute = action("cycle", DataAttribute);
-export const addDataAttribute = action("add", DataAttribute);
-export const setDataAttribute = action("set", DataAttribute);
-export const removeDataAttribute = action("remove", DataAttribute);
+export const toggleDataAttribute = activate("toggle", DataAttribute);
+export const cycleDataAttribute = activate("cycle", DataAttribute);
+export const addDataAttribute = activate("add", DataAttribute);
+export const setDataAttribute = activate("set", DataAttribute);
+export const removeDataAttribute = activate("remove", DataAttribute);
 
 const attributeActions = {
   toggleAttribute,
@@ -148,12 +148,12 @@ export { dataAttributeActions };
 
 export default attributeActions;
 
-export const plugin = {
+export const attributeAction = {
   name: "attribute",
   actions: attributeActions
 };
 
-export const dataPlugin = {
+export const dataAttributeAction = {
   name: "dataAttribute",
   actions: dataAttributeActions
 };

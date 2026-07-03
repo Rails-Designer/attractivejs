@@ -215,7 +215,7 @@ class Request extends ActionBase {
   }
 }
 
-export const action =
+const activate =
   (method) =>
   (element, options = {}) => {
     const instance = new Request(element, options);
@@ -223,16 +223,16 @@ export const action =
     return instance[method]();
   };
 
-export const get = action("get");
-export const post = action("post");
-export const patch = action("patch");
-export const put = action("put");
+export const get = activate("get");
+export const post = activate("post");
+export const patch = activate("patch");
+export const put = activate("put");
 
 const actions = { get, post, patch, put };
 
 export default actions;
 
-export const plugin = {
+export const requestAction = {
   name: "request",
   actions
 };

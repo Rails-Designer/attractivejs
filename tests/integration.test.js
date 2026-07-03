@@ -1,7 +1,10 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../src/index.js";
+import CoreAttractive from "../src/attractive.js";
 import builtinActions from "../src/actions/index.js";
 import { defaultModifiers } from "../src/core/modifier_definitions.js";
+import { classAction } from "../src/actions/class.js";
+import { elementAction } from "../src/actions/element.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -575,5 +578,99 @@ describe("Integration", () => {
     await vi.runAllTimersAsync();
 
     expect(receivedValue).toBe("hello");
+  });
+});
+
+describe("Core build with selective actions", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+    vi.useFakeTimers();
+  });
+
+  test("use action registers all actions from a bundle", async () => {
+    const app = new CoreAttractive();
+    app.use(classAction);
+    app.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="addClass#active" on-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("active")).toBe(true);
+  });
+
+  test("use action registers multiple bundles", async () => {
+    const app = new CoreAttractive();
+    app.use(classAction);
+    app.use(elementAction);
+    app.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    app.activate();
+
+    document.body.innerHTML = `
+      <div id="container">
+        <div id="target">Remove me</div>
+      </div>
+      <button id="btn" on="remove" on-target="target">Remove</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    expect(document.getElementById("target")).toBeNull();
+  });
+
+  test("use accepts an array of action bundles", async () => {
+    const app = new CoreAttractive();
+    app.use([classAction, elementAction]);
+    app.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="addClass#active" on-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("active")).toBe(true);
+  });
+
+  test("unregistered actions are not available", async () => {
+    const app = new CoreAttractive();
+    app.use(classAction);
+    app.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    app.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="copy">Copy</button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    expect(() => {
+      document.getElementById("btn").click();
+    }).not.toThrow();
   });
 });

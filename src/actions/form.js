@@ -24,20 +24,20 @@ class Form extends ActionBase {
   }
 }
 
-const action =
+const activate =
   (method) =>
   (element, options = {}) => {
     new Form(element, options)[method]();
   };
 
-export const submit = action("requestSubmit");
-export const reset = action("reset");
+export const submit = activate("requestSubmit");
+export const reset = activate("reset");
 
 const actions = { submit, reset };
 
 export default actions;
 
-export const plugin = {
+export const formAction = {
   name: "form",
   actions
 };
