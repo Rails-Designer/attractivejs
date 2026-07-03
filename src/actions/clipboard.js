@@ -48,15 +48,7 @@ class Clipboard extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    const instance = new Clipboard(element, options);
-
-    return instance[method]();
-  };
-
-export const copy = activate("copy");
+export const copy = Clipboard.actionFor("copy");
 
 const actions = { copy };
 

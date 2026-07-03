@@ -24,14 +24,8 @@ class Form extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    new Form(element, options)[method]();
-  };
-
-export const submit = activate("requestSubmit");
-export const reset = activate("reset");
+export const submit = Form.actionFor("requestSubmit");
+export const reset = Form.actionFor("reset");
 
 const actions = { submit, reset };
 

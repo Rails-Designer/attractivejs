@@ -40,16 +40,8 @@ class Element extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    const instance = new Element(element, options);
-
-    return instance[method]();
-  };
-
-export const add = activate("add");
-export const remove = activate("remove");
+export const add = Element.actionFor("add");
+export const remove = Element.actionFor("remove");
 
 const actions = { add, remove };
 

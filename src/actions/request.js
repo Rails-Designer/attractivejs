@@ -24,6 +24,8 @@ class Request extends ActionBase {
     return this.#executeGet();
   }
 
+  // private
+
   async #executeGet() {
     if (!this.value) {
       console.warn("No URL provided in the action value");
@@ -215,18 +217,10 @@ class Request extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) => {
-    const instance = new Request(element, options);
-
-    return instance[method]();
-  };
-
-export const get = activate("get");
-export const post = activate("post");
-export const patch = activate("patch");
-export const put = activate("put");
+export const get = Request.actionFor("get");
+export const post = Request.actionFor("post");
+export const patch = Request.actionFor("patch");
+export const put = Request.actionFor("put");
 
 const actions = { get, post, patch, put };
 

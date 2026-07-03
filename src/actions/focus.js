@@ -10,12 +10,7 @@ class Focus extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) =>
-    new Focus(element, options)[method]();
-
-export const focus = activate("focus");
+export const focus = Focus.actionFor("focus");
 
 const actions = { focus };
 

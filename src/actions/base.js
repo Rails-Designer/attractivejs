@@ -1,6 +1,14 @@
 import Debug from "./../debug";
 
 export default class ActionBase {
+  static actionFor(method) {
+    return (element, options = {}) => {
+      const instance = new this(element, options);
+
+      return instance[method]();
+    };
+  }
+
   constructor(currentElement, options = {}) {
     if (!currentElement) throw new Error("Current element is required");
 

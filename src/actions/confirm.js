@@ -26,12 +26,7 @@ class Confirm extends ActionBase {
   }
 }
 
-const activate =
-  (method) =>
-  (element, options = {}) =>
-    new Confirm(element, options)[method]();
-
-export const confirm = activate("confirm");
+export const confirm = Confirm.actionFor("confirm");
 
 const actions = { confirm };
 

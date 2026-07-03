@@ -44,6 +44,8 @@ class Attribute extends ActionBase {
     this.targets.forEach((target) => target.removeAttribute(this.attribute));
   }
 
+  // private
+
   #cycleAttribute(target) {
     const nextValue = this.cycledValue(
       target.getAttribute(this.attribute),
@@ -108,25 +110,17 @@ class DataAttribute extends ActionBase {
   }
 }
 
-const activate =
-  (method, ClassType) =>
-  (element, options = {}) => {
-    const instance = new ClassType(element, options);
+export const toggleAttribute = Attribute.actionFor("toggle");
+export const cycleAttribute = Attribute.actionFor("cycle");
+export const addAttribute = Attribute.actionFor("add");
+export const setAttribute = Attribute.actionFor("set");
+export const removeAttribute = Attribute.actionFor("remove");
 
-    return instance[method]();
-  };
-
-export const toggleAttribute = activate("toggle", Attribute);
-export const cycleAttribute = activate("cycle", Attribute);
-export const addAttribute = activate("add", Attribute);
-export const setAttribute = activate("set", Attribute);
-export const removeAttribute = activate("remove", Attribute);
-
-export const toggleDataAttribute = activate("toggle", DataAttribute);
-export const cycleDataAttribute = activate("cycle", DataAttribute);
-export const addDataAttribute = activate("add", DataAttribute);
-export const setDataAttribute = activate("set", DataAttribute);
-export const removeDataAttribute = activate("remove", DataAttribute);
+export const toggleDataAttribute = DataAttribute.actionFor("toggle");
+export const cycleDataAttribute = DataAttribute.actionFor("cycle");
+export const addDataAttribute = DataAttribute.actionFor("add");
+export const setDataAttribute = DataAttribute.actionFor("set");
+export const removeDataAttribute = DataAttribute.actionFor("remove");
 
 const attributeActions = {
   toggleAttribute,
