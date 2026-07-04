@@ -9,22 +9,26 @@ export function defaultModifiers(registry) {
     trigger();
   });
 
-  registry.registerModifier("whenVisible", (element, trigger) => {
+  const whenIntersecting = (check) => (element, trigger) => {
     let fired = false;
 
     const observer = new IntersectionObserver((entries) => {
-      const intersecting = entries.some((entry) => entry.isIntersecting);
-
-      if (intersecting && !fired) {
+      if (check(entries) && !fired) {
         fired = true;
 
         observer.disconnect();
+
         trigger();
       }
     });
 
     observer.observe(element);
-  });
+  };
+
+  registry.registerModifier(
+    "whenVisible",
+    whenIntersecting((entries) => entries.some((entry) => entry.isIntersecting))
+  );
 
   registry.registerModifier("whenOutside", ({ event, element }) => {
     if (
@@ -44,20 +48,10 @@ export function defaultModifiers(registry) {
     return true;
   });
 
-  registry.registerModifier("whenInView", (element, trigger) => {
-    let fired = false;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !fired) {
-        fired = true;
-
-        observer.disconnect();
-        trigger();
-      }
-    });
-
-    observer.observe(element);
-  });
+  registry.registerModifier(
+    "whenInView",
+    whenIntersecting((entries) => entries[0].isIntersecting)
+  );
 
   registry.registerModifier("preventDefault", ({ event }) => {
     event.preventDefault();
