@@ -1,6 +1,42 @@
 import ActionBase from "./base";
 
-class Attribute extends ActionBase {
+const attributeOperations = {
+  get(element, name) {
+    return element.getAttribute(name);
+  },
+
+  set(element, name, value) {
+    element.setAttribute(name, value);
+  },
+
+  has(element, name) {
+    return element.hasAttribute(name);
+  },
+
+  remove(element, name) {
+    element.removeAttribute(name);
+  }
+};
+
+const dataAttributeOperations = {
+  get(element, name) {
+    return element.dataset[name];
+  },
+
+  set(element, name, value) {
+    element.dataset[name] = value;
+  },
+
+  has(element, name) {
+    return name in element.dataset;
+  },
+
+  remove(element, name) {
+    delete element.dataset[name];
+  }
+};
+
+class DOMAttribute extends ActionBase {
   constructor(currentElement, options = {}) {
     super(currentElement, options);
 
@@ -14,9 +50,9 @@ class Attribute extends ActionBase {
     if (!this.attribute) return;
 
     this.targets.forEach((target) =>
-      target.hasAttribute(this.attribute)
-        ? target.removeAttribute(this.attribute)
-        : target.setAttribute(this.attribute, this.value || "")
+      this.operations.has(target, this.attribute)
+        ? this.operations.remove(target, this.attribute)
+        : this.operations.set(target, this.attribute, this.value || "")
     );
   }
 
@@ -30,7 +66,7 @@ class Attribute extends ActionBase {
     if (!this.attribute) return;
 
     this.targets.forEach((target) =>
-      target.setAttribute(this.attribute, this.value || "")
+      this.operations.set(target, this.attribute, this.value || "")
     );
   }
 
@@ -41,72 +77,28 @@ class Attribute extends ActionBase {
   remove() {
     if (!this.attribute) return;
 
-    this.targets.forEach((target) => target.removeAttribute(this.attribute));
+    this.targets.forEach((target) =>
+      this.operations.remove(target, this.attribute)
+    );
   }
 
-  // private
-
   #cycleAttribute(target) {
-    const nextValue = this.cycledValue(
-      target.getAttribute(this.attribute),
-      this.value
-    );
+    const currentValue = this.operations.get(target, this.attribute);
+    const nextValue = this.cycledValue(currentValue, this.value);
 
-    target.setAttribute(this.attribute, nextValue);
+    this.operations.set(target, this.attribute, nextValue);
   }
 }
 
-class DataAttribute extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
-
-    const [attribute, value] = options.value.split("=");
-
-    this.attribute = attribute;
-    this.value = value;
+class Attribute extends DOMAttribute {
+  get operations() {
+    return attributeOperations;
   }
+}
 
-  toggle() {
-    if (!this.attribute) return;
-
-    this.targets.forEach((target) => {
-      this.attribute in target.dataset
-        ? delete target.dataset[this.attribute]
-        : (target.dataset[this.attribute] = this.value || "");
-    });
-  }
-
-  cycle() {
-    if (!this.value) return;
-
-    this.targets.forEach((target) => this.#cycleDataAttribute(target));
-  }
-
-  add() {
-    if (!this.attribute) return;
-
-    this.targets.forEach((target) => {
-      target.dataset[this.attribute] = this.value || "";
-    });
-  }
-
-  set() {
-    return this.add();
-  }
-
-  remove() {
-    if (!this.attribute) return;
-
-    this.targets.forEach((target) => delete target.dataset[this.attribute]);
-  }
-
-  #cycleDataAttribute(target) {
-    const nextValue = this.cycledValue(
-      target.dataset[this.attribute],
-      this.value
-    );
-
-    target.dataset[this.attribute] = nextValue;
+class DataAttribute extends DOMAttribute {
+  get operations() {
+    return dataAttributeOperations;
   }
 }
 
