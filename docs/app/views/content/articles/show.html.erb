@@ -1,0 +1,17 @@
+<article class="content">
+  <h1>
+    <%= @resource.title %>
+  </h1>
+
+  <%= @resource.markdownify? ? markdownify(@resource.content, process: [CopyableCodeProcessor]) : @resource.content %>
+</article>
+
+<ul class="pagination">
+  <li>
+    <%= link_to "Previous", @resource.previous, rel: "prev" if @resource.previous %>
+  </li>
+
+  <li>
+    <%= link_to "Next", @resource.next, rel: "next" if @resource.next %>
+  </li>
+</ul>

@@ -1,0 +1,43 @@
+@layer components {
+  .navigation {
+    position: sticky;
+    top: 0;
+    width: 100%; height: var(--navigation-height);
+    margin-inline: auto;
+    padding-block: var(--spacing-4);
+    padding-inline: var(--spacing-4);
+    background: var(--gray-950);
+    border-block-end: 1px solid var(--gray-800);
+    z-index: 2;
+
+    @media (width >= 1024px) { padding-inline: var(--spacing-10); }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .logo {
+      font-size: 1rem;
+      font-weight: 650;
+      color: var(--gray-200);
+      text-decoration: none;
+
+      &:hover { color: var(--gray-400) };
+    }
+
+    .icon {
+      display: none;
+      width: var(--spacing-6); height: auto;
+      border: 0;
+      background: transparent;
+      aspect-ratio: 1;
+      border-radius: var(--spacing-1);
+
+      &:hover {
+        background: var(--gray-900);
+      }
+    }
+  }
+}

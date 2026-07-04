@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <%= render "shared/head" %>
+
+  <body>
+    <div class="page">
+    <%= render "shared/navigation" %>
+
+    <main class="wrapper">
+      <%= render partial: "content/articles/sidebar_navigation", locals: { categories: Content::Article.categories } %>
+
+     <div class="container">
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>

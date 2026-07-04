@@ -1,0 +1,12 @@
+<%# locals: (category:, resources: category.resources) %>
+<li class="category">
+  <%= tag.p category.name, class: "title" %>
+
+  <ul class="items">
+    <% resources.each do |article| %>
+      <%= tag.li id: current_page?(article) ? "current-item" : nil do %>
+        <%= link_to article.title, article, class: class_names("item", {"current": current_page?(article)}) %>
+      <% end %>
+    <% end %>
+  </ul>
+</li>

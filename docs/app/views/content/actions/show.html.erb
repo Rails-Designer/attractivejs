@@ -1,0 +1,27 @@
+<article class="content">
+  <h1>
+    <%= link_to "Actions", article_path("actions") %> / <%= @resource.title %>
+  </h1>
+
+  <p>
+    <%= @resource.description %>
+  </p>
+
+  <p>
+    <%= @resource.metadata.alias %>
+  </p>
+
+  <dl>
+    <%= @resource.metadata.options %>
+  </dl>
+</article>
+
+<div class="action-preview">
+  <div class="code">
+    <%= markdownify @resource.code_preview %>
+  </div>
+
+  <div class="example">
+    <%== @resource.content %>
+  </div>
+</div>

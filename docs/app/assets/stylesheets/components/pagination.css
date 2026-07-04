@@ -1,0 +1,28 @@
+@layer components {
+  .pagination{
+    list-style: none;
+    display: grid;
+    gap: var(--spacing-4);
+    grid-template-columns: repeat(2, 1fr);
+    margin-block: var(--spacing-10) 0;
+    padding: 0;
+
+    li:nth-child(even) { text-align: right; }
+
+    a {
+      display: block;
+      width: 100%;
+      padding-block: var(--spacing-3);
+      padding-inline: var(--spacing-5);
+      color: var(--gray-200);
+      font-size: .875rem;
+      font-weight: 400;
+      text-decoration: none;
+      border: 1px solid var(--gray-900);
+      border-radius: var(--spacing-1);
+
+      &:hover{
+        background: var(--gray-900);
+      }
+    }
+  }

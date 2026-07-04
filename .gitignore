@@ -3,3 +3,11 @@ dist
 .DS_Store
 .pnpm-store/
 .pnpm-debug.log
+
+docs/tmp/
+docs/log/
+docs/vendor/bundle/
+docs/vendor/cache/
+docs/.bundle/
+docs/public/assets/
+docs/public/packs/

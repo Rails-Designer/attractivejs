@@ -1,0 +1,97 @@
+@layer components {
+  .sidebar {
+    position: sticky;
+    top: var(--navigation-height); bottom: 0;
+    display: none;
+    align-items: flex-start;
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    height: calc(100dvh - var(--navigation-height));
+    border-right: 1px solid var(--gray-800);
+    background: oklch(from var(--gray-950) l c h / .7);
+    backdrop-filter: blur(16px);
+    overflow-y: auto;
+    z-index: 2;
+
+    &[open] {
+      @media (width <= 1024px) {
+        display: flex;
+        position: fixed;
+      }
+    }
+
+    @media (width >= 1024px) {
+      display: flex;
+      background: oklch(from var(--gray-950) l c h / .85);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .categories {
+      display: grid;
+      row-gap: var(--spacing-8);
+      width: 100%;
+      padding-block-start: var(--spacing-6);
+      padding-inline: var(--spacing-8);
+    }
+
+    .category {
+      &:not(:first-child) {
+        padding-block-start: var(--spacing-8);
+        border-top: 1px solid var(--gray-800);
+      }
+
+      .title {
+        margin-block: 0;
+        margin-inline-start: var(--spacing-3);
+        font-size: .875rem;
+        font-weight: 550;
+        color: var(--gray-200);
+      }
+
+      .items {
+        display: grid;
+        margin-block-start: var(--spacing-2);
+      }
+    }
+
+    .item {
+      display: block;
+      padding-block: var(--spacing-2);
+      padding-inline: var(--spacing-3);
+      font-size: .875rem;
+      font-weight: 350;
+      text-decoration: none;
+      border-radius: var(--spacing-1);
+      color: var(--gray-200);
+
+      &:hover {
+        background: oklch(from white l c h / .1);
+      }
+
+      &.current {
+        color: var(--brand-300);
+        background: var(--brand-900);
+      }
+    }
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: transparent;
+    border: 0;
+    isolation: isolate;
+    z-index: 1;
+
+    @media (width >= 1024px) { display: none; }
+
+    .sidebar[open] ~ & {
+      display: block;
+    }
+  }
+}

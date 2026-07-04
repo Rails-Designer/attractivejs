@@ -1,0 +1,70 @@
+@layer reset, base, components, utilities;
+
+:root {
+  color-scheme: dark;
+
+  --spacing: .25rem;
+
+  --brand-hue: 22;
+
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-1: calc(var(--spacing) * 1);
+  --spacing-2: calc(var(--spacing) * 2);
+  --spacing-3: calc(var(--spacing) * 3);
+  --spacing-4: calc(var(--spacing) * 4);
+  --spacing-5: calc(var(--spacing) * 5);
+  --spacing-6: calc(var(--spacing) * 6);
+  --spacing-8: calc(var(--spacing) * 8);
+  --spacing-10: calc(var(--spacing) * 10);
+  --spacing-12: calc(var(--spacing) * 12);
+  --spacing-16: calc(var(--spacing) * 16);
+  --spacing-20: calc(var(--spacing) * 20);
+  --spacing-24: calc(var(--spacing) * 24);
+  --spacing-28: calc(var(--spacing) * 28);
+  --spacing-32: calc(var(--spacing) * 32);
+  --spacing-36: calc(var(--spacing) * 36);
+  --spacing-40: calc(var(--spacing) * 40);
+  --spacing-44: calc(var(--spacing) * 44);
+  --spacing-48: calc(var(--spacing) * 48);
+  --spacing-52: calc(var(--spacing) * 52);
+  --spacing-56: calc(var(--spacing) * 56);
+  --spacing-60: calc(var(--spacing) * 60);
+  --spacing-64: calc(var(--spacing) * 64);
+  --spacing-72: calc(var(--spacing) * 72);
+  --spacing-80: calc(var(--spacing) * 80);
+  --spacing-96: calc(var(--spacing) * 96);
+
+  --brand-50:  oklch(.99 .01 var(--brand-hue));
+  --brand-100: oklch(.98 .02 var(--brand-hue));
+  --brand-200: oklch(.94 .04 var(--brand-hue));
+  --brand-300: oklch(.86 .08 var(--brand-hue));
+  --brand-400: oklch(.74 .14 var(--brand-hue));
+  --brand-500: oklch(.6 .18 var(--brand-hue));
+  --brand-600: oklch(.52 .16 var(--brand-hue));
+  --brand-700: oklch(.44 .14 var(--brand-hue));
+  --brand-800: oklch(.36 .12 var(--brand-hue));
+  --brand-900: oklch(.26 .08 var(--brand-hue));
+  --brand-950: oklch(.16 .04 var(--brand-hue));
+
+  --gray-50:  oklch(.985 .002 250);
+  --gray-100: oklch(.97 .005 250);
+  --gray-200: oklch(.93 .007 250);
+  --gray-300: oklch(.87 .01  250);
+  --gray-400: oklch(.75 .012 250);
+  --gray-500: oklch(.62 .014 250);
+  --gray-600: oklch(.52 .012 250);
+  --gray-700: oklch(.43 .01  250);
+  --gray-800: oklch(.35 .008 250);
+  --gray-900: oklch(.25 .006 250);
+  --gray-950: oklch(.15 .003 250);
+
+  /* Component-specific values */
+  --container-width: 88rem;
+  --sidebar-width: 20rem;
+  --navigation-height: 3.5rem;
+}
+
+@import "./reset";
+@import "./base";
+@import "./components";

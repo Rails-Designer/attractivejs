@@ -1,0 +1,238 @@
+@layer component {
+  .content {
+    width: 100%;
+    max-width: 80ch;
+
+    h1:not(:where(.no-content, .no-content *)) {
+      margin-block: 0;
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--gray-100);
+
+      & + * {
+        margin-block-start: var(--spacing-6);
+      }
+    }
+
+    :where(*:not(h1,h2,h3,h4,h5,h6) + *:not(pre,code,li,blockquote > p,svg,div[data-slot="code"]), blockquote + pre):not(:where(.no-content, .no-content *)) {
+      margin-block-start: var(--spacing-5);
+    }
+
+    :is(h2) + p:not(:where(.no-content, .no-content *)) {
+      margin-block-start: calc(var(--spacing) * 1.5);
+    }
+
+    h3 + p:not(:where(.no-content, .no-content *)) {
+      margin-block-start: var(--spacing-1);
+    }
+
+    :is(h4, h5, h6) + p:not(:where(.no-content, .no-content *)) {
+      margin-block-start: calc(var(--spacing) * .5);
+    }
+
+    * + :is(h2, h3):not(:where(.no-content, .no-content *)) {
+      margin-block-start: var(--spacing-8);
+    }
+
+    h2:not(:where(.no-content, .no-content *)) {
+      font-weight: 500;
+      font-size: 1.5rem;
+      line-height: 2rem;
+      color: var(--gray-200);
+    }
+
+    h3:not(:where(.no-content, .no-content *)) {
+      font-weight: 500;
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+      color: var(--gray-200);
+    }
+
+    h4:not(:where(.no-content, .no-content *)) {
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      color: var(--gray-200);
+    }
+
+    > p:not(:where(.no-content, .no-content *)), li:not(:where(.no-content, .no-content *)) {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+
+    > p:not(:where(.no-content, .no-content *)) {
+      font-weight: 300;
+      color: var(--gray-100);
+    }
+
+    :is(ul, ol):not(:where(.no-content, .no-content *)) {
+      margin-block-start: var(--spacing-2);
+      list-style-position: outside;
+    }
+
+    ul:not(:where(.no-content, .no-content *)) {
+      list-style-type: disc;
+      margin-inline-start: calc(var(--spacing) * 4.5);
+    }
+
+    ol:not(:where(.no-content, .no-content *)) {
+      list-style-type: decimal;
+      margin-inline-start: var(--spacing-5);
+    }
+
+    pre:not(:where(.no-content, .no-content *)) {
+      margin-block-start: calc(var(--spacing) * 1.25);
+      padding: var(--spacing-2) calc(var(--spacing) * 1.5);
+      border-radius: .375rem;
+      overflow: auto;
+
+      @media (width >= 40rem) {
+        padding: var(--spacing-3) var(--spacing-2);
+      }
+    }
+
+    code:not(:where(.no-content, .no-content *)) {
+      padding: calc(var(--spacing) * .5);
+      font-size: .875em;
+      font-weight: 500;
+      background-color: color-mix(in srgb, var(--gray-800) 70%, transparent);
+      color: var(--gray-200);
+      border-radius: .125rem;
+    }
+
+    pre > code:not(:where(.no-content, .no-content *)) {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 400;
+      color: var(--gray-700);
+      background-color: transparent;
+    }
+
+    [data-slot="code"]:not(:where(.no-content, .no-content *)) {
+      position: relative;
+
+      .icon {
+        /* "absolute inline-block top-0 right-0 py-2 pr-2 my-1.5 pl-1 text-white/80 bg-gray-950 cursor-pointer pointer-fine:opacity-0 transition hover:text-white group-hover/code:opacity-50 md:my-3 sm:pr-3 sm:py-2" */
+        position: absolute;
+        top: 0; right: 0;
+        width: var(--spacing-6); height: auto;
+        aspect-ratio: 1;
+        margin-block: var(--spacing-3);
+        margin-inline-end: var(--spacing-2);
+        color: var(--gray-400);
+        background: var(--gray-900);
+        border: 1px solid var(--gray-800);
+        border-radius: var(--spacing-1);
+
+        &:hover {
+          color: var(--gray-200);
+          border: 1px solid var(--gray-700);
+        }
+
+        svg {
+          width: 100%; height: auto;
+          aspect-ratio: 1;
+        }
+
+        [data-slot="icon-copy"] {
+          display: block;
+
+          :has([data-copy-success=true]) & { display: none; }
+        }
+
+        [data-slot="icon-copied"] {
+          display: none;
+
+          :has([data-copy-success=true]) & { display: block; }
+        }
+      }
+    }
+
+    strong:not(:where(.no-content, .no-content *)) {
+      font-weight: 500;
+    }
+
+    table:not(:where(.no-content, .no-content *)) {
+      border-collapse: collapse;
+      width: 100%;
+      text-align: left;
+      font-size: .875rem;
+    }
+
+    thead:not(:where(.no-content, .no-content *)) {
+      padding-inline: var(--spacing-2);
+    }
+
+    th:not(:where(.no-content, .no-content *)) {
+      padding-inline: var(--spacing-3);
+      padding-block: var(--spacing-2);
+      color: var(--gray-200);
+      font-weight: 400;
+    }
+
+    tbody tr:not(:where(.no-content, .no-content *)) {
+      border-block-end: 1px solid var(--gray-800);
+
+      &:last-child { border-block-end: 0; }
+    }
+
+    td:not(:where(.no-content, .no-content *)) {
+      padding-inline: var(--spacing-3);
+      padding-block: var(--spacing-2);
+      vertical-align: top;
+      color: var(--gray-400);
+    }
+
+    *:not(:where(.no-content, .no-content *))::marker {
+      color: var(--brand-600);
+    }
+
+    :is(h2, h3, h4, h5, h6):not(:where(.no-content, .no-content *)) {
+      position: relative;
+      display: flex;
+      align-items: center;
+      column-gap: .25rem;
+      justify-content: start;
+
+      .anchor {
+        scroll-margin-top: 3rem;
+
+        &::before {
+          content: "#";
+          display: inline-block;
+          width: 1rem; height: 1rem;
+          font-size: .75em;
+          font-weight: 400;
+          color: var(--gray-500);
+          opacity: 0;
+        }
+      }
+
+      @media (hover: hover) and (width >= 1024px) {
+        margin-left: -1.25rem;
+
+        &:hover .anchor::before {
+          opacity: 1;
+        }
+      }
+
+      @media (hover: hover) and (width < 1024px) {
+        flex-direction: row-reverse;
+
+        &:hover .anchor::before {
+          opacity: 1;
+        }
+      }
+
+      @media (hover: none) {
+        flex-direction: row-reverse;
+
+        .anchor::before {
+          position: relative;
+          color: var(--gray-600);
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

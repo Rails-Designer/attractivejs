@@ -1,0 +1,13 @@
+<%# locals: (categories: []) %>
+<nav id="sidebar" class="sidebar">
+  <ul class="categories">
+    <%= render partial: "content/articles/sidebar_navigation/category", collection: categories, as: :category %>
+  </ul>
+</nav>
+
+<button
+  on="removeAttribute#open"
+  on-target="sidebar"
+  class="sidebar-backdrop"
+>
+</button>

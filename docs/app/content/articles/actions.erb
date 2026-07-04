@@ -1,0 +1,23 @@
+---
+title: Actions
+description: All built-in actions grouped by category
+category: basics
+position: 1
+markdownify: false
+---
+
+<p>
+  All of Attractive.js's built-in actions.
+</p>
+
+<ul class="no-content actions-list">
+  <% Content::Action.all.in_order_of(:group, Content::Action::GROUPS).group_by { it.group }.each do |group, actions| %>
+    <li class="group">
+      <h2><%= group %></h2>
+
+      <ul class="actions">
+        <%= render actions %>
+      </ul>
+    </li>
+  <% end%>
+</ul>
