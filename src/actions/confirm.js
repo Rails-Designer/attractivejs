@@ -1,6 +1,8 @@
 import ActionBase from "./base";
 import debounce from "./../helpers/debounce";
 
+const debouncedClearingFeedback = debounce();
+
 class Confirm extends ActionBase {
   confirm() {
     const message =
@@ -19,7 +21,7 @@ class Confirm extends ActionBase {
 
     if (!duration) return;
 
-    debounce(
+    debouncedClearingFeedback(
       () => this.currentElement.removeAttribute("data-confirm-success"),
       parseInt(duration)
     );

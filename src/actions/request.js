@@ -2,6 +2,10 @@ import ActionBase from "./base";
 import { CSRF } from "./request/csrf";
 import debounce from "./../helpers/debounce";
 
+const debouncedRequest = debounce();
+const debouncedFeedback = debounce();
+const debouncedFetch = debounce();
+
 const activeRequests = new WeakMap();
 
 class Request extends ActionBase {
@@ -16,7 +20,7 @@ class Request extends ActionBase {
       parseInt(this.currentElement.dataset.requestDebounce) || 0;
 
     if (debounceDelay) {
-      debounce(() => this.#executeGet(), debounceDelay);
+      debouncedRequest(() => this.#executeGet(), debounceDelay);
 
       return;
     }
@@ -119,7 +123,7 @@ class Request extends ActionBase {
 
     if (!duration || state === "busy") return;
 
-    debounce(() => {
+    debouncedFeedback(() => {
       this.targets.forEach((target) =>
         target.removeAttribute("data-request-success")
       );
@@ -131,7 +135,7 @@ class Request extends ActionBase {
       parseInt(this.currentElement.dataset.requestDebounce) || 0;
 
     if (debounceDelay) {
-      debounce(() => this.#executeFetch(method), debounceDelay);
+      debouncedFetch(() => this.#executeFetch(method), debounceDelay);
 
       return;
     }

@@ -1,6 +1,8 @@
 import ActionBase from "./base";
 import debounce from "./../helpers/debounce";
 
+const debouncedSubmit = debounce();
+
 class Form extends ActionBase {
   requestSubmit() {
     const delay = parseInt(this.currentElement.dataset.formDebounce) || 0;
@@ -11,7 +13,7 @@ class Form extends ActionBase {
       );
 
     if (delay) {
-      debounce(submit, delay);
+      debouncedSubmit(submit, delay);
     } else {
       submit();
     }
