@@ -24,4 +24,16 @@ if (typeof window !== "undefined") {
   window.Attractive = Attractive;
 }
 
+if (
+  typeof document !== "undefined" &&
+  (
+    document.currentScript ??
+    document.querySelector('script[src*="attractive"][activate]')
+  )?.hasAttribute("activate")
+) {
+  document.readyState === "loading"
+    ? document.addEventListener("DOMContentLoaded", () => Attractive.activate())
+    : Attractive.activate();
+}
+
 export default Attractive;
