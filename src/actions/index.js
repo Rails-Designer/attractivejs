@@ -9,6 +9,7 @@ import formActions from "./form";
 import reloadActions from "./reload";
 import requestActions from "./request";
 import scrollToActions from "./scroll_to";
+import styleActions from "./style";
 
 export const actions = {
   attribute: attributeActions,
@@ -22,7 +23,8 @@ export const actions = {
   form: formActions,
   reload: reloadActions,
   request: requestActions,
-  scrollTo: scrollToActions
+  scrollTo: scrollToActions,
+  style: styleActions
 };
 
 export const availableActions = (groups = []) => {
