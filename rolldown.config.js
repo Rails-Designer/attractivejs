@@ -1,5 +1,4 @@
-import resolve from "@rollup/plugin-node-resolve";
-import { terser } from "rollup-plugin-terser";
+import { defineConfig } from "rolldown";
 
 const actions = [
   { name: "class", file: "class.js" },
@@ -16,88 +15,76 @@ const actions = [
   { name: "attribute", file: "attribute.js" }
 ];
 
-const outputs = actions.flatMap(({ name, file }) => [
-  {
+const actionConfigs = actions.flatMap(({ name, file }) => [
+  defineConfig({
     input: `src/actions/${file}`,
     output: {
       file: `dist/actions/${name}.js`,
       format: "es"
-    },
-    plugins: [resolve()]
-  },
-  {
+    }
+  }),
+
+  defineConfig({
     input: `src/actions/${file}`,
     output: {
       file: `dist/actions/${name}.min.js`,
-      format: "es"
-    },
-    plugins: [resolve(), terser()]
-  }
+      format: "es",
+      minify: true
+    }
+  })
 ]);
 
-outputs.push(
-  {
-    input: "src/actions/index.js",
-    output: {
-      file: "dist/actions/index.js",
-      format: "es"
-    },
-    plugins: [resolve()]
-  },
-  {
-    input: "src/actions/index.js",
-    output: {
-      file: "dist/actions/index.min.js",
-      format: "es"
-    },
-    plugins: [resolve(), terser()]
-  }
-);
-
 export default [
-  // Full ESM build (for bundlers and importmaps)
-  {
+  defineConfig({
     input: "src/index.js",
     output: {
       file: "dist/attractive.js",
       format: "es"
-    },
+    }
+  }),
 
-    plugins: [resolve()]
-  },
-
-  // Minified full ESM build (for CDN)
-  {
+  defineConfig({
     input: "src/index.js",
     output: {
       file: "dist/attractive.min.js",
-      format: "es"
-    },
+      format: "es",
+      minify: true
+    }
+  }),
 
-    plugins: [resolve(), terser()]
-  },
-
-  // Core ESM build (engine only)
-  {
+  defineConfig({
     input: "src/attractive.core.js",
     output: {
       file: "dist/attractive.core.js",
       format: "es"
-    },
+    }
+  }),
 
-    plugins: [resolve()]
-  },
-
-  // Core minified ESM build
-  {
+  defineConfig({
     input: "src/attractive.core.js",
     output: {
       file: "dist/attractive.core.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
+  defineConfig({
+    input: "src/actions/index.js",
+    output: {
+      file: "dist/actions/index.js",
       format: "es"
-    },
+    }
+  }),
 
-    plugins: [resolve(), terser()]
-  },
+  defineConfig({
+    input: "src/actions/index.js",
+    output: {
+      file: "dist/actions/index.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
 
-  ...outputs
+  ...actionConfigs
 ];
