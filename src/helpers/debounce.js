@@ -1,9 +1,11 @@
-let timeoutId;
+const debounce = () => {
+  let timeoutId;
 
-const debounce = (callback, delay) => {
-  clearTimeout(timeoutId);
+  return (callback, delay) => {
+    clearTimeout(timeoutId);
 
-  timeoutId = setTimeout(callback, delay);
+    timeoutId = setTimeout(callback, delay);
+  };
 };
 
 export default debounce;
