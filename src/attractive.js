@@ -58,6 +58,14 @@ class Attractive {
     return Debug.enabled;
   }
 
+  get debug() {
+    return Debug.enabled;
+  }
+
+  set debug(value) {
+    Debug.enabled = value;
+  }
+
   static onError(error, message, detail) {
     console.warn(`[attractive] ${message}`, error);
 
