@@ -20,17 +20,16 @@ Attractive.activate = function (options = {}) {
   return attractive;
 };
 
-if (typeof window !== "undefined") {
-  window.Attractive = Attractive;
-}
-
 if (
   typeof document !== "undefined" &&
+  typeof window !== "undefined" &&
   (
     document.currentScript ??
     document.querySelector('script[src*="attractive"][activate]')
   )?.hasAttribute("activate")
 ) {
+  window.Attractive = Attractive;
+
   document.readyState === "loading"
     ? document.addEventListener("DOMContentLoaded", () => Attractive.activate())
     : Attractive.activate();
