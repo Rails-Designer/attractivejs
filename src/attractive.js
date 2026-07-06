@@ -83,7 +83,7 @@ class Attractive {
       this.#hooks,
       (error, message, detail) => Attractive.onError(error, message, detail)
     );
-    this.#eventTypes = new EventTypes(this.#registry);
+    this.#eventTypes = new EventTypes();
     this.#modifiers = new Modifiers(this.#registry);
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
