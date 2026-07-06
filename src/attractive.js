@@ -2,7 +2,7 @@ import Hooks from "./core/hooks";
 import Registry from "./core/registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
-import Modifiers from "./core/modifiers";
+import Directives from "./core/directives";
 import Observer from "./core/observer";
 import EventListeners from "./core/event_listeners";
 import ActionController from "./core/action_controller";
@@ -14,7 +14,7 @@ class Attractive {
   #registry = new Registry();
   #events;
   #eventTypes;
-  #modifiers;
+  #directives;
   #observe;
   #listeners;
   #controller;
@@ -84,7 +84,7 @@ class Attractive {
       (error, message, detail) => Attractive.onError(error, message, detail)
     );
     this.#eventTypes = new EventTypes();
-    this.#modifiers = new Modifiers(this.#registry);
+    this.#directives = new Directives(this.#registry);
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
     );
@@ -128,7 +128,7 @@ class Attractive {
     this.#controller = new ActionController(
       this.#events,
       this.#eventTypes,
-      this.#modifiers,
+      this.#directives,
       this.#listeners,
       on,
       this.#prefix
@@ -189,14 +189,27 @@ class Attractive {
   }
 
   /**
-   * Adds a custom modifier.
+   * Adds a custom trigger.
    *
-   * @param {string} name — modifier name used in `:name`
-   * @param {Function} setup — setup function (element, trigger) or gate function (context)
+   * @param {string} name — trigger name used in `:name`
+   * @param {Function} trigger — trigger function (element, fire)
    * @returns {Attractive} — the instance for chaining
    */
-  addModifier(name, setup) {
-    this.#registry.addModifier(name, setup);
+  addTrigger(name, trigger) {
+    this.#registry.addDirective(name, trigger);
+
+    return this;
+  }
+
+  /**
+   * Adds a custom gate.
+   *
+   * @param {string} name — gate name used in `:name`
+   * @param {Function} gate — gate function ({ event, element }) — return false to block
+   * @returns {Attractive} — the instance for chaining
+   */
+  addGate(name, gate) {
+    this.#registry.addDirective(name, gate);
 
     return this;
   }
@@ -216,14 +229,28 @@ class Attractive {
   }
 
   /**
-   * Adds multiple modifiers at once.
+   * Adds multiple triggers at once.
    *
-   * @param {Object<string, Function>} modifiers — object mapping modifier names to setup/gate functions
+   * @param {Object<string, Function>} triggers — object mapping trigger names to trigger functions
    * @returns {Attractive} — the instance for chaining
    */
-  addModifiers(modifiers) {
-    Object.entries(modifiers).forEach(([name, setup]) =>
-      this.#registry.addModifier(name, setup)
+  addTriggers(triggers) {
+    Object.entries(triggers).forEach(([name, fn]) =>
+      this.#registry.addDirective(name, fn)
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds multiple gates at once.
+   *
+   * @param {Object<string, Function>} gates — object mapping gate names to gate functions
+   * @returns {Attractive} — the instance for chaining
+   */
+  addGates(gates) {
+    Object.entries(gates).forEach(([name, fn]) =>
+      this.#registry.addDirective(name, fn)
     );
 
     return this;
@@ -281,13 +308,13 @@ class Attractive {
   }
 
   /**
-   * Registers the default built-in modifiers.
+   * Registers the default built-in directives.
    *
-   * @param {Function} modifiersLoader — receives the registry to register modifiers
+   * @param {Function} directivesLoader — receives the registry to register directives
    * @returns {Attractive} — the instance for chaining
    */
-  registerModifiers(modifiersLoader) {
-    modifiersLoader(this.#registry);
+  registerDirectives(directivesLoader) {
+    directivesLoader(this.#registry);
 
     return this;
   }

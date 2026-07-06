@@ -1,6 +1,6 @@
 class Registry {
   #actions = new Map();
-  #modifiers = new Map();
+  #directives = new Map();
   #activeActions = null;
 
   addAction(name, action, group = null) {
@@ -27,16 +27,16 @@ class Registry {
     return this.#activeActions.has(actionName);
   }
 
-  addModifier(name, setup) {
-    this.#modifiers.set(name, setup);
+  addDirective(name, directive) {
+    this.#directives.set(name, directive);
   }
 
-  getModifier(name) {
-    return this.#modifiers.get(name);
+  getDirective(name) {
+    return this.#directives.get(name);
   }
 
-  hasModifier(name) {
-    return this.#modifiers.has(name);
+  hasDirective(name) {
+    return this.#directives.has(name);
   }
 }
 

@@ -48,6 +48,6 @@ attractive.activate({ on: document.getElementById("sidebar") });
 Actions are isolated to their container element.
 
 
-## Custom actions and modifiers
+## Custom actions, triggers and gates
 
-Custom actions and modifiers via `registerAction`, `registerModifier`, and `use()`.
+Custom actions, triggers and gates via `addTrigger`, `addGate` and `addAction`.

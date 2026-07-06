@@ -15,16 +15,16 @@ class ActionController {
 
   #events;
   #eventTypes;
-  #modifiers;
+  #directives;
   #listeners;
   #element;
   #prefix;
   #scope;
 
-  constructor(events, eventTypes, modifiers, listeners, element, prefix) {
+  constructor(events, eventTypes, directives, listeners, element, prefix) {
     this.#events = events;
     this.#eventTypes = eventTypes;
-    this.#modifiers = modifiers;
+    this.#directives = directives;
     this.#listeners = listeners;
     this.#element = element;
     this.#prefix = prefix;
@@ -73,7 +73,7 @@ class ActionController {
         );
       });
 
-    const modifierNames = [
+    const directives = [
       ...new Set(
         actionNames
           .filter((action) => action.includes(":"))
@@ -83,14 +83,14 @@ class ActionController {
 
     const defaultEventType = this.#eventTypes.getDefault({ from: element });
 
-    modifierNames.forEach((modifier) => {
-      this.#modifiers.setup({
-        for: modifier,
+    directives.forEach((name) => {
+      this.#directives.setup({
+        for: name,
         on: element,
         trigger: () =>
           this.#events.process(
-            { type: modifier },
-            { on: element, using: defaultEventType, triggeredBy: modifier }
+            { type: name },
+            { on: element, using: defaultEventType, triggeredBy: name }
           )
       });
     });

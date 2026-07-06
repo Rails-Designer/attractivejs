@@ -1,11 +1,11 @@
 ---
 title: Hooks
-description: Lifecycle hooks for before, after, and error handling
+description: Lifecycle hooks for before, after and error handling
 category: advanced
 position: 2
 ---
 
-Lifecycle hooks let you run code before or after every action, and handle errors centrally.
+Lifecycle hooks let you run code before or after every action and handle errors centrally.
 
 
 ## onBeforeAction

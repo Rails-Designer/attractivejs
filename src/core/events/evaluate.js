@@ -7,7 +7,12 @@ class Evaluate {
 
   async run(
     action,
-    { for: event, on: element, using: defaultEventType, triggeredBy: modifier },
+    {
+      for: event,
+      on: element,
+      using: defaultEventType,
+      triggeredBy: directive
+    },
     { execute }
   ) {
     const isCustomEvent = action.includes("->");
@@ -15,18 +20,18 @@ class Evaluate {
     action = this.#stripCustomEvent({ from: action, for: event.type });
     if (action === undefined) return;
 
-    const hasModifiers = action.includes(":");
+    const hasDirectives = action.includes(":");
 
-    if (hasModifiers)
-      action = this.#stripModifiers({ from: action, for: event, on: element });
+    if (hasDirectives)
+      action = this.#stripDirectives({ from: action, for: event, on: element });
 
     if (action === undefined) return;
 
-    if (!isCustomEvent && !hasModifiers && event.type !== defaultEventType)
+    if (!isCustomEvent && !hasDirectives && event.type !== defaultEventType)
       return;
 
     return await execute(action, {
-      with: { on: element, for: event, triggeredBy: modifier }
+      with: { on: element, for: event, triggeredBy: directive }
     });
   }
 
@@ -45,12 +50,12 @@ class Evaluate {
     return actionPart;
   }
 
-  #stripModifiers({ from: action, for: event, on: element }) {
+  #stripDirectives({ from: action, for: event, on: element }) {
     const parts = action.split(":");
     const allPass = parts
       .slice(1)
-      .every((modifier) =>
-        this.#passesModifier({ modifier, for: event, on: element })
+      .every((name) =>
+        this.#passesGate({ gate: name, for: event, on: element })
       );
 
     if (!allPass) return;
@@ -58,14 +63,14 @@ class Evaluate {
     return parts[0];
   }
 
-  #passesModifier({ modifier, for: event, on: element }) {
-    const gate = this.#registry.getModifier(modifier);
+  #passesGate({ gate: name, for: event, on: element }) {
+    const gateFn = this.#registry.getDirective(name);
 
-    if (gate && gate.length === 1) {
-      return gate({ event, element }) !== false;
+    if (gateFn && gateFn.length === 1) {
+      return gateFn({ event, element }) !== false;
     }
 
-    return event.type === modifier;
+    return event.type === name;
   }
 }
 
