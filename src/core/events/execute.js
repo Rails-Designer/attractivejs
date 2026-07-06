@@ -113,10 +113,7 @@ class Execute {
       event: event || null,
       actionName: name,
       triggeredBy: directive || null,
-      dataset: element.dataset,
-      dispatchEvent: (name, detail = {}) => {
-        element.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));
-      }
+      dataset: element.dataset
     };
   }
 
