@@ -18,7 +18,7 @@ The attribute syntax changed from `data-action` / `data-target` to `@action` / `
 | `data-target="panel"`              | `@target="panel"`         |
 | `data-targets=".items"`            | `@targets=".items"`       |
 
-The `@` prefix is fixed (not configurable). The shorthand `@=""` is equivalent to `@action=""`.
+The shorthand `@=""` is equivalent to `@action=""`.
 
 
 ## Auto-activation

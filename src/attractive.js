@@ -6,7 +6,7 @@ import Directives from "./core/directives";
 import Observer from "./core/observer";
 import EventListeners from "./core/event_listeners";
 import ActionController from "./core/action_controller";
-import { actionAttributes } from "./core/get_attribute";
+import { actionAttributes } from "./core/attributes";
 import Debug from "./debug";
 
 class Attractive {

@@ -1,8 +1,4 @@
-import {
-  getActionValue,
-  getTargetValue,
-  getTargetsValue
-} from "./get_attribute";
+import { getActionValue, getTargetValue, getTargetsValue } from "./attributes";
 import Evaluate from "./events/evaluate";
 import Execute from "./events/execute";
 

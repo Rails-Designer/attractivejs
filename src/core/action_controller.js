@@ -1,4 +1,4 @@
-import { actionAttributes, getActionValue } from "./get_attribute";
+import { actionAttributes, getActionValue } from "./attributes";
 
 class ActionController {
   static #nonBubblingEvents = new Set([
