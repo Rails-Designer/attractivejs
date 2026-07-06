@@ -1,21 +1,21 @@
 ---
 title: Custom actions
-description: Register your own actions, modifiers and plugins
+description: Register your own actions and modifiers
 category: advanced
 position: 1
 ---
 
-The same interface used by built-in actions is available to you. Register custom actions, modifiers and event type overrides.
+The same interface used by built-in actions is available to you. Register custom actions and modifiers.
 
 
-## registerAction
+## addAction
+
+`addAction(name, action)`. The name is what you use in `on=""`, the action receives `(element, context)`:
 
 ```js
 import Attractive from "attractivejs";
 
-const attractive = Attractive.activate();
-
-attractive.registerAction("sharePage", (element, { dataset }) => {
+const sharePage = (element, { dataset }) => {
   const title = dataset.shareTitle || document.title;
   const url = dataset.shareUrl || window.location.href;
 
@@ -24,7 +24,11 @@ attractive.registerAction("sharePage", (element, { dataset }) => {
   } else {
     navigator.clipboard.writeText(url);
   }
-});
+};
+
+const attractive = Attractive.activate();
+
+attractive.addAction("sharePage", sharePage);
 ```
 
 ```html
@@ -33,83 +37,40 @@ attractive.registerAction("sharePage", (element, { dataset }) => {
 
 The action function receives the element and a context object:
 ```js
-attractive.registerAction(
+attractive.addAction(
   "myAction",
   (
     element,
-    { value, target, targets, event, dataset, actionName, dispatchEvent }
+    { value, target, targets, event, dataset, actionName, triggeredBy, dispatchEvent }
   ) => {
-    // value — the string after # (e.g. "active" from toggleClass#active)
-    // target — single target element by ID
-    // targets — multiple target elements by CSS selector
-    // event — the triggering event
-    // dataset — element.dataset
-    // actionName — the registered action name
-    // dispatchEvent(name, detail) — fires a CustomEvent on the element
+    // value: the string after # (e.g. "active" from toggleClass#active)
+    // target: single target element by ID
+    // targets: multiple target elements by CSS selector
+    // event: the triggering event
+    // dataset: element.dataset
+    // actionName: the registered action name
+    // triggeredBy: the modifier that triggered this action, or null
+    // dispatchEvent(name, detail): fires a CustomEvent on the element
   }
 );
-```
-
-
-## use
-
-Register multiple actions, modifiers and event type overrides at once:
-```js
-const subscribeAction = {
-  name: "subscribe",
-  actions: {
-    async subscribe(element, { event, dataset }) {
-      event.preventDefault();
-
-      const form = event.target;
-      const button = form.querySelector("[type=submit]");
-      const originalLabel = button.value;
-
-      button.value = "Subscribing...";
-      button.disabled = true;
-
-      try {
-        await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-          mode: "no-cors"
-        });
-
-        window.location.href = dataset.redirect || "/subscribed/";
-      } catch {
-        button.value = originalLabel;
-        button.disabled = false;
-      }
-    }
-  }
-};
-
-attractive.use(subscribeAction);
-```
-
-```html
-<form on="subscribe" data-redirect="/thank-you/">
-  <input name="email" type="email" placeholder="Your email" />
-
-  <input type="submit" value="Subscribe" />
-</form>
 ```
 
 
 ## Custom modifiers
 
 ```js
-attractive.registerModifier("myModifier", (element) => {
-  // Setup modifier: fires when prepared
-  // Receives (element, trigger)
+attractive.addModifier("onceTurboLoaded", (element, trigger) => {
+  // Setup modifier: fires once when Turbo loads
+  document.addEventListener("turbo:load", trigger, { once: true });
 });
 
-attractive.registerModifier("myGate", ({ event, element }) => {
-  // Gate modifier: return false to block action
-  return element.classList.contains("enabled");
+attractive.addModifier("whenSmallScreen", ({ event, element }) => {
+  // Gate modifier: only allow on small screens
+  return window.matchMedia("(max-width: 768px)").matches;
 });
 ```
 
 ```html
-<button on="toggleClass#active:myGate">Toggle</button>
+<button on="toggleClass#active:onceTurboLoaded">Toggle</button>
+<button on="removeClass#hidden:whenSmallScreen">Delete</button>
 ```

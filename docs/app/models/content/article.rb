@@ -1,6 +1,6 @@
 class Content::Article < Perron::Resource
   CATEGORIES = {
-    "introduction" => "Introduction",
+    "get-started" => "Getting started",
     "basics" => "Basics",
     "advanced" => "Advanced",
   }

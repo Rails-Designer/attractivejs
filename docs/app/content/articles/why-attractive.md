@@ -1,7 +1,7 @@
 ---
 title: Why Attractive.js?
 description: 99% of static sites and server-rendered apps don't need heavy frameworks
-category: introduction
+category: get-started
 position: 1
 ---
 

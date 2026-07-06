@@ -1,7 +1,7 @@
 ---
 title: Quickstart
 description: Get started with Attractive.js in one script tag
-category: introduction
+category: get-started
 position: 2
 ---
 

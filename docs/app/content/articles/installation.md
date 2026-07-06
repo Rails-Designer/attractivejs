@@ -1,7 +1,7 @@
 ---
 title: Installation
-description: Install Attractive.js via npm, yarn, pnpm, or importmap-rails
-category: introduction
+description: Install Attractive.js via pnpm, npm or your favorite package manager.
+category: get-started
 position: 3
 ---
 
@@ -44,7 +44,6 @@ const attractive = Attractive.activate({
 ```
 
 Enable debug logging:
-
 ```js
 const attractive = Attractive.activate({ debug: true });
 ```
@@ -53,7 +52,7 @@ const attractive = Attractive.activate({ debug: true });
 ## Configure the prefix
 
 ```js
-Attractive.configure({ prefix: "data-on" });
+Attractive.configure({ prefix: "data-action" });
 ```
 
 

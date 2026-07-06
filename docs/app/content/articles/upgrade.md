@@ -1,7 +1,7 @@
 ---
 title: Upgrade guide
 description: Migrate from v0.x to the 1.0.0 release
-category: introduction
+category: get-started
 position: 4
 ---
 

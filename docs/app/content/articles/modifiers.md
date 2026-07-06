@@ -49,7 +49,7 @@ Gate modifiers evaluate a condition before allowing the action to fire. Returns 
   <button>Menu</button>
 </div>
 
-<div on="removeClass#open:whenOutside" on-target="menu">...</div>
+<div on="removeClass#open:whenOutside" on-target="menu">…</div>
 ```
 
 Multiple modifiers can be chained:
