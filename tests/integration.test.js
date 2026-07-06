@@ -3,14 +3,8 @@ import Attractive from "../src/index.js";
 import CoreAttractive from "../src/attractive.js";
 import builtinActions from "../src/actions/index.js";
 import { defaultModifiers } from "../src/core/modifier_definitions.js";
-import {
-  addClass,
-  toggleClass,
-  cycleClass,
-  setClass,
-  removeClass
-} from "../src/actions/class.js";
-import { add, remove } from "../src/actions/element.js";
+import { addClass, removeClass } from "../src/actions/class.js";
+import { remove } from "../src/actions/element.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
