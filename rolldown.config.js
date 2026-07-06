@@ -12,7 +12,8 @@ const actions = [
   { name: "reload", file: "reload.js" },
   { name: "request", file: "request.js" },
   { name: "scroll-to", file: "scroll_to.js" },
-  { name: "attribute", file: "attribute.js" }
+  { name: "attribute", file: "attribute.js" },
+  { name: "style", file: "style.js" }
 ];
 
 const actionConfigs = actions.flatMap(({ name, file }) => [
