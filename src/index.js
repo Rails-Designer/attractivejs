@@ -1,6 +1,6 @@
 import Attractive from "./attractive";
 import builtinActions from "./actions";
-import { defaultModifiers } from "./core/modifier_definitions";
+import { defaultDirectives } from "./core/builtin_directives";
 
 Attractive.activate = function (options = {}) {
   const attractive = new this(options);
@@ -11,8 +11,8 @@ Attractive.activate = function (options = {}) {
     );
   });
 
-  attractive.registerModifiers((registry) => {
-    defaultModifiers(registry);
+  attractive.registerDirectives((directives) => {
+    defaultDirectives(directives);
   });
 
   attractive.activate(options);

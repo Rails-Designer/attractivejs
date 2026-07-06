@@ -2,7 +2,7 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../src/index.js";
 import CoreAttractive from "../src/attractive.js";
 import builtinActions from "../src/actions/index.js";
-import { defaultModifiers } from "../src/core/modifier_definitions.js";
+import { defaultDirectives } from "../src/core/builtin_directives.js";
 import { addClass, removeClass } from "../src/actions/class.js";
 import { remove } from "../src/actions/element.js";
 
@@ -24,12 +24,12 @@ describe("Integration", () => {
       );
     });
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
   });
 
-  test("mounted modifier triggers addClass immediately when element is added to DOM", async () => {
+  test("mounted trigger fires addClass immediately when element is added to DOM", async () => {
     attractive.activate();
 
     document.body.innerHTML = `
@@ -59,7 +59,7 @@ describe("Integration", () => {
     expect(trigger.classList.contains("hovered")).toBe(true);
   });
 
-  test("whenVisible modifier triggers when element becomes visible", async () => {
+  test("whenVisible trigger fires when element becomes visible", async () => {
     const mockObserve = vi.fn();
     const mockDisconnect = vi.fn();
 
@@ -96,7 +96,7 @@ describe("Integration", () => {
     expect(target.classList.contains("fallback")).toBe(true);
   });
 
-  test("once modifier allows action only on first click", async () => {
+  test("once gate allows action only on first click", async () => {
     attractive.activate();
 
     document.body.innerHTML = `
@@ -155,7 +155,7 @@ describe("Integration", () => {
     expect(target.classList.contains("clicked")).toBe(true);
   });
 
-  test("whenInView modifier triggers when element becomes visible", async () => {
+  test("whenInView trigger fires when element becomes visible", async () => {
     let observerCallback;
 
     global.IntersectionObserver = vi.fn().mockImplementation((callback) => {
@@ -214,7 +214,7 @@ describe("Integration", () => {
     }).not.toThrow();
   });
 
-  test("preventDefault modifier stops default browser behavior", async () => {
+  test("preventDefault gate stops default browser behavior", async () => {
     attractive.activate();
 
     document.body.innerHTML = `
@@ -383,7 +383,7 @@ describe("Integration", () => {
     expect(order).toEqual(["first"]);
   });
 
-  test("chained gate modifiers both evaluate correctly", async () => {
+  test("chained gates both evaluate correctly", async () => {
     let callCount = 0;
 
     attractive.addAction("chainedTest", () => {
@@ -405,7 +405,7 @@ describe("Integration", () => {
     expect(callCount).toBe(1);
   });
 
-  test("chained with setup modifier still works", async () => {
+  test("chained with trigger and gate still works", async () => {
     attractive.activate();
 
     document.body.innerHTML = `
@@ -597,8 +597,8 @@ describe("Core build with selective actions", () => {
     const attractive = new CoreAttractive();
 
     attractive.addAction("addClass", addClass);
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 
@@ -622,8 +622,8 @@ describe("Core build with selective actions", () => {
     attractive.addAction("addClass", addClass);
     attractive.addAction("remove", remove);
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 
@@ -647,8 +647,8 @@ describe("Core build with selective actions", () => {
     attractive.addAction("addClass", addClass);
     attractive.addAction("removeClass", removeClass);
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 
@@ -671,8 +671,8 @@ describe("Core build with selective actions", () => {
 
     attractive.addAction("addClass", addClass);
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 
@@ -692,8 +692,8 @@ describe("Core build with selective actions", () => {
 
     attractive.addActions({ addClass, removeClass });
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 
@@ -711,14 +711,14 @@ describe("Core build with selective actions", () => {
     expect(target.classList.contains("inactive")).toBe(false);
   });
 
-  test("addModifiers registers multiple modifiers at once", async () => {
+  test("addTriggers/addGates register directives at once", async () => {
     const attractive = new CoreAttractive();
 
     attractive.addAction("addClass", addClass);
-    attractive.addModifiers({ enabled: (_context) => true });
+    attractive.addGates({ enabled: (_context) => true });
 
-    attractive.registerModifiers((registry) => {
-      defaultModifiers(registry);
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
     });
     attractive.activate();
 

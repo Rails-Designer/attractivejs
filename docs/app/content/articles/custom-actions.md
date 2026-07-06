@@ -1,11 +1,11 @@
 ---
 title: Custom actions
-description: Register your own actions and modifiers
+description: Register your own actions, triggers and gates
 category: advanced
 position: 1
 ---
 
-The same interface used by built-in actions is available to you. Register custom actions and modifiers.
+The same interface used by built-in actions is available to you. Register custom actions, triggers and gates.
 
 
 ## addAction
@@ -49,7 +49,7 @@ attractive.addAction(
     // event: the triggering event
     // dataset: element.dataset
     // actionName: the registered action name
-    // triggeredBy: the modifier that triggered this action, or null
+    // triggeredBy: the trigger/gate that initiated this action or null
     // dispatchEvent(name, detail): fires a CustomEvent on the element
   }
 );
@@ -58,21 +58,35 @@ attractive.addAction(
 You can also batch register multiple actions at once with `addActions({ sharePage, myAction })`.
 
 
-## Custom modifiers
+## addTrigger
+
+Triggers fire the action when a condition is met (rather than on a user event). The function receives `(element, fire)` — call `fire()` to execute the action.
 
 ```js
-attractive.addModifier("onceTurboLoaded", (element, trigger) => {
-  // Setup modifier: fires once when Turbo loads
-  document.addEventListener("turbo:load", trigger, { once: true });
-});
-
-attractive.addModifier("whenSmallScreen", ({ event, element }) => {
-  // Gate modifier: only allow on small screens
-  return window.matchMedia("(max-width: 768px)").matches;
+attractive.addTrigger("onceTurboLoaded", (element, fire) => {
+  document.addEventListener("turbo:load", fire, { once: true });
 });
 ```
 
 ```html
 <button on="toggleClass#active:onceTurboLoaded">Toggle</button>
+```
+
+Batch register triggers with `addTriggers({ onceTurboLoaded, … })`.
+
+
+## addGate
+
+Gates evaluate a condition before allowing the action to fire. Return `false` to block the action.
+
+```js
+attractive.addGate("whenSmallScreen", ({ event, element }) => {
+  return window.matchMedia("(max-width: 768px)").matches;
+});
+```
+
+```html
 <button on="removeClass#hidden:whenSmallScreen">Delete</button>
 ```
+
+Batch register gates with `addGates({ whenSmallScreen, … })`.

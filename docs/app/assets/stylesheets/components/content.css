@@ -67,6 +67,7 @@
 
     :is(ul, ol):not(:where(.no-content, .no-content *)) {
       margin-block-start: var(--spacing-2);
+      padding-inline-start: 0;
       list-style-position: outside;
     }
 

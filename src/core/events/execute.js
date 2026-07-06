@@ -17,7 +17,7 @@ class Execute {
 
   async run(
     action,
-    { with: { on: element, for: event, triggeredBy: modifier } }
+    { with: { on: element, for: event, triggeredBy: directive } }
   ) {
     const resolved = this.#resolve({ from: action });
     if (resolved === undefined) return;
@@ -42,7 +42,7 @@ class Execute {
       for: event,
       target,
       targets,
-      triggeredBy: modifier
+      triggeredBy: directive
     });
 
     if (this.#hooks?.runBefore(hookContext) === false) {
@@ -104,7 +104,7 @@ class Execute {
     for: event,
     target,
     targets,
-    triggeredBy: modifier
+    triggeredBy: directive
   }) {
     return {
       value,
@@ -112,7 +112,7 @@ class Execute {
       targets,
       event: event || null,
       actionName: name,
-      triggeredBy: modifier || null,
+      triggeredBy: directive || null,
       dataset: element.dataset,
       dispatchEvent: (name, detail = {}) => {
         element.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));

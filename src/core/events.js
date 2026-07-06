@@ -25,7 +25,7 @@ class Events {
 
   async process(
     event,
-    { on: element, using: defaultEventType, triggeredBy: modifier }
+    { on: element, using: defaultEventType, triggeredBy: directive }
   ) {
     if (!element) return;
 
@@ -40,7 +40,7 @@ class Events {
           for: event,
           on: element,
           using: defaultEventType,
-          triggeredBy: modifier
+          triggeredBy: directive
         },
         { execute: (action, context) => this.#execute.run(action, context) }
       );

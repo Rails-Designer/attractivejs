@@ -1,11 +1,11 @@
 ---
-title: Modifiers
-description: Control when and how actions fire with setup and gate modifiers
+title: Triggers and gates
+description: Control when and how actions fire with triggers and gates
 category: basics
 position: 2
 ---
 
-Modifiers control when and how actions fire. They are appended to the action value with a colon.
+Triggers and gates control when and how actions fire. They are appended to the action value with a colon.
 ```html
 <button on="addClass#visible:mounted">Appears on load</button>
 <button on="toggleClass#open:once">Toggle once</button>
@@ -13,16 +13,16 @@ Modifiers control when and how actions fire. They are appended to the action val
 ```
 
 
-## Setup modifiers
+## Triggers
 
-Setup modifiers fire the action when a condition is met, rather than on a user event.
+Triggers fire the action when a condition is met, rather than on a user event.
 
-| Modifier       | Description                                                              |
-| -------------- | ------------------------------------------------------------------------ |
-| `:mounted`     | Fires immediately when the element is added to the DOM                   |
-| `:now`         | Alias for `:mounted`                                                     |
-| `:whenVisible` | Fires once when the element scrolls into view (via IntersectionObserver) |
-| `:whenInView`  | Alias for `:whenVisible`                                                 |
+| Trigger       | Description                                                              |
+| ------------- | ------------------------------------------------------------------------ |
+| `:mounted`    | Fires immediately when the element is added to the DOM                   |
+| `:now`        | Alias for `:mounted`                                                     |
+| `:whenVisible`| Fires once when the element scrolls into view (via IntersectionObserver) |
+| `:whenInView` | Alias for `:whenVisible`                                                 |
 
 ```html
 <div on="addClass#fade-in:mounted">Appears immediately</div>
@@ -30,11 +30,11 @@ Setup modifiers fire the action when a condition is met, rather than on a user e
 ```
 
 
-## Gate modifiers
+## Gates
 
-Gate modifiers evaluate a condition before allowing the action to fire. Returns `false` to block the action.
+Gates evaluate a condition before allowing the action to fire. Returns `false` to block the action.
 
-| Modifier           | Description                                                |
+| Gate               | Description                                                |
 | ------------------ | ---------------------------------------------------------- |
 | `:once`            | Prevents the action from firing more than once per element |
 | `:preventDefault`  | Calls `event.preventDefault()`                             |
@@ -52,7 +52,7 @@ Gate modifiers evaluate a condition before allowing the action to fire. Returns 
 <div on="removeClass#open:whenOutside" on-target="menu">…</div>
 ```
 
-Multiple modifiers can be chained:
+Multiple triggers and gates can be chained:
 ```html
 <div on="addClass#visible:mounted:once">Shows once</div>
 <button on="copy:once:preventDefault">Copy once</button>
