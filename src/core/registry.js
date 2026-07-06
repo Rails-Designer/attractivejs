@@ -3,7 +3,7 @@ class Registry {
   #modifiers = new Map();
   #activeActions = null;
 
-  registerAction(name, action, group = null) {
+  addAction(name, action, group = null) {
     this.#actions.set(name, { handler: action, group });
   }
 
@@ -27,7 +27,7 @@ class Registry {
     return this.#activeActions.has(actionName);
   }
 
-  registerModifier(name, setup) {
+  addModifier(name, setup) {
     this.#modifiers.set(name, setup);
   }
 

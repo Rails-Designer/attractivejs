@@ -176,27 +176,55 @@ class Attractive {
   }
 
   /**
-   * Registers a custom action.
+   * Adds a custom action.
    *
    * @param {string} name — action name used in `on=""`
    * @param {Function} action — the action function
    * @returns {Attractive} — the instance for chaining
    */
-  registerAction(name, action) {
-    this.#registry.registerAction(name, action);
+  addAction(name, action) {
+    this.#registry.addAction(name, action);
 
     return this;
   }
 
   /**
-   * Registers a custom modifier.
+   * Adds a custom modifier.
    *
    * @param {string} name — modifier name used in `:name`
    * @param {Function} setup — setup function (element, trigger) or gate function (context)
    * @returns {Attractive} — the instance for chaining
    */
-  registerModifier(name, setup) {
-    this.#registry.registerModifier(name, setup);
+  addModifier(name, setup) {
+    this.#registry.addModifier(name, setup);
+
+    return this;
+  }
+
+  /**
+   * Adds multiple actions at once.
+   *
+   * @param {Object<string, Function>} actions — object mapping action names to handler functions
+   * @returns {Attractive} — the instance for chaining
+   */
+  addActions(actions) {
+    Object.entries(actions).forEach(([name, action]) =>
+      this.#registry.addAction(name, action)
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds multiple modifiers at once.
+   *
+   * @param {Object<string, Function>} modifiers — object mapping modifier names to setup/gate functions
+   * @returns {Attractive} — the instance for chaining
+   */
+  addModifiers(modifiers) {
+    Object.entries(modifiers).forEach(([name, setup]) =>
+      this.#registry.addModifier(name, setup)
+    );
 
     return this;
   }

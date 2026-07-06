@@ -55,6 +55,8 @@ attractive.addAction(
 );
 ```
 
+You can also batch register multiple actions at once with `addActions({ sharePage, myAction })`.
+
 
 ## Custom modifiers
 

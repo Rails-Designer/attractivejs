@@ -22,8 +22,11 @@ const attractive = new Attractive();
 
 attractive.addAction("toggleClass", toggleClass);
 attractive.addAction("copy", copy);
+// or batch them: addActions({ toggleClass: toggleClass, copy: copy })
+// or shorthand: addActions({ toggleClass, copy })
 
 attractive.activate();
+```
 ```
 
 Custom actions work the same way. The action is a function you define:
