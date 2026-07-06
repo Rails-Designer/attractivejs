@@ -20,7 +20,7 @@ describe("Integration", () => {
 
     attractive.registerActions((registry) => {
       Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.registerAction(name, action)
+        registry.addAction(name, action)
       );
     });
 
@@ -308,7 +308,7 @@ describe("Integration", () => {
   });
 
   test("async action resolves correctly", async () => {
-    attractive.registerAction("asyncAction", async (element) => {
+    attractive.addAction("asyncAction", async (element) => {
       const result = await Promise.resolve("done");
 
       element.dataset.asyncResult = result;
@@ -334,7 +334,7 @@ describe("Integration", () => {
   test("false returned from async action prevents default", async () => {
     let actionCalled = false;
 
-    attractive.registerAction("asyncPrevent", async () => {
+    attractive.addAction("asyncPrevent", async () => {
       actionCalled = true;
 
       return false;
@@ -358,13 +358,13 @@ describe("Integration", () => {
   test("false short-circuits subsequent actions", async () => {
     const order = [];
 
-    attractive.registerAction("first", async () => {
+    attractive.addAction("first", async () => {
       order.push("first");
 
       return false;
     });
 
-    attractive.registerAction("second", () => {
+    attractive.addAction("second", () => {
       order.push("second");
     });
 
@@ -386,7 +386,7 @@ describe("Integration", () => {
   test("chained gate modifiers both evaluate correctly", async () => {
     let callCount = 0;
 
-    attractive.registerAction("chainedTest", () => {
+    attractive.addAction("chainedTest", () => {
       callCount++;
     });
 
@@ -422,7 +422,7 @@ describe("Integration", () => {
   test("action context includes event for event-triggered actions", async () => {
     let receivedEvent;
 
-    attractive.registerAction("captureEvent", (element, { event }) => {
+    attractive.addAction("captureEvent", (element, { event }) => {
       receivedEvent = event;
     });
 
@@ -445,7 +445,7 @@ describe("Integration", () => {
   test("action context includes dataset", async () => {
     let receivedDataset;
 
-    attractive.registerAction("captureDataset", (element, { dataset }) => {
+    attractive.addAction("captureDataset", (element, { dataset }) => {
       receivedDataset = dataset;
     });
 
@@ -467,7 +467,7 @@ describe("Integration", () => {
   test("dispatchEvent helper dispatches a CustomEvent", async () => {
     let capturedEvent;
 
-    attractive.registerAction("dispatchTest", (element, { dispatchEvent }) => {
+    attractive.addAction("dispatchTest", (element, { dispatchEvent }) => {
       element.addEventListener("test-event", (event) => {
         capturedEvent = event;
       });
@@ -492,7 +492,7 @@ describe("Integration", () => {
   });
 
   test("error from action does not bubble up as unhandled", async () => {
-    attractive.registerAction("thrower", () => {
+    attractive.addAction("thrower", () => {
       throw new Error("boom");
     });
 
@@ -513,7 +513,7 @@ describe("Integration", () => {
     const hook = vi.fn();
     const error = new Error("boom");
 
-    attractive.registerAction("thrower", () => {
+    attractive.addAction("thrower", () => {
       throw error;
     });
 
@@ -539,7 +539,7 @@ describe("Integration", () => {
 
     Attractive.onError = handler;
 
-    attractive.registerAction("thrower", () => {
+    attractive.addAction("thrower", () => {
       throw new Error("boom");
     });
 
@@ -565,7 +565,7 @@ describe("Integration", () => {
   test("old-style handler destructuring still works", async () => {
     let receivedValue = null;
 
-    attractive.registerAction("oldStyle", (element, { value }) => {
+    attractive.addAction("oldStyle", (element, { value }) => {
       receivedValue = value;
     });
 
@@ -596,7 +596,7 @@ describe("Core build with selective actions", () => {
   test("registers actions and makes them available", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.registerAction("addClass", addClass);
+    attractive.addAction("addClass", addClass);
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
@@ -619,8 +619,8 @@ describe("Core build with selective actions", () => {
   test("registers actions from different modules", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.registerAction("addClass", addClass);
-    attractive.registerAction("remove", remove);
+    attractive.addAction("addClass", addClass);
+    attractive.addAction("remove", remove);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
@@ -644,8 +644,8 @@ describe("Core build with selective actions", () => {
   test("registers multiple actions from a single module", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.registerAction("addClass", addClass);
-    attractive.registerAction("removeClass", removeClass);
+    attractive.addAction("addClass", addClass);
+    attractive.addAction("removeClass", removeClass);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
@@ -669,7 +669,7 @@ describe("Core build with selective actions", () => {
   test("unregistered actions are not available", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.registerAction("addClass", addClass);
+    attractive.addAction("addClass", addClass);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);

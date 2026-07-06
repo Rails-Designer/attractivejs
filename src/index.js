@@ -7,7 +7,7 @@ Attractive.activate = function (options = {}) {
 
   attractive.registerActions((registry) => {
     Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.registerAction(name, action)
+      registry.addAction(name, action)
     );
   });
 

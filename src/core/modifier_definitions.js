@@ -1,11 +1,11 @@
 const onceTracker = new WeakSet();
 
 export function defaultModifiers(registry) {
-  registry.registerModifier("mounted", (_, trigger) => {
+  registry.addModifier("mounted", (_, trigger) => {
     trigger();
   });
 
-  registry.registerModifier("now", (_, trigger) => {
+  registry.addModifier("now", (_, trigger) => {
     trigger();
   });
 
@@ -25,12 +25,12 @@ export function defaultModifiers(registry) {
     observer.observe(element);
   };
 
-  registry.registerModifier(
+  registry.addModifier(
     "whenVisible",
     whenIntersecting((entries) => entries.some((entry) => entry.isIntersecting))
   );
 
-  registry.registerModifier("whenOutside", ({ event, element }) => {
+  registry.addModifier("whenOutside", ({ event, element }) => {
     if (
       typeof element.checkVisibility === "function" &&
       !element.checkVisibility()
@@ -40,7 +40,7 @@ export function defaultModifiers(registry) {
     return !element.contains(event.target);
   });
 
-  registry.registerModifier("once", ({ element }) => {
+  registry.addModifier("once", ({ element }) => {
     if (onceTracker.has(element)) return false;
 
     onceTracker.add(element);
@@ -48,18 +48,18 @@ export function defaultModifiers(registry) {
     return true;
   });
 
-  registry.registerModifier(
+  registry.addModifier(
     "whenInView",
     whenIntersecting((entries) => entries[0].isIntersecting)
   );
 
-  registry.registerModifier("preventDefault", ({ event }) => {
+  registry.addModifier("preventDefault", ({ event }) => {
     event.preventDefault();
 
     return true;
   });
 
-  registry.registerModifier("stopPropagation", ({ event }) => {
+  registry.addModifier("stopPropagation", ({ event }) => {
     event.stopPropagation();
 
     return true;
