@@ -464,33 +464,6 @@ describe("Integration", () => {
     expect(receivedDataset.custom).toBe("hello");
   });
 
-  test("dispatchEvent helper dispatches a CustomEvent", async () => {
-    let capturedEvent;
-
-    attractive.addAction("dispatchTest", (element, { dispatchEvent }) => {
-      element.addEventListener("test-event", (event) => {
-        capturedEvent = event;
-      });
-
-      dispatchEvent("test-event", { key: "value" });
-    });
-
-    attractive.activate();
-
-    document.body.innerHTML = `
-      <button id="btn" @action="dispatchTest">Click</button>
-    `;
-
-    await vi.runAllTimersAsync();
-
-    document.getElementById("btn").click();
-
-    await vi.runAllTimersAsync();
-
-    expect(capturedEvent).toBeInstanceOf(CustomEvent);
-    expect(capturedEvent.detail).toEqual({ key: "value" });
-  });
-
   test("error from action does not bubble up as unhandled", async () => {
     attractive.addAction("thrower", () => {
       throw new Error("boom");

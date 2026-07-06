@@ -11,7 +11,6 @@ The same interface used by built-in actions is available to you. Register custom
 ## addAction
 
 `addAction(name, action)`. The name is what you use in `@action=""`, the action receives `(element, context)`:
-
 ```js
 import Attractive from "attractivejs";
 
@@ -41,7 +40,7 @@ attractive.addAction(
   "myAction",
   (
     element,
-    { value, target, targets, event, dataset, actionName, triggeredBy, dispatchEvent }
+    { value, target, targets, event, dataset, actionName, triggeredBy }
   ) => {
     // value: the string after # (e.g. "active" from toggleClass#active)
     // target: single target element by ID
@@ -50,7 +49,6 @@ attractive.addAction(
     // dataset: element.dataset
     // actionName: the registered action name
     // triggeredBy: the trigger/gate that initiated this action or null
-    // dispatchEvent(name, detail): fires a CustomEvent on the element
   }
 );
 ```
@@ -61,7 +59,6 @@ You can also batch register multiple actions at once with `addActions({ sharePag
 ## addTrigger
 
 Triggers fire the action when a condition is met (rather than on a user event). The function receives `(element, fire)` — call `fire()` to execute the action.
-
 ```js
 attractive.addTrigger("onceTurboLoaded", (element, fire) => {
   document.addEventListener("turbo:load", fire, { once: true });
@@ -78,7 +75,6 @@ Batch register triggers with `addTriggers({ onceTurboLoaded, … })`.
 ## addGate
 
 Gates evaluate a condition before allowing the action to fire. Return `false` to block the action.
-
 ```js
 attractive.addGate("whenSmallScreen", ({ event, element }) => {
   return window.matchMedia("(max-width: 768px)").matches;
