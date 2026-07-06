@@ -686,4 +686,53 @@ describe("Core build with selective actions", () => {
       document.getElementById("btn").click();
     }).not.toThrow();
   });
+
+  test("addActions registers multiple actions at once", async () => {
+    const attractive = new CoreAttractive();
+
+    attractive.addActions({ addClass, removeClass });
+
+    attractive.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="removeClass#inactive" on-target="target">
+        <span id="target" class="inactive">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("inactive")).toBe(false);
+  });
+
+  test("addModifiers registers multiple modifiers at once", async () => {
+    const attractive = new CoreAttractive();
+
+    attractive.addAction("addClass", addClass);
+    attractive.addModifiers({ enabled: (_context) => true });
+
+    attractive.registerModifiers((registry) => {
+      defaultModifiers(registry);
+    });
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" on="addClass#active:enabled" on-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("active")).toBe(true);
+  });
 });

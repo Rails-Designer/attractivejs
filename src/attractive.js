@@ -202,6 +202,34 @@ class Attractive {
   }
 
   /**
+   * Adds multiple actions at once.
+   *
+   * @param {Object<string, Function>} actions — object mapping action names to handler functions
+   * @returns {Attractive} — the instance for chaining
+   */
+  addActions(actions) {
+    Object.entries(actions).forEach(([name, action]) =>
+      this.#registry.addAction(name, action)
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds multiple modifiers at once.
+   *
+   * @param {Object<string, Function>} modifiers — object mapping modifier names to setup/gate functions
+   * @returns {Attractive} — the instance for chaining
+   */
+  addModifiers(modifiers) {
+    Object.entries(modifiers).forEach(([name, setup]) =>
+      this.#registry.addModifier(name, setup)
+    );
+
+    return this;
+  }
+
+  /**
    * Registers a callback that runs before each action.
    * Return false to cancel the action.
    *
