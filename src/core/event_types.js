@@ -1,10 +1,4 @@
 class EventTypes {
-  #registry;
-
-  constructor(registry) {
-    this.#registry = registry;
-  }
-
   identify({ by: value }) {
     const actions = value.split(" ");
 
@@ -15,10 +9,6 @@ class EventTypes {
 
   getDefault({ from: element }) {
     const tagName = element.tagName.toLowerCase();
-    const override = this.#registry.getEventTypeOverride(tagName);
-
-    if (override) return override;
-
     const isInput = tagName === "input";
     const inputType = isInput ? element.type || "text" : null;
 

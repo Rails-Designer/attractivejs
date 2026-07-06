@@ -74,6 +74,9 @@
     },
     "./actions/scroll-to": {
       "import": "./dist/actions/scroll-to.js"
+    },
+    "./actions/style": {
+      "import": "./dist/actions/style.js"
     }
   },
   "files": [

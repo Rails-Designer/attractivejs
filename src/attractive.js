@@ -83,7 +83,7 @@ class Attractive {
       this.#hooks,
       (error, message, detail) => Attractive.onError(error, message, detail)
     );
-    this.#eventTypes = new EventTypes(this.#registry);
+    this.#eventTypes = new EventTypes();
     this.#modifiers = new Modifiers(this.#registry);
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
@@ -170,49 +170,6 @@ class Attractive {
 
     if (actionNames.length > 0) {
       this.#registry.setActiveActions(new Set(actionNames));
-    }
-
-    return this;
-  }
-
-  /**
-   * Registers actions, modifiers, or event types from an extension object.
-   *
-   * @param {Object|Object[]} action
-   * @param {string} action.name — action identifier
-   * @param {Object<string, Function>} [action.actions] — action name to handler map
-   * @param {Object<string, Function>} [action.modifiers] — modifier name to setup/gate function map
-   * @param {Object<string, string>} [action.eventTypeOverrides] — tag name to event type map
-   * @param {Function} [action.init] — called after registration with the instance
-   * @returns {Attractive} — the instance for chaining
-   */
-  use(action) {
-    if (Array.isArray(action)) {
-      action.forEach((item) => this.use(item));
-
-      return this;
-    }
-
-    if (action.actions) {
-      Object.entries(action.actions).forEach(([name, action]) =>
-        this.#registry.registerAction(name, action)
-      );
-    }
-
-    if (action.modifiers) {
-      Object.entries(action.modifiers).forEach(([name, setup]) =>
-        this.#registry.registerModifier(name, setup)
-      );
-    }
-
-    if (action.eventTypeOverrides) {
-      Object.entries(action.eventTypeOverrides).forEach(([tag, event]) =>
-        this.#registry.registerEventTypeOverride(tag, event)
-      );
-    }
-
-    if (action.init) {
-      action.init(this);
     }
 
     return this;

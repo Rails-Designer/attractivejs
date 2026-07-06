@@ -1,7 +1,6 @@
 class Registry {
   #actions = new Map();
   #modifiers = new Map();
-  #eventTypeOverrides = new Map();
   #activeActions = null;
 
   registerAction(name, action, group = null) {
@@ -38,14 +37,6 @@ class Registry {
 
   hasModifier(name) {
     return this.#modifiers.has(name);
-  }
-
-  registerEventTypeOverride(tagName, eventType) {
-    this.#eventTypeOverrides.set(tagName, eventType);
-  }
-
-  getEventTypeOverride(tagName) {
-    return this.#eventTypeOverrides.get(tagName);
   }
 }
 

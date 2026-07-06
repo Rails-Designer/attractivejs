@@ -3,8 +3,14 @@ import Attractive from "../src/index.js";
 import CoreAttractive from "../src/attractive.js";
 import builtinActions from "../src/actions/index.js";
 import { defaultModifiers } from "../src/core/modifier_definitions.js";
-import { classAction } from "../src/actions/class.js";
-import { elementAction } from "../src/actions/element.js";
+import {
+  addClass,
+  toggleClass,
+  cycleClass,
+  setClass,
+  removeClass
+} from "../src/actions/class.js";
+import { add, remove } from "../src/actions/element.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -593,10 +599,10 @@ describe("Core build with selective actions", () => {
     vi.useFakeTimers();
   });
 
-  test("use action registers all actions from a bundle", async () => {
+  test("registers actions and makes them available", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.use(classAction);
+    attractive.registerAction("addClass", addClass);
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
     });
@@ -616,11 +622,11 @@ describe("Core build with selective actions", () => {
     expect(target.classList.contains("active")).toBe(true);
   });
 
-  test("use action registers multiple bundles", async () => {
+  test("registers actions from different modules", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.use(classAction);
-    attractive.use(elementAction);
+    attractive.registerAction("addClass", addClass);
+    attractive.registerAction("remove", remove);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
@@ -641,10 +647,11 @@ describe("Core build with selective actions", () => {
     expect(document.getElementById("target")).toBeNull();
   });
 
-  test("use accepts an array of action bundles", async () => {
+  test("registers multiple actions from a single module", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.use([classAction, elementAction]);
+    attractive.registerAction("addClass", addClass);
+    attractive.registerAction("removeClass", removeClass);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
@@ -652,8 +659,8 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#active" on-target="target">
-        <span id="target">Target</span>
+      <button id="btn" on="removeClass#inactive" on-target="target">
+        <span id="target" class="inactive">Target</span>
       </button>
     `;
 
@@ -662,13 +669,13 @@ describe("Core build with selective actions", () => {
     document.getElementById("btn").click();
 
     const target = document.getElementById("target");
-    expect(target.classList.contains("active")).toBe(true);
+    expect(target.classList.contains("inactive")).toBe(false);
   });
 
   test("unregistered actions are not available", async () => {
     const attractive = new CoreAttractive();
 
-    attractive.use(classAction);
+    attractive.registerAction("addClass", addClass);
 
     attractive.registerModifiers((registry) => {
       defaultModifiers(registry);
