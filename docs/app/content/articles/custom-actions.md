@@ -10,7 +10,7 @@ The same interface used by built-in actions is available to you. Register custom
 
 ## addAction
 
-`addAction(name, action)`. The name is what you use in `on=""`, the action receives `(element, context)`:
+`addAction(name, action)`. The name is what you use in `@action=""`, the action receives `(element, context)`:
 
 ```js
 import Attractive from "attractivejs";
@@ -32,7 +32,7 @@ attractive.addAction("sharePage", sharePage);
 ```
 
 ```html
-<button on="sharePage" data-share-title="Check this out!">Share</button>
+<button @action="sharePage" data-share-title="Check this out!">Share</button>
 ```
 
 The action function receives the element and a context object:
@@ -69,7 +69,7 @@ attractive.addTrigger("onceTurboLoaded", (element, fire) => {
 ```
 
 ```html
-<button on="toggleClass#active:onceTurboLoaded">Toggle</button>
+<button @action="toggleClass#active:onceTurboLoaded">Toggle</button>
 ```
 
 Batch register triggers with `addTriggers({ onceTurboLoaded, … })`.
@@ -86,7 +86,7 @@ attractive.addGate("whenSmallScreen", ({ event, element }) => {
 ```
 
 ```html
-<button on="removeClass#hidden:whenSmallScreen">Delete</button>
+<button @action="removeClass#hidden:whenSmallScreen">Delete</button>
 ```
 
 Batch register gates with `addGates({ whenSmallScreen, … })`.

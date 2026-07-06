@@ -9,18 +9,16 @@ import Execute from "./events/execute";
 class Events {
   #evaluate;
   #execute;
-  #prefix;
 
-  constructor(registry, prefix, hooks, onError) {
+  constructor(registry, hooks, onError) {
     this.#evaluate = new Evaluate(registry);
     this.#execute = new Execute(
       registry,
       hooks,
       onError,
-      (element) => getTargetValue(element, this.#prefix),
-      (element) => getTargetsValue(element, this.#prefix)
+      (element) => getTargetValue(element),
+      (element) => getTargetsValue(element)
     );
-    this.#prefix = prefix;
   }
 
   async process(
@@ -29,7 +27,7 @@ class Events {
   ) {
     if (!element) return;
 
-    const actionValue = getActionValue(element, this.#prefix);
+    const actionValue = getActionValue(element);
 
     if (!actionValue) return;
 

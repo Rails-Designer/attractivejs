@@ -5,7 +5,7 @@ description: Cycle a data attribute through comma-separated values
 position: 5
 ---
 
-<button on="cycleDataAttribute#state=one,two,three" on-target="page">Cycle state</button>
+<button @action="cycleDataAttribute#state=one,two,three" @target="page">Cycle state</button>
 
 <div id="page" data-state="one">
   <span data-content="one">First content</span>

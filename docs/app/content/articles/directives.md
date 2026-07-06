@@ -7,9 +7,9 @@ position: 2
 
 Triggers and gates control when and how actions fire. They are appended to the action value with a colon.
 ```html
-<button on="addClass#visible:mounted">Appears on load</button>
-<button on="toggleClass#open:once">Toggle once</button>
-<button on="get#/search:preventDefault">Search</button>
+<button @action="addClass#visible:mounted">Appears on load</button>
+<button @action="toggleClass#open:once">Toggle once</button>
+<button @action="get#/search:preventDefault">Search</button>
 ```
 
 
@@ -25,8 +25,8 @@ Triggers fire the action when a condition is met, rather than on a user event.
 | `:whenInView` | Alias for `:whenVisible`                                                 |
 
 ```html
-<div on="addClass#fade-in:mounted">Appears immediately</div>
-<img on="addClass#loaded:whenVisible" data-src="/image.jpg" loading="lazy" />
+<div @action="addClass#fade-in:mounted">Appears immediately</div>
+<img @action="addClass#loaded:whenVisible" data-src="/image.jpg" loading="lazy" />
 ```
 
 
@@ -42,18 +42,18 @@ Gates evaluate a condition before allowing the action to fire. Returns `false` t
 | `:whenOutside`     | Only fires when the click target is outside the element    |
 
 ```html
-<button on="toggleClass#clicked:once">Click once</button>
-<form on="get#/search:preventDefault">…</form>
+<button @action="toggleClass#clicked:once">Click once</button>
+<form @action="get#/search:preventDefault">…</form>
 
-<div on="toggleClass#open" on-target="menu">
+<div @action="toggleClass#open" @target="menu">
   <button>Menu</button>
 </div>
 
-<div on="removeClass#open:whenOutside" on-target="menu">…</div>
+<div @action="removeClass#open:whenOutside" @target="menu">…</div>
 ```
 
 Multiple triggers and gates can be chained:
 ```html
-<div on="addClass#visible:mounted:once">Shows once</div>
-<button on="copy:once:preventDefault">Copy once</button>
+<div @action="addClass#visible:mounted:once">Shows once</div>
+<button @action="copy:once:preventDefault">Copy once</button>
 ```

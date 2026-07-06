@@ -14,7 +14,7 @@ options:
     default: beforeend
 ---
 
-<button on="add" on-target="list" data-element-source="item-template">Add</button>
+<button @action="add" @target="list" data-element-source="item-template">Add</button>
 
 <ul id="list"></ul>
 <template id="item-template"><li>New item</li></template>

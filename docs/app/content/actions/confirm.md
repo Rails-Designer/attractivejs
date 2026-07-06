@@ -14,4 +14,4 @@ options:
     default: 2000
 ---
 
-<button on="confirm" data-confirm-message="Delete this item?">Delete</button>
+<button @action="confirm" data-confirm-message="Delete this item?">Delete</button>

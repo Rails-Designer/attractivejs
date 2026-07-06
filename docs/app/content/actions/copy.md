@@ -10,5 +10,5 @@ options:
     default: 2000
 ---
 
-<button on="copy" on-target="source">Copy</button>
+<button @action="copy" @target="source">Copy</button>
 <span id="source">Text to copy to clipboard</span>

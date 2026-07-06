@@ -6,9 +6,8 @@ import Directives from "./core/directives";
 import Observer from "./core/observer";
 import EventListeners from "./core/event_listeners";
 import ActionController from "./core/action_controller";
+import { actionAttributes } from "./core/get_attribute";
 import Debug from "./debug";
-
-let defaultPrefix = "on";
 
 class Attractive {
   #registry = new Registry();
@@ -19,7 +18,6 @@ class Attractive {
   #listeners;
   #controller;
   #initialized = false;
-  #prefix;
   #hooks = new Hooks();
 
   static activate(options = {}) {
@@ -28,16 +26,6 @@ class Attractive {
     instance.activate(options);
 
     return instance;
-  }
-
-  /**
-   * Configures the default prefix for all instances.
-   *
-   * @param {Object} options
-   * @param {string} options.prefix — default attribute prefix (default: "on")
-   */
-  static configure(options = {}) {
-    if (options.prefix) defaultPrefix = options.prefix;
   }
 
   /**
@@ -75,11 +63,8 @@ class Attractive {
   }
 
   constructor(options = {}) {
-    this.#prefix = options.prefix || defaultPrefix;
-
     this.#events = new Events(
       this.#registry,
-      this.#prefix,
       this.#hooks,
       (error, message, detail) => Attractive.onError(error, message, detail)
     );
@@ -88,18 +73,6 @@ class Attractive {
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
     );
-  }
-
-  get actionAttribute() {
-    return this.#prefix;
-  }
-
-  get targetAttribute() {
-    return `${this.#prefix}-target`;
-  }
-
-  get targetsAttribute() {
-    return `${this.#prefix}-targets`;
   }
 
   /**
@@ -130,8 +103,7 @@ class Attractive {
       this.#eventTypes,
       this.#directives,
       this.#listeners,
-      on,
-      this.#prefix
+      on
     );
 
     this.#observe = new Observer(
@@ -140,19 +112,24 @@ class Attractive {
       on
     );
 
-    this.#observe.start(`[${this.actionAttribute}], [data-action]`);
+    this.#observe.start(actionAttributes);
 
-    const elements = on.querySelectorAll(
-      `[${this.actionAttribute}], [data-action]`
-    );
+    const elements = on.querySelectorAll("*");
+    const actionElements = [];
 
-    elements.forEach((element) => this.#controller.prepare(element));
+    for (const element of elements) {
+      if (actionAttributes(element)) {
+        actionElements.push(element);
+      }
+    }
+
+    actionElements.forEach((element) => this.#controller.prepare(element));
 
     this.#initialized = true;
 
     if (Debug.enabled) {
       Debug.log(
-        `active — ${elements.length} element${elements.length === 1 ? "" : "s"} with actions`
+        `active — ${actionElements.length} element${actionElements.length === 1 ? "" : "s"} with actions`
       );
     }
 
@@ -178,7 +155,7 @@ class Attractive {
   /**
    * Adds a custom action.
    *
-   * @param {string} name — action name used in `on=""`
+   * @param {string} name — action name used in `@action=""`
    * @param {Function} action — the action function
    * @returns {Attractive} — the instance for chaining
    */

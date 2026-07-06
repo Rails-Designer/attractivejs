@@ -9,6 +9,6 @@ options:
     type: number
 ---
 
-<button on="remove" on-target="item">Remove</button>
+<button @action="remove" @target="item">Remove</button>
 
 <div id="item">Item to remove</div>

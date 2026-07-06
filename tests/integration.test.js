@@ -33,7 +33,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div on="addClass#loaded:mounted" on-target="target">
+      <div @action="addClass#loaded:mounted" @target="target">
         <span id="target">Target element</span>
       </div>
     `;
@@ -48,7 +48,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="trigger" on="mouseenter->addClass#hovered">Hover me</button>
+      <button id="trigger" @action="mouseenter->addClass#hovered">Hover me</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -71,7 +71,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div on="addClass#visible:whenVisible" on-target="target">
+      <div @action="addClass#visible:whenVisible" @target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -85,7 +85,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="nonExistentAction#addClass#fallback:mounted" on-target="target">
+      <button @action="nonExistentAction#addClass#fallback:mounted" @target="target">
         <div id="target">Target</div>
       </button>
     `;
@@ -100,7 +100,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#toggled:once" on-target="target">
+      <button id="btn" @action="addClass#toggled:once" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -122,7 +122,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
+      <div id="outer" @action="window@click->addClass#clicked:whenOutside" @target="target">
         <div id="inner">Inside</div>
       </div>
       <span id="target">Target</span>
@@ -140,7 +140,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div id="outer" on="window@click->addClass#clicked:whenOutside" on-target="target">
+      <div id="outer" @action="window@click->addClass#clicked:whenOutside" @target="target">
         <div id="inner">Inside</div>
       </div>
       <div id="outside">Outside</div>
@@ -165,7 +165,7 @@ describe("Integration", () => {
     });
 
     document.body.innerHTML = `
-      <div on="addClass#visible:whenInView" on-target="target">
+      <div @action="addClass#visible:whenInView" @target="target">
         <span id="target">Target</span>
       </div>
     `;
@@ -186,7 +186,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="focus" on-target="inputField">Focus</button>
+      <button @action="focus" @target="inputField">Focus</button>
       <input id="inputField" type="text">
     `;
 
@@ -204,7 +204,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="nonExistentAction">Click me</button>
+      <button @action="nonExistentAction">Click me</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -218,7 +218,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <a href="https://example.com" on="addClass#clicked:preventDefault" on-target="target">Click me</a>
+      <a href="https://example.com" @action="addClass#clicked:preventDefault" @target="target">Click me</a>
       <span id="target">Target</span>
     `;
 
@@ -236,7 +236,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="toggleClass#toggled" on-target="target">
+      <button @action="toggleClass#toggled" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -258,7 +258,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" on-target="target">
+      <button @action="addClass#toggled" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -273,7 +273,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" on-target="target">
+      <button @action="addClass#toggled" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -291,7 +291,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button on="addClass#toggled" on-target="target">
+      <button @action="addClass#toggled" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -317,7 +317,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="asyncAction">Async</button>
+      <button id="btn" @action="asyncAction">Async</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -343,7 +343,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="asyncPrevent">Click</button>
+      <button id="btn" @action="asyncPrevent">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -371,7 +371,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="first second">Multi</button>
+      <button id="btn" @action="first second">Multi</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -393,7 +393,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="chainedTest:preventDefault">Click</button>
+      <button id="btn" @action="chainedTest:preventDefault">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -409,7 +409,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#loaded:mounted:once" on-target="target">Click</button>
+      <button id="btn" @action="addClass#loaded:mounted:once" @target="target">Click</button>
       <span id="target">Target</span>
     `;
 
@@ -429,7 +429,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="captureEvent">Click</button>
+      <button id="btn" @action="captureEvent">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -452,7 +452,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="captureDataset" data-custom="hello">Click</button>
+      <button id="btn" @action="captureDataset" data-custom="hello">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -478,7 +478,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="dispatchTest">Click</button>
+      <button id="btn" @action="dispatchTest">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -499,7 +499,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="thrower">Click</button>
+      <button id="btn" @action="thrower">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -521,7 +521,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="thrower">Click</button>
+      <button id="btn" @action="thrower">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -546,7 +546,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="thrower">Click</button>
+      <button id="btn" @action="thrower">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -572,7 +572,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="oldStyle#hello">Click</button>
+      <button id="btn" @action="oldStyle#hello">Click</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -603,7 +603,7 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#active" on-target="target">
+      <button id="btn" @action="addClass#active" @target="target">
         <span id="target">Target</span>
       </button>
     `;
@@ -631,7 +631,7 @@ describe("Core build with selective actions", () => {
       <div id="container">
         <div id="target">Remove me</div>
       </div>
-      <button id="btn" on="remove" on-target="target">Remove</button>
+      <button id="btn" @action="remove" @target="target">Remove</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -653,7 +653,7 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="removeClass#inactive" on-target="target">
+      <button id="btn" @action="removeClass#inactive" @target="target">
         <span id="target" class="inactive">Target</span>
       </button>
     `;
@@ -677,7 +677,7 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="copy">Copy</button>
+      <button id="btn" @action="copy">Copy</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -698,7 +698,7 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="removeClass#inactive" on-target="target">
+      <button id="btn" @action="removeClass#inactive" @target="target">
         <span id="target" class="inactive">Target</span>
       </button>
     `;
@@ -709,6 +709,58 @@ describe("Core build with selective actions", () => {
 
     const target = document.getElementById("target");
     expect(target.classList.contains("inactive")).toBe(false);
+  });
+
+  test("@ shorthand works for default event action", async () => {
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" @="addClass#toggled" @target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("toggled")).toBe(true);
+  });
+
+  test("data-action backward compat works when no @action present", async () => {
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" data-action="addClass#toggled" data-target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("toggled")).toBe(true);
+  });
+
+  test("@action takes priority over data-action", async () => {
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" @action="addClass#primary" data-action="addClass#ignored" @target="target">
+        <span id="target">Target</span>
+      </button>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    document.getElementById("btn").click();
+
+    const target = document.getElementById("target");
+    expect(target.classList.contains("primary")).toBe(true);
+    expect(target.classList.contains("ignored")).toBe(false);
   });
 
   test("addTriggers/addGates register directives at once", async () => {
@@ -723,7 +775,7 @@ describe("Core build with selective actions", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="btn" on="addClass#active:enabled" on-target="target">
+      <button id="btn" @action="addClass#active:enabled" @target="target">
         <span id="target">Target</span>
       </button>
     `;

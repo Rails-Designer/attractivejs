@@ -5,6 +5,6 @@ description: Toggle CSS classes on one or more elements
 position: 1
 ---
 
-<button on="toggleClass#active" on-target="panel">Toggle</button>
+<button @action="toggleClass#active" @target="panel">Toggle</button>
 
 <div id="panel">Content</div>

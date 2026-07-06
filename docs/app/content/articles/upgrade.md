@@ -10,13 +10,15 @@ Changes you need to make when upgrading to v1.0.0.
 
 ## Attribute changes
 
-The attribute prefix changed from `data-action` to `on`.
+The attribute syntax changed from `data-action` / `data-target` to `@action` / `@target`.
 
-| v0.x (deprecated)                  | v1.0.0                      |
+| v0.x (deprecated)                  | v1.0.0                    |
 | ---------------------------------- | ------------------------- |
-| `data-action="toggleClass#active"` | `on="toggleClass#active"` |
-| `data-target="panel"`              | `on-target="panel"`       |
-| `data-targets=".items"`            | `on-targets=".items"`     |
+| `data-action="toggleClass#active"` | `@action="toggleClass#active"` |
+| `data-target="panel"`              | `@target="panel"`         |
+| `data-targets=".items"`            | `@targets=".items"`       |
+
+The `@` prefix is fixed (not configurable). The shorthand `@=""` is equivalent to `@action=""`.
 
 
 ## Auto-activation
@@ -27,15 +29,6 @@ v1.0.0 supports script tag auto-activation:
 ```
 
 The `activate` attribute on the script tag replaces the need for manual `Attractive.activate()` calls in simple setups.
-
-
-## Configurable prefix
-
-```js
-Attractive.configure({ prefix: "data-on" });
-```
-
-The prefix is no longer hardcoded to `data-action`. Configure it for all instances.
 
 
 ## Scoped instances

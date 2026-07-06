@@ -13,6 +13,6 @@ options:
     default: 2000
 ---
 
-<button on="post /api/save" on-target="output">Save</button>
+<button @action="post /api/save" @target="output">Save</button>
 
 <div id="output"></div>

@@ -13,6 +13,6 @@ options:
     default: 2000
 ---
 
-<button on="get /api/content" on-target="output">Load</button>
+<button @action="get /api/content" @target="output">Load</button>
 
 <div id="output"></div>
