@@ -13,6 +13,6 @@ options:
     default: 2000
 ---
 
-<button on="put /api/replace" on-target="output">Replace</button>
+<button @action="put /api/replace" @target="output">Replace</button>
 
 <div id="output"></div>

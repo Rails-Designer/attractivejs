@@ -49,13 +49,6 @@ const attractive = Attractive.activate({ debug: true });
 ```
 
 
-## Configure the prefix
-
-```js
-Attractive.configure({ prefix: "data-action" });
-```
-
-
 ## Select which actions to enable
 
 ```js

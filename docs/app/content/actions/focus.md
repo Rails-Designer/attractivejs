@@ -5,5 +5,5 @@ description: Focus a target element
 position: 1
 ---
 
-<button on="focus" on-target="name-input">Focus</button>
+<button @action="focus" @target="name-input">Focus</button>
 <input id="name-input" type="text">

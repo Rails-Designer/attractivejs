@@ -14,7 +14,7 @@ Get up and running with Attractive.js and this script to your `<head>`.
 ## First example
 
 ```html
-<button on="toggleClass#active" on-target="panel">Toggle</button>
+<button @action="toggleClass#active" @target="panel">Toggle</button>
 
 <div id="panel">Content</div>
 ```

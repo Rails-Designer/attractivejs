@@ -1,4 +1,4 @@
-import { getActionValue } from "./get_attribute";
+import { actionAttributes, getActionValue } from "./get_attribute";
 
 class ActionController {
   static #nonBubblingEvents = new Set([
@@ -18,23 +18,21 @@ class ActionController {
   #directives;
   #listeners;
   #element;
-  #prefix;
   #scope;
 
-  constructor(events, eventTypes, directives, listeners, element, prefix) {
+  constructor(events, eventTypes, directives, listeners, element) {
     this.#events = events;
     this.#eventTypes = eventTypes;
     this.#directives = directives;
     this.#listeners = listeners;
     this.#element = element;
-    this.#prefix = prefix;
     this.#scope = element;
   }
 
   // private
 
   prepare(element) {
-    const actionValue = getActionValue(element, this.#prefix);
+    const actionValue = getActionValue(element);
 
     if (!actionValue) return;
 
@@ -99,7 +97,7 @@ class ActionController {
   process(event, context = null) {
     const element = context
       ? context.element
-      : event.target.closest(`[${this.#prefix}], [data-action]`);
+      : this.#actionElement(event.target);
 
     if (!element) return;
 
@@ -113,6 +111,14 @@ class ActionController {
       on: element,
       using: defaultEventType
     });
+  }
+
+  #actionElement(element) {
+    while (element && element !== this.#scope) {
+      if (actionAttributes(element)) return element;
+      element = element.parentElement;
+    }
+    return null;
   }
 }
 

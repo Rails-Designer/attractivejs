@@ -16,7 +16,7 @@ import { toggleClass } from "attractivejs/actions/class";
 import { copy } from "attractivejs/actions/clipboard";
 ```
 
-Register them individually with `addAction(name, action)`. The name is what you use in `on=""`, the action is the imported function:
+Register them individually with `addAction(name, action)`. The name is what you use in `@action=""`, the action is the imported function:
 ```js
 const attractive = new Attractive();
 
@@ -27,12 +27,10 @@ attractive.addAction("copy", copy);
 
 attractive.activate();
 ```
-```
 
 Custom actions work the same way. The action is a function you define:
 ```js
 // const analytics = (element, context) => { … };
-
 attractive.addAction("analytics", analytics);
 ```
 

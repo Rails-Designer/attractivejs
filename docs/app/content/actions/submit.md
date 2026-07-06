@@ -9,6 +9,6 @@ options:
     type: number
 ---
 
-<button on="submit" on-target="my-form">Submit</button>
+<button @action="submit" @target="my-form">Submit</button>
 
 <form id="my-form"><input name="email"></form>

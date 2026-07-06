@@ -12,7 +12,7 @@ class Observer {
     this.#scope = scope;
   }
 
-  start(selector) {
+  start(action) {
     if (!window.MutationObserver) return;
 
     this.#observer = new MutationObserver((mutations) => {
@@ -21,7 +21,7 @@ class Observer {
 
       mutations.forEach((mutation) =>
         this.#processMutation(mutation, {
-          for: selector,
+          for: action,
           elements: { added, removed }
         })
       );
@@ -62,24 +62,26 @@ class Observer {
 
   // private
 
-  #processMutation(mutation, { for: selector, elements: { added, removed } }) {
+  #processMutation(mutation, { for: action, elements: { added, removed } }) {
     if (mutation.type !== "childList") return;
 
     mutation.addedNodes.forEach((node) => {
-      this.#processNode(node, { for: selector, and: added });
+      this.#processNode(node, { for: action, and: added });
     });
 
     mutation.removedNodes.forEach((node) => {
-      this.#processNode(node, { for: selector, and: removed });
+      this.#processNode(node, { for: action, and: removed });
     });
   }
 
-  #processNode(node, { for: selector, and: elements }) {
+  #processNode(node, { for: action, and: elements }) {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
-    if (node.matches && node.matches(selector)) elements.add(node);
+    if (action(node)) elements.add(node);
     if (!node.querySelectorAll) return;
 
-    node.querySelectorAll(selector).forEach((element) => elements.add(element));
+    node.querySelectorAll("*").forEach((element) => {
+      if (action(element)) elements.add(element);
+    });
   }
 }
 

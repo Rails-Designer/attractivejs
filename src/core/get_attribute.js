@@ -1,40 +1,47 @@
 import deprecation from "./deprecation";
 
-export function getActionValue(element, prefix) {
-  const value = element.getAttribute(prefix);
-
-  if (value !== null) return value;
-
-  if (element.hasAttribute("data-action")) {
-    deprecation.warn("`data-action` is deprecated, use `on` instead.");
-  }
-
-  return element.getAttribute("data-action");
+export function actionAttributes(element) {
+  return (
+    element.hasAttribute("@action") ||
+    element.hasAttribute("@") ||
+    element.hasAttribute("data-action")
+  );
 }
 
-export function getTargetValue(element, prefix) {
-  const value = element.getAttribute(`${prefix}-target`);
-
+export function getActionValue(element) {
+  const value = element.getAttribute("@action");
   if (value !== null) return value;
 
-  const legacy = element.getAttribute("data-target");
+  const shorthand = element.getAttribute("@");
+  if (shorthand !== null) return shorthand;
 
+  const legacy = element.getAttribute("data-action");
   if (legacy !== null) {
-    deprecation.warn("`data-target` is deprecated, use `on-target` instead.");
+    deprecation.warn("`data-action` is deprecated, use `@action` instead.");
   }
 
   return legacy;
 }
 
-export function getTargetsValue(element, prefix) {
-  const value = element.getAttribute(`${prefix}-targets`);
+export function getTargetValue(element) {
+  const value = element.getAttribute("@target");
+  if (value !== null) return value;
 
+  const legacy = element.getAttribute("data-target");
+  if (legacy !== null) {
+    deprecation.warn("`data-target` is deprecated, use `@target` instead.");
+  }
+
+  return legacy;
+}
+
+export function getTargetsValue(element) {
+  const value = element.getAttribute("@targets");
   if (value !== null) return value;
 
   const legacy = element.getAttribute("data-targets");
-
   if (legacy !== null) {
-    deprecation.warn("`data-targets` is deprecated, use `on-targets` instead.");
+    deprecation.warn("`data-targets` is deprecated, use `@targets` instead.");
   }
 
   return legacy;

@@ -5,6 +5,6 @@ description: Cycle through class names, replacing the current one with the next 
 position: 5
 ---
 
-<button on="cycleClass#info,warning,error" on-target="badge">Cycle</button>
+<button @action="cycleClass#info,warning,error" @target="badge">Cycle</button>
 
 <div id="badge" class="info">Status</div>

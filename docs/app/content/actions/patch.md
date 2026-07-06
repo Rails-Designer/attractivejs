@@ -13,6 +13,6 @@ options:
     default: 2000
 ---
 
-<button on="patch /api/update" on-target="output">Update</button>
+<button @action="patch /api/update" @target="output">Update</button>
 
 <div id="output"></div>

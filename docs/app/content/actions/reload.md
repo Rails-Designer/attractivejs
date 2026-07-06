@@ -5,4 +5,4 @@ description: Reload a Turbo Frame or the current page
 position: 1
 ---
 
-<button on="reload">Reload page</button>
+<button @action="reload">Reload page</button>
