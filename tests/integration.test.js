@@ -48,7 +48,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <button id="trigger" @action="mouseenter->addClass#hovered">Hover me</button>
+      <button id="trigger" @mouseenter="addClass#hovered">Hover me</button>
     `;
 
     await vi.runAllTimersAsync();
@@ -122,7 +122,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div id="outer" @action="window@click->addClass#clicked:whenOutside" @target="target">
+      <div id="outer" @click.window="addClass#clicked:whenOutside" @target="target">
         <div id="inner">Inside</div>
       </div>
       <span id="target">Target</span>
@@ -140,7 +140,7 @@ describe("Integration", () => {
     attractive.activate();
 
     document.body.innerHTML = `
-      <div id="outer" @action="window@click->addClass#clicked:whenOutside" @target="target">
+      <div id="outer" @click.window="addClass#clicked:whenOutside" @target="target">
         <div id="inner">Inside</div>
       </div>
       <div id="outside">Outside</div>

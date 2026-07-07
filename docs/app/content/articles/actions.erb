@@ -6,22 +6,46 @@ position: 1
 markdownify: false
 ---
 
-<p>
-  All of Attractive.js's built-in actions.
-</p>
+<%= markdownify do %>
+  Actions are declared via the `@action` attribute (or `@` for short):
 
-<p>
-  Actions are declared via the <code>@action</code> attribute (or <code>@</code> for short).
-</p>
+  ```html
+  <button @action="toggleClass#active" @target="panel">Toggle</button>
+  <div id="panel">Content</div>
+  ```
 
-<p>
-  The <code>@target</code> attribute points to an element by its <code>id</code>. Use <code>@targets</code> for multiple elements via a CSS selector. If no target is given, the action runs on the element itself.
-</p>
+  Multiple actions can be combined in one attribute, space-separated:
+
+  ```html
+  <button
+    @action="addAttribute#aria-busy=true removeAttribute#aria-invalid"
+    @target="form"
+  >
+    Save
+  </button>
+  ```
+
+  Use explicit event types by naming the event in the attribute:
+
+  ```html
+  <button
+    @mouseenter="addClass#hovered"
+    @mouseleave="removeClass#hovered"
+  >
+    Hover
+  </button>
+  <input @change="addClass#dirty">
+  ```
+
+  The `@target` attribute points to an element by its `id`. Use `@targets` for multiple elements via a CSS selector. If no target is given, the action runs on the element itself.
+
+  All of Attractive.js's built-in actions:
+<% end %>
 
 <ul class="no-content actions-list">
   <% Content::Action.all.in_order_of(:group, Content::Action::GROUPS).group_by { it.group }.each do |group, actions| %>
     <li class="group">
-      <h2><%= group %></h2>
+      <h2><%= group.humanize %></h2>
 
       <ul class="actions">
         <%= render actions %>

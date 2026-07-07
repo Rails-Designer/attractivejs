@@ -41,6 +41,21 @@ attractive.activate({ on: document.getElementById("sidebar") });
 Actions are isolated to their container element.
 
 
+## Event type attributes
+
+Event types are now set via the attribute name instead of the `->` syntax:
+
+| v0.x (deprecated)                              | v1.0.0                              |
+| ---------------------------------------------- | ----------------------------------- |
+| `@action="mouseenter->addClass#hovered"`       | `@mouseenter="addClass#hovered"`    |
+| `@action="window@click->removeClass#open"`     | `@click.window="removeClass#open"`  |
+| `@action="change->addClass#dirty"`             | `@change="addClass#dirty"`          |
+
+The `->` syntax and embedded event types are removed. The value now only contains the action, optional value and directives.
+
+The `.window` and `.document` modifiers on the attribute name replace the old `window@event->` pattern.
+
+
 ## Custom actions, triggers and gates
 
 Custom actions, triggers and gates via `addTrigger`, `addGate` and `addAction`.

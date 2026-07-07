@@ -15,11 +15,6 @@ class Evaluate {
     },
     { execute }
   ) {
-    const isCustomEvent = action.includes("->");
-
-    action = this.#stripCustomEvent({ from: action, for: event.type });
-    if (action === undefined) return;
-
     const hasDirectives = action.includes(":");
 
     if (hasDirectives)
@@ -27,28 +22,12 @@ class Evaluate {
 
     if (action === undefined) return;
 
-    if (!isCustomEvent && !hasDirectives && event.type !== defaultEventType)
-      return;
-
     return await execute(action, {
-      with: { on: element, for: event, triggeredBy: directive }
+      with: { on: element, for: event, triggeredBy: directive || null }
     });
   }
 
   // private
-
-  #stripCustomEvent({ from: action, for: eventType }) {
-    if (!action.includes("->")) return action;
-
-    const [eventPart, actionPart] = action.split("->");
-    const eventName = eventPart.includes("@")
-      ? eventPart.split("@")[1]
-      : eventPart;
-
-    if (eventName !== eventType) return;
-
-    return actionPart;
-  }
 
   #stripDirectives({ from: action, for: event, on: element }) {
     const parts = action.split(":");

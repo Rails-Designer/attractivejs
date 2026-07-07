@@ -9,7 +9,7 @@ Triggers and gates control when and how actions fire. They are appended to the a
 ```html
 <button @action="addClass#visible:mounted">Appears on load</button>
 <button @action="toggleClass#open:once">Toggle once</button>
-<button @action="get#/search:preventDefault">Search</button>
+<form @action="toggleClass#submitted:preventDefault">Submit</form>
 ```
 
 
@@ -43,7 +43,7 @@ Gates evaluate a condition before allowing the action to fire. Returns `false` t
 
 ```html
 <button @action="toggleClass#clicked:once">Click once</button>
-<form @action="get#/search:preventDefault">…</form>
+<button @action="removeClass#loading:preventDefault">Save</button>
 
 <div @action="toggleClass#open" @target="menu">
   <button>Menu</button>
@@ -55,5 +55,5 @@ Gates evaluate a condition before allowing the action to fire. Returns `false` t
 Multiple triggers and gates can be chained:
 ```html
 <div @action="addClass#visible:mounted:once">Shows once</div>
-<button @action="copy:once:preventDefault">Copy once</button>
+<button @action="copy:once:preventDefault" @target="source">Copy</button>
 ```

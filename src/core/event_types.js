@@ -1,12 +1,4 @@
 class EventTypes {
-  identify({ by: value }) {
-    const actions = value.split(" ");
-
-    return actions
-      .filter((action) => action.includes("->"))
-      .map((action) => action.split("->")[0]);
-  }
-
   getDefault({ from: element }) {
     const tagName = element.tagName.toLowerCase();
     const isInput = tagName === "input";
