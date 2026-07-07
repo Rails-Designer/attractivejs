@@ -307,6 +307,38 @@ describe("Integration", () => {
     expect(target.classList.contains("toggled")).toBe(true);
   });
 
+  test("active returns false before activation", () => {
+    expect(attractive.active).toBe(false);
+  });
+
+  test("active returns true after activation", () => {
+    attractive.activate();
+
+    expect(attractive.active).toBe(true);
+  });
+
+  test("active returns false after deactivation", () => {
+    attractive.activate();
+    attractive.deactivate();
+
+    expect(attractive.active).toBe(false);
+  });
+
+  test("active returns true after reactivation", () => {
+    attractive.activate();
+    attractive.deactivate();
+    attractive.activate();
+
+    expect(attractive.active).toBe(true);
+  });
+
+  test("active returns true after restart", () => {
+    attractive.activate();
+    attractive.restart();
+
+    expect(attractive.active).toBe(true);
+  });
+
   test("async action resolves correctly", async () => {
     attractive.addAction("asyncAction", async (element) => {
       const result = await Promise.resolve("done");
