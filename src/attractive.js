@@ -54,6 +54,15 @@ class Attractive {
     Debug.enabled = value;
   }
 
+  /**
+   * Returns whether the instance is currently active.
+   *
+   * @returns {boolean} — true if activate() has been called and deactivate() has not
+   */
+  get active() {
+    return this.#initialized;
+  }
+
   static onError(error, message, detail) {
     console.warn(`[attractive] ${message}`, error);
 
