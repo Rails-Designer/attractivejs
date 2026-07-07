@@ -1,4 +1,4 @@
-import { actionAttributes, getActionValue } from "./attributes";
+import { actionAttributes, getActionAttributes } from "./attributes";
 
 class ActionController {
   static #nonBubblingEvents = new Set([
@@ -29,69 +29,14 @@ class ActionController {
     this.#scope = element;
   }
 
-  // private
-
   prepare(element) {
-    const actionValue = getActionValue(element);
+    const attributes = getActionAttributes({ on: element });
 
-    if (!actionValue) return;
+    if (attributes.length === 0) return;
 
-    const actionNames = actionValue.split(" ");
-
-    const registeredEventTypes = new Set(
-      actionValue.includes("->")
-        ? this.#eventTypes.identify({ by: actionValue })
-        : [this.#eventTypes.getDefault({ from: element })]
-    );
-
-    registeredEventTypes.forEach((eventType) => {
-      if (ActionController.#nonBubblingEvents.has(eventType)) {
-        const processEvent = (event) => this.process(event);
-
-        element.addEventListener(eventType, processEvent);
-      } else {
-        this.#listeners.addEventListeners({
-          for: eventType,
-          on: this.#element
-        });
-      }
-    });
-
-    actionNames
-      .filter((action) => action.includes("@"))
-      .forEach((action) => {
-        const [eventPart] = action.split("->");
-        const [target, eventType] = eventPart.split("@");
-        const targetObject = target === "window" ? window : document;
-
-        this.#listeners.addTargetedEventListener(
-          eventType,
-          targetObject,
-          element
-        );
-      });
-
-    const directives = [
-      ...new Set(
-        actionNames
-          .filter((action) => action.includes(":"))
-          .flatMap((action) => action.split(":").slice(1))
-      )
-    ];
-
-    const defaultEventType = this.#eventTypes.getDefault({ from: element });
-
-    directives.forEach((name) => {
-      this.#directives.setup({
-        for: name,
-        on: element,
-        trigger: () =>
-          this.#events.process(
-            { type: name },
-            { on: element, using: defaultEventType, triggeredBy: name }
-          )
-      });
-    });
+    this.#registerDirectListeners({ on: element, from: attributes });
+    this.#registerDelegationListeners({ on: element, from: attributes });
+    this.#setupDirectiveTriggers({ on: element, from: attributes });
   }
 
   process(event, context = null) {
@@ -105,19 +50,118 @@ class ActionController {
 
     const defaultEventType = context
       ? context.eventType
-      : this.#eventTypes.getDefault({ from: element });
+      : this.#defaultEventType({ for: element });
 
-    this.#events.process(event, {
-      on: element,
-      using: defaultEventType
+    const attributes = getActionAttributes({ on: element });
+
+    for (const { event: eventName, value } of attributes) {
+      const eventType = eventName !== null ? eventName : defaultEventType;
+
+      if (eventType !== event.type) continue;
+
+      this.#events.process(event, {
+        on: element,
+        using: defaultEventType,
+        with: value
+      });
+    }
+  }
+
+  // private
+
+  #registerDirectListeners({ on: element, from: attributes }) {
+    for (const { event: eventName, modifiers, value } of attributes) {
+      const eventType = eventName || this.#defaultEventType({ for: element });
+
+      if (modifiers.includes("window") || modifiers.includes("document")) {
+        const target = modifiers.includes("window") ? window : document;
+
+        this.#listeners.addTargetedEventListener({
+          for: eventType,
+          on: target,
+          element
+        });
+
+        continue;
+      }
+
+      if (ActionController.#nonBubblingEvents.has(eventType)) {
+        element.addEventListener(eventType, (event) =>
+          this.#events.process(event, {
+            on: element,
+            using: this.#defaultEventType({ for: element }),
+            with: value
+          })
+        );
+      }
+    }
+  }
+
+  #registerDelegationListeners({ on: element, from: attributes }) {
+    const eventTypes = new Set();
+
+    for (const { event: eventName, modifiers } of attributes) {
+      if (modifiers.includes("window") || modifiers.includes("document"))
+        continue;
+
+      const eventType = eventName || this.#defaultEventType({ for: element });
+
+      if (ActionController.#nonBubblingEvents.has(eventType)) continue;
+
+      eventTypes.add(eventType);
+    }
+
+    eventTypes.forEach((eventType) => {
+      this.#listeners.addEventListeners({ for: eventType, on: this.#element });
     });
   }
 
+  #setupDirectiveTriggers({ on: element, from: attributes }) {
+    const directives = [
+      ...new Set(
+        attributes.flatMap(({ value }) =>
+          value
+            .split(" ")
+            .filter((name) => name.includes(":"))
+            .flatMap((name) => name.split(":").slice(1))
+        )
+      )
+    ];
+
+    const defaultEventType = this.#defaultEventType({ for: element });
+
+    directives.forEach((name) => {
+      this.#directives.setup({
+        for: name,
+        on: element,
+        trigger: () => {
+          attributes.forEach(({ value }) => {
+            this.#events.process(
+              { type: name },
+              {
+                on: element,
+                using: defaultEventType,
+                triggeredBy: name,
+                with: value
+              }
+            );
+          });
+        }
+      });
+    });
+  }
+
+  #defaultEventType({ for: element }) {
+    return this.#eventTypes.getDefault({ from: element });
+  }
+
   #actionElement(element) {
-    while (element && element !== this.#scope) {
+    while (element) {
       if (actionAttributes(element)) return element;
+
       element = element.parentElement;
     }
+
     return null;
   }
 }

@@ -1,26 +1,54 @@
 import deprecation from "./deprecation";
 
+const RESERVED = new Set([
+  "@target",
+  "@targets",
+  "data-target",
+  "data-targets"
+]);
+
 export function actionAttributes(element) {
-  return (
-    element.hasAttribute("@action") ||
-    element.hasAttribute("@") ||
-    element.hasAttribute("data-action")
-  );
-}
-
-export function getActionValue(element) {
-  const value = element.getAttribute("@action");
-  if (value !== null) return value;
-
-  const shorthand = element.getAttribute("@");
-  if (shorthand !== null) return shorthand;
-
-  const legacy = element.getAttribute("data-action");
-  if (legacy !== null) {
-    deprecation.warn("`data-action` is deprecated, use `@action` instead.");
+  for (const attribute of element.attributes) {
+    if (RESERVED.has(attribute.name)) continue;
+    if (attribute.name.startsWith("@")) return true;
   }
 
-  return legacy;
+  return element.hasAttribute("data-action");
+}
+
+export function getActionAttributes({ on: element }) {
+  const attributes = [];
+
+  for (const attribute of element.attributes) {
+    if (RESERVED.has(attribute.name)) continue;
+
+    if (attribute.name.startsWith("@")) {
+      attributes.push(parseAttribute(attribute.name, attribute.value));
+    }
+  }
+
+  if (attributes.length === 0 && element.hasAttribute("data-action")) {
+    const value = element.getAttribute("data-action");
+    if (value !== null) {
+      deprecation.warn("`data-action` is deprecated, use `@action` instead.");
+
+      attributes.push({ event: null, modifiers: [], value });
+    }
+  }
+
+  return attributes;
+}
+
+function parseAttribute(name, value) {
+  if (name === "@action" || name === "@") {
+    return { event: null, modifiers: [], value };
+  }
+
+  const parts = name.slice(1).split(".");
+  const event = parts[0];
+  const modifiers = parts.slice(1);
+
+  return { event, modifiers, value };
 }
 
 export function getTargetValue(element) {

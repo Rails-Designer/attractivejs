@@ -23,7 +23,7 @@ class EventListeners {
     this.#eventListeners.set(eventType, { handler: processEvent, element });
   }
 
-  addTargetedEventListener(eventType, target, element) {
+  addTargetedEventListener({ for: eventType, on: target, element }) {
     const key = `${target === window ? "window" : "document"}:${eventType}`;
 
     if (!this.#elementListeners.has(element)) {

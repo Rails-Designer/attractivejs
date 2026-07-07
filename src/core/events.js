@@ -1,4 +1,4 @@
-import { getActionValue, getTargetValue, getTargetsValue } from "./attributes";
+import { getTargetValue, getTargetsValue } from "./attributes";
 import Evaluate from "./events/evaluate";
 import Execute from "./events/execute";
 
@@ -19,13 +19,14 @@ class Events {
 
   async process(
     event,
-    { on: element, using: defaultEventType, triggeredBy: directive }
+    {
+      on: element,
+      using: defaultEventType,
+      triggeredBy: directive,
+      with: actionValue
+    }
   ) {
-    if (!element) return;
-
-    const actionValue = getActionValue(element);
-
-    if (!actionValue) return;
+    if (!element || !actionValue) return;
 
     for (const action of this.#splitActions(actionValue)) {
       const result = await this.#evaluate.run(
