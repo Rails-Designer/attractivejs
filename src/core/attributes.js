@@ -8,6 +8,8 @@ const RESERVED = new Set([
 ]);
 
 export function actionAttributes(element) {
+  if (!element || !element.attributes) return false;
+
   for (const attribute of element.attributes) {
     if (RESERVED.has(attribute.name)) continue;
     if (attribute.name.startsWith("@")) return true;
@@ -46,7 +48,7 @@ function parseAttribute(name, value) {
 
   const parts = name.slice(1).split(".");
   const event = parts[0];
-  const modifiers = parts.slice(1);
+  const modifiers = parts.slice(1).flatMap((part) => part.split("+"));
 
   return { event, modifiers, value };
 }

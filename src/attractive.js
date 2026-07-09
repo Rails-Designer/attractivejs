@@ -7,9 +7,12 @@ import Observer from "./core/observer";
 import EventListeners from "./core/event_listeners";
 import ActionController from "./core/action_controller";
 import { actionAttributes } from "./core/attributes";
+import { defaultEventModifier } from "./core/default_event_modifier";
 import Debug from "./debug";
 
 class Attractive {
+  static #extensions = new Set();
+
   #registry = new Registry();
   #events;
   #eventTypes;
@@ -19,6 +22,12 @@ class Attractive {
   #controller;
   #initialized = false;
   #hooks = new Hooks();
+  #elementAddedHooks = new Set();
+  #elementRemovedHooks = new Set();
+  #beforeRemoveHooks = new Set();
+  #eventSubscriptions = new Map();
+  #attributePrefixes = new Set();
+  #scope;
 
   static activate(options = {}) {
     const instance = new this(options);
@@ -26,6 +35,16 @@ class Attractive {
     instance.activate(options);
 
     return instance;
+  }
+
+  static extend(extensions) {
+    if (Array.isArray(extensions)) {
+      extensions.forEach((extension) => this.#extensions.add(extension));
+    } else {
+      this.#extensions.add(extensions);
+    }
+
+    return this;
   }
 
   /**
@@ -82,6 +101,8 @@ class Attractive {
     this.#listeners = new EventListeners((event, context) =>
       this.#controller.process(event, context)
     );
+
+    defaultEventModifier(this.#registry);
   }
 
   /**
@@ -107,7 +128,10 @@ class Attractive {
 
     if (this.#initialized) return this;
 
+    this.#scope = on;
+
     this.#controller = new ActionController(
+      this.#registry,
       this.#events,
       this.#eventTypes,
       this.#directives,
@@ -116,23 +140,42 @@ class Attractive {
     );
 
     this.#observe = new Observer(
-      (element) => this.#controller.prepare(element),
-      (element) => this.#listeners.cleanup(element),
-      on
+      (element) => {
+        this.#controller.prepare(element);
+        this.#elementAddedHooks.forEach((hook) => hook(element));
+      },
+      (element) => {
+        this.#listeners.cleanup(element);
+        this.#elementRemovedHooks.forEach((hook) => hook(element));
+      },
+      on,
+      (element) => {
+        this.#beforeRemoveHooks.forEach((hook) => hook(element));
+      }
     );
-
-    this.#observe.start(actionAttributes);
 
     const elements = on.querySelectorAll("*");
     const actionElements = [];
 
     for (const element of elements) {
-      if (actionAttributes(element)) {
+      if (this.#hasActionAttribute(element)) {
         actionElements.push(element);
       }
     }
 
-    actionElements.forEach((element) => this.#controller.prepare(element));
+    actionElements.forEach((element) => {
+      this.#controller.prepare(element);
+    });
+
+    for (const extension of Attractive.#extensions) {
+      extension({ instance: this, registry: this.#registry });
+    }
+
+    this.#observe.start((element) => this.#hasActionAttribute(element));
+
+    actionElements.forEach((element) => {
+      this.#elementAddedHooks.forEach((hook) => hook(element));
+    });
 
     this.#initialized = true;
 
@@ -279,7 +322,62 @@ class Attractive {
     return this;
   }
 
+  onElementAdded(callback) {
+    this.#elementAddedHooks.add(callback);
+
+    return this;
+  }
+
+  onElementRemoved(callback) {
+    this.#elementRemovedHooks.add(callback);
+
+    return this;
+  }
+
+  onBeforeElementRemoved(callback) {
+    this.#beforeRemoveHooks.add(callback);
+
+    return this;
+  }
+
+  addEventListener(type, callback) {
+    if (!this.#eventSubscriptions.has(type)) {
+      const listener = (event) => {
+        this.#eventSubscriptions
+          .get(type)
+          .subscriptions.forEach((fn) => fn(event));
+      };
+
+      (this.#scope || document).addEventListener(type, listener);
+
+      this.#eventSubscriptions.set(type, {
+        listener,
+        subscriptions: new Set()
+      });
+    }
+
+    this.#eventSubscriptions.get(type).subscriptions.add(callback);
+
+    return this;
+  }
+
+  observeAttribute(prefix) {
+    this.#attributePrefixes.add(prefix);
+
+    return this;
+  }
+
   // private
+
+  #hasActionAttribute(element) {
+    if (actionAttributes(element)) return true;
+
+    return Array.from(this.#attributePrefixes).some((prefix) =>
+      Array.from(element.attributes).some((attribute) =>
+        attribute.name.startsWith(prefix)
+      )
+    );
+  }
 
   /**
    * Registers the default built-in actions.
@@ -305,6 +403,18 @@ class Attractive {
     return this;
   }
 
+  extend(extensions) {
+    if (Array.isArray(extensions)) {
+      extensions.forEach((extension) =>
+        extension({ instance: this, registry: this.#registry })
+      );
+    } else {
+      extensions({ instance: this, registry: this.#registry });
+    }
+
+    return this;
+  }
+
   /**
    * Deactivates the instance, removing all event listeners and observer.
    *
@@ -318,6 +428,21 @@ class Attractive {
     if (this.#observe) {
       this.#observe.stop();
     }
+
+    this.#eventSubscriptions.forEach((subscription, type) => {
+      (this.#scope || document).removeEventListener(
+        type,
+        subscription.listener
+      );
+      subscription.subscriptions.clear();
+    });
+
+    this.#eventSubscriptions.clear();
+
+    this.#elementAddedHooks.clear();
+    this.#elementRemovedHooks.clear();
+    this.#beforeRemoveHooks.clear();
+    this.#attributePrefixes.clear();
 
     this.#initialized = false;
 

@@ -8,11 +8,58 @@
     />
     <script type="module">
       import Attractive from "../dist/attractive.min.js";
+      import { keyboard } from "../dist/keyboard.js";
 
-      Attractive.activate({ debug: true });
+      const attractive = Attractive.activate({ debug: true });
+      attractive.extend(keyboard);
     </script>
   </head>
   <body>
+    <h2>Keyboard</h2>
+
+    <h3>1. global with dot (@hotkey.escape, bare → click delegation)</h3>
+    <p>
+      <button @hotkey.escape @action="removeClass#active" @target="keyTarget1">
+        Press Escape globally
+      </button>
+      <code id="keyTarget1" class="active">target (class reset)</code>
+    </p>
+
+    <h3>2. global with + (@hotkey.ctrl+k, valued → synthetic hotkey event)</h3>
+    <p>
+      <button @hotkey.ctrl+k="addClass#active" @target="keyTarget2">
+        Press Ctrl+K globally
+      </button>
+      <code id="keyTarget2">target (class added)</code>
+    </p>
+
+    <h3>3. hotkey with dot — sequence (@hotkey.g.i, bare → click)</h3>
+    <p>
+      <a @hotkey.g.i @action="toggleClass#active" @target="keyTarget3" href="#">
+        Inbox (press g then i)
+      </a>
+      <code id="keyTarget3">target (toggled)</code>
+    </p>
+
+    <h3>4. hotkey with + — combo (@hotkey.g+i, valued → synthetic event)</h3>
+    <p>
+      <button @hotkey.g+i="toggleClass#active" @target="keyTarget4">
+        Press g+i simultaneously
+      </button>
+      <code id="keyTarget4">target (toggled)</code>
+    </p>
+
+    <h3>5. keydown on input (@keydown, element-scoped)</h3>
+    <p>
+      <input
+        @keydown.meta+enter="addClass#active"
+        @keydown.escape="removeClass#active"
+        @target="kbTarget"
+        placeholder="Focus here, press Cmd+Enter or Escape"
+      />
+      <code id="kbTarget">target</code>
+    </p>
+
     <h2>Toggle (@="" syntax)</h2>
     <button @action="toggleClass#active" @target="toggleTarget">Toggle</button>
     <p id="toggleTarget">This toggles the <code>active</code> class.</p>

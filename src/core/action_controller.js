@@ -13,6 +13,7 @@ class ActionController {
     "scroll"
   ]);
 
+  #registry;
   #events;
   #eventTypes;
   #directives;
@@ -20,7 +21,8 @@ class ActionController {
   #element;
   #scope;
 
-  constructor(events, eventTypes, directives, listeners, element) {
+  constructor(registry, events, eventTypes, directives, listeners, element) {
+    this.#registry = registry;
     this.#events = events;
     this.#eventTypes = eventTypes;
     this.#directives = directives;
@@ -54,10 +56,13 @@ class ActionController {
 
     const attributes = getActionAttributes({ on: element });
 
-    for (const { event: eventName, value } of attributes) {
+    for (const { event: eventName, modifiers, value } of attributes) {
       const eventType = eventName !== null ? eventName : defaultEventType;
 
       if (eventType !== event.type) continue;
+
+      if (this.#blockedByEventModifiers({ for: event, on: element, modifiers }))
+        continue;
 
       this.#events.process(event, {
         on: element,
@@ -68,6 +73,18 @@ class ActionController {
   }
 
   // private
+
+  #blockedByEventModifiers({ for: event, on: element, modifiers }) {
+    return modifiers.some((name) => {
+      const eventModifier = this.#registry.getEventModifier(name);
+
+      if (eventModifier) return eventModifier(event, element) === false;
+
+      if (event.key === undefined) return false;
+
+      return event.key.toLowerCase() !== name.toLowerCase();
+    });
+  }
 
   #registerDirectListeners({ on: element, from: attributes }) {
     for (const { event: eventName, modifiers, value } of attributes) {

@@ -3,12 +3,19 @@ import Debug from "./../debug";
 class Observer {
   #prepare;
   #cleanup;
+  #beforeCleanup;
   #observer;
   #scope;
 
-  constructor(prepare, cleanup = null, scope = document.documentElement) {
+  constructor(
+    prepare,
+    cleanup = null,
+    scope = document.documentElement,
+    beforeCleanup = null
+  ) {
     this.#prepare = prepare;
     this.#cleanup = cleanup;
+    this.#beforeCleanup = beforeCleanup;
     this.#scope = scope;
   }
 
@@ -36,7 +43,7 @@ class Observer {
         this.#prepare(element);
       });
 
-      if (this.#cleanup) {
+      if (this.#beforeCleanup || this.#cleanup) {
         removed.forEach((element) => {
           Debug.log(
             "Element removed:",
@@ -44,7 +51,8 @@ class Observer {
             "#" + (element.id || "")
           );
 
-          this.#cleanup(element);
+          this.#beforeCleanup?.(element);
+          this.#cleanup?.(element);
         });
       }
     });
