@@ -249,7 +249,7 @@ class Attractive {
    * @param {Function} callback — receives { name, element, options, event }
    * @returns {Attractive} — the instance for chaining
    */
-  onBeforeAction(callback) {
+  beforeAction(callback) {
     this.#hooks.addBefore(callback);
 
     return this;
@@ -261,7 +261,7 @@ class Attractive {
    * @param {Function} callback — receives { name, element, options, event, result }
    * @returns {Attractive} — the instance for chaining
    */
-  onAfterAction(callback) {
+  afterAction(callback) {
     this.#hooks.addAfter(callback);
 
     return this;

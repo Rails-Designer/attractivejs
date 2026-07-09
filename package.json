@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "ci": "pnpm lint && pnpm format:check && pnpm test",
+    "docs": "cd ./docs/ && bin/dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepublishOnly": "pnpm build",

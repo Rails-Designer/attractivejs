@@ -1,119 +1,203 @@
-import { describe, test, expect, beforeEach, vi } from "vitest";
-import Hooks from "../../src/core/hooks.js";
+import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
+import Attractive from "../../src/attractive.js";
 
-describe("Hooks", () => {
-  let hooks;
+describe("beforeAction", () => {
+  let attractive;
 
   beforeEach(() => {
-    hooks = new Hooks();
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+    vi.useFakeTimers();
+
+    attractive = new Attractive();
+
+    attractive.addAction("noop", () => {});
   });
 
-  describe("addBefore / runBefore", () => {
-    test("fires callback with context", () => {
-      const callback = vi.fn();
-      const context = { name: "test" };
-
-      hooks.addBefore(callback);
-      hooks.runBefore(context);
-
-      expect(callback).toHaveBeenCalledWith(context);
-    });
-
-    test("fires multiple callbacks in order", () => {
-      const order = [];
-      const context = { name: "test" };
-
-      hooks.addBefore(() => order.push("first"));
-      hooks.addBefore(() => order.push("second"));
-      hooks.runBefore(context);
-
-      expect(order).toEqual(["first", "second"]);
-    });
-
-    test("returns false when a callback returns false", () => {
-      hooks.addBefore(() => true);
-      hooks.addBefore(() => false);
-      hooks.addBefore(() => true);
-
-      const result = hooks.runBefore({});
-
-      expect(result).toBe(false);
-    });
-
-    test("does not call remaining callbacks after false", () => {
-      const afterCancelled = vi.fn();
-
-      hooks.addBefore(() => false);
-      hooks.addBefore(afterCancelled);
-      hooks.runBefore({});
-
-      expect(afterCancelled).not.toHaveBeenCalled();
-    });
+  afterEach(() => {
+    attractive.deactivate();
   });
 
-  describe("removeBefore", () => {
-    test("removes a registered callback", () => {
-      const callback = vi.fn();
+  test("fires callback with context", async () => {
+    const callback = vi.fn();
 
-      hooks.addBefore(callback);
-      hooks.removeBefore(callback);
-      hooks.runBefore({});
+    attractive.beforeAction(callback);
+    attractive.activate();
 
-      expect(callback).not.toHaveBeenCalled();
-    });
+    document.body.innerHTML = `
+      <button id="btn" @action="noop">Click</button>
+    `;
 
-    test("does not throw when removing non-existent callback", () => {
-      const callback = vi.fn();
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
 
-      expect(() => hooks.removeBefore(callback)).not.toThrow();
-    });
+    expect(callback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "noop",
+        element: expect.any(HTMLElement),
+        options: expect.any(Object),
+        event: expect.any(MouseEvent)
+      })
+    );
   });
 
-  describe("addAfter / runAfter", () => {
-    test("fires callback with context and result", () => {
-      const callback = vi.fn();
-      const context = { name: "test", result: "ok" };
+  test("fires multiple callbacks in order", async () => {
+    const order = [];
 
-      hooks.addAfter(callback);
-      hooks.runAfter(context);
+    attractive.beforeAction(() => order.push("first"));
+    attractive.beforeAction(() => order.push("second"));
+    attractive.activate();
 
-      expect(callback).toHaveBeenCalledWith(context);
-    });
+    document.body.innerHTML = `
+      <button id="btn" @action="noop">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(order).toEqual(["first", "second"]);
   });
 
-  describe("addError / runError", () => {
-    test("fires callback with context and error", () => {
-      const callback = vi.fn();
-      const context = { name: "test", error: new Error("fail") };
+  test("cancels action when callback returns false", async () => {
+    const actionRan = vi.fn();
 
-      hooks.addError(callback);
-      hooks.runError(context);
+    attractive = new Attractive();
+    attractive.addAction("guarded", actionRan);
+    attractive.beforeAction(() => false);
+    attractive.activate();
 
-      expect(callback).toHaveBeenCalledWith(context);
-    });
+    document.body.innerHTML = `
+      <button id="btn" @action="guarded">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(actionRan).not.toHaveBeenCalled();
   });
 
-  describe("integration context shape", () => {
-    test("runBefore receives expected context properties", () => {
-      const callback = vi.fn();
-      const context = {
-        name: "toggleClass",
-        element: document.createElement("div"),
-        options: { value: "active", target: "foo", targets: null },
-        event: new MouseEvent("click")
-      };
+  test("does not call remaining callbacks after false", async () => {
+    const afterCancelled = vi.fn();
 
-      hooks.addBefore(callback);
-      hooks.runBefore(context);
+    attractive.beforeAction(() => false);
+    attractive.beforeAction(afterCancelled);
+    attractive.activate();
 
-      expect(callback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: expect.any(String),
-          element: expect.any(HTMLElement),
-          options: expect.any(Object),
-          event: expect.any(MouseEvent)
-        })
-      );
+    document.body.innerHTML = `
+      <button id="btn" @action="noop">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(afterCancelled).not.toHaveBeenCalled();
+  });
+
+  test("receives expected context properties", async () => {
+    const callback = vi.fn();
+
+    attractive.beforeAction(callback);
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" @action="noop">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(callback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: expect.any(String),
+        element: expect.any(HTMLElement),
+        options: expect.any(Object),
+        event: expect.any(MouseEvent)
+      })
+    );
+  });
+});
+
+describe("afterAction", () => {
+  let attractive;
+
+  beforeEach(() => {
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+    vi.useFakeTimers();
+
+    attractive = new Attractive();
+    attractive.addAction("noop", () => {});
+  });
+
+  afterEach(() => {
+    attractive.deactivate();
+  });
+
+  test("fires callback with context and result", async () => {
+    const callback = vi.fn();
+
+    attractive.afterAction(callback);
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" @action="noop">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(callback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "noop",
+        element: expect.any(HTMLElement),
+        options: expect.any(Object),
+        result: undefined
+      })
+    );
+  });
+});
+
+describe("onError", () => {
+  let attractive;
+
+  beforeEach(() => {
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+    vi.useFakeTimers();
+
+    attractive = new Attractive();
+  });
+
+  afterEach(() => {
+    attractive.deactivate();
+  });
+
+  test("fires callback when action throws", async () => {
+    const hook = vi.fn();
+    const error = new Error("boom");
+
+    attractive.addAction("thrower", () => {
+      throw error;
     });
+    attractive.onError(hook);
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <button id="btn" @action="thrower">Click</button>
+    `;
+
+    await vi.runAllTimersAsync();
+    document.getElementById("btn").click();
+    await vi.runAllTimersAsync();
+
+    expect(hook).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "thrower", error })
+    );
   });
 });

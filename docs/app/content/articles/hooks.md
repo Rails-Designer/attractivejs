@@ -8,14 +8,14 @@ position: 2
 Lifecycle hooks let you run code before or after every action and handle errors centrally.
 
 
-## onBeforeAction
+## beforeAction
 
 Runs before each action. Return `false` to cancel the action.
 
 ```js
 const attractive = Attractive.activate();
 
-attractive.onBeforeAction(({ name, element, options, event }) => {
+attractive.beforeAction(({ name, element, options, event }) => {
   if (!element.classList.contains("enabled")) {
     return false;
   }
@@ -23,11 +23,11 @@ attractive.onBeforeAction(({ name, element, options, event }) => {
 ```
 
 
-## onAfterAction
+## afterAction
 
 Runs after each successful action.
 ```js
-attractive.onAfterAction(({ name, element, options, event, result }) => {
+attractive.afterAction(({ name, element, options, event, result }) => {
   console.log(`Action ${name} completed`);
 });
 ```
