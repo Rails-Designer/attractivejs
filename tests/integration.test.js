@@ -792,4 +792,22 @@ describe("Core build with selective actions", () => {
     const target = document.getElementById("target");
     expect(target.classList.contains("active")).toBe(true);
   });
+
+  test("action on template element processes correctly", async () => {
+    attractive.activate();
+
+    document.body.innerHTML = `
+      <template @action="focus" @target="inputField">Content</template>
+      <input id="inputField" type="text">
+    `;
+
+    await vi.runAllTimersAsync();
+
+    const input = document.getElementById("inputField");
+    const focusSpy = vi.spyOn(input, "focus");
+
+    document.querySelector("template").click();
+
+    expect(focusSpy).toHaveBeenCalled();
+  });
 });
