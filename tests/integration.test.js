@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../src/index.js";
-import CoreAttractive from "../src/attractive.js";
+import Core from "../src/core.js";
 import builtinActions from "../src/actions/index.js";
 import { defaultDirectives } from "../src/core/builtin_directives.js";
 import { addClass, removeClass } from "../src/actions/class.js";
@@ -601,7 +601,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("registers actions and makes them available", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
     attractive.registerDirectives((directives) => {
@@ -624,7 +624,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("registers actions from different modules", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
     attractive.addAction("remove", remove);
@@ -649,7 +649,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("registers multiple actions from a single module", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
     attractive.addAction("removeClass", removeClass);
@@ -674,7 +674,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("unregistered actions are not available", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
 
@@ -695,7 +695,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("addActions registers multiple actions at once", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addActions({ addClass, removeClass });
 
@@ -771,7 +771,7 @@ describe("Core build with selective actions", () => {
   });
 
   test("addTriggers/addGates register directives at once", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
     attractive.addGates({ enabled: (_context) => true });
@@ -816,7 +816,7 @@ describe("Core build with selective actions", () => {
 
 describe("Extend", () => {
   test("accepts an array of extensions", async () => {
-    const attractive = new CoreAttractive();
+    const attractive = new Core();
 
     attractive.addAction("addClass", addClass);
     attractive.registerDirectives((directives) => {

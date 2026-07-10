@@ -3,31 +3,25 @@ import Registry from "./core/registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
 import Directives from "./core/directives";
-import Observer from "./core/observer";
-import EventListeners from "./core/event_listeners";
-import ActionController from "./core/action_controller";
-import { actionAttributes } from "./core/attributes";
+import ElementLifecycleHooks from "./core/element_lifecycle_hooks";
+import EventSubscriptions from "./core/event_subscriptions";
+import AttributePrefixes from "./core/attribute_prefixes";
+import Activation from "./core/activation";
 import { defaultEventModifier } from "./core/default_event_modifier";
 import Debug from "./debug";
 
 class Attractive {
-  static #extensions = new Set();
-
   #registry = new Registry();
   #events;
   #eventTypes;
   #directives;
-  #observe;
-  #listeners;
-  #controller;
-  #initialized = false;
+  #activation;
   #hooks = new Hooks();
-  #elementAddedHooks = new Set();
-  #elementRemovedHooks = new Set();
-  #beforeRemoveHooks = new Set();
-  #eventSubscriptions = new Map();
-  #attributePrefixes = new Set();
-  #scope;
+  #elementLifecycle = new ElementLifecycleHooks();
+  #subscriptions = new EventSubscriptions();
+  #attributePrefixes = new AttributePrefixes();
+
+  static #extensions = new Set();
 
   static activate(options = {}) {
     const instance = new this(options);
@@ -48,21 +42,21 @@ class Attractive {
   }
 
   /**
-   * Toggle debug logging on or off.
-   *
-   * @param {boolean} value — true to enable debug output
-   */
-  static set debug(value) {
-    Debug.enabled = value;
-  }
-
-  /**
    * Returns whether debug logging is enabled.
    *
    * @returns {boolean} — current debug state
    */
   static get debug() {
     return Debug.enabled;
+  }
+
+  /**
+   * Toggle debug logging on or off.
+   *
+   * @param {boolean} value — true to enable debug output
+   */
+  static set debug(value) {
+    Debug.enabled = value;
   }
 
   get debug() {
@@ -79,10 +73,10 @@ class Attractive {
    * @returns {boolean} — true if activate() has been called and deactivate() has not
    */
   get active() {
-    return this.#initialized;
+    return this.#activation.active;
   }
 
-  static onError(error, message, detail) {
+  static onError(error, message) {
     console.warn(`[attractive] ${message}`, error);
 
     if (typeof window.onerror === "function") {
@@ -90,7 +84,7 @@ class Attractive {
     }
   }
 
-  constructor(options = {}) {
+  constructor() {
     this.#events = new Events(
       this.#registry,
       this.#hooks,
@@ -98,11 +92,20 @@ class Attractive {
     );
     this.#eventTypes = new EventTypes();
     this.#directives = new Directives(this.#registry);
-    this.#listeners = new EventListeners((event, context) =>
-      this.#controller.process(event, context)
-    );
 
     defaultEventModifier(this.#registry);
+
+    this.#activation = new Activation({
+      registry: this.#registry,
+      events: this.#events,
+      eventTypes: this.#eventTypes,
+      directives: this.#directives,
+      elementLifecycle: this.#elementLifecycle,
+      subscriptions: this.#subscriptions,
+      attributePrefixes: this.#attributePrefixes,
+      owner: this,
+      extensions: Attractive.#extensions
+    });
   }
 
   /**
@@ -114,76 +117,7 @@ class Attractive {
    * @returns {Attractive} — the instance for chaining
    */
   activate(options = {}) {
-    const { on = document, debug = false } = options;
-
-    Debug.enabled = debug;
-
-    if (!on) {
-      Debug.error(
-        "scope element not found: activate() requires a valid DOM element"
-      );
-
-      return this;
-    }
-
-    if (this.#initialized) return this;
-
-    this.#scope = on;
-
-    this.#controller = new ActionController(
-      this.#registry,
-      this.#events,
-      this.#eventTypes,
-      this.#directives,
-      this.#listeners,
-      on
-    );
-
-    this.#observe = new Observer(
-      (element) => {
-        this.#controller.prepare(element);
-        this.#elementAddedHooks.forEach((hook) => hook(element));
-      },
-      (element) => {
-        this.#listeners.cleanup(element);
-        this.#elementRemovedHooks.forEach((hook) => hook(element));
-      },
-      on,
-      (element) => {
-        this.#beforeRemoveHooks.forEach((hook) => hook(element));
-      }
-    );
-
-    const elements = on.querySelectorAll("*");
-    const actionElements = [];
-
-    for (const element of elements) {
-      if (this.#hasActionAttribute(element)) {
-        actionElements.push(element);
-      }
-    }
-
-    actionElements.forEach((element) => {
-      this.#controller.prepare(element);
-    });
-
-    for (const extension of Attractive.#extensions) {
-      extension({ instance: this, registry: this.#registry });
-    }
-
-    this.#observe.start((element) => this.#hasActionAttribute(element));
-
-    actionElements.forEach((element) => {
-      this.#elementAddedHooks.forEach((hook) => hook(element));
-    });
-
-    this.#initialized = true;
-
-    if (Debug.enabled) {
-      Debug.log(
-        `active — ${actionElements.length} element${actionElements.length === 1 ? "" : "s"} with actions`
-      );
-    }
+    this.#activation.activate(options);
 
     return this;
   }
@@ -322,63 +256,6 @@ class Attractive {
     return this;
   }
 
-  onElementAdded(callback) {
-    this.#elementAddedHooks.add(callback);
-
-    return this;
-  }
-
-  onElementRemoved(callback) {
-    this.#elementRemovedHooks.add(callback);
-
-    return this;
-  }
-
-  onBeforeElementRemoved(callback) {
-    this.#beforeRemoveHooks.add(callback);
-
-    return this;
-  }
-
-  addEventListener(type, callback) {
-    if (!this.#eventSubscriptions.has(type)) {
-      const listener = (event) => {
-        this.#eventSubscriptions
-          .get(type)
-          .subscriptions.forEach((fn) => fn(event));
-      };
-
-      (this.#scope || document).addEventListener(type, listener);
-
-      this.#eventSubscriptions.set(type, {
-        listener,
-        subscriptions: new Set()
-      });
-    }
-
-    this.#eventSubscriptions.get(type).subscriptions.add(callback);
-
-    return this;
-  }
-
-  observeAttribute(prefix) {
-    this.#attributePrefixes.add(prefix);
-
-    return this;
-  }
-
-  // private
-
-  #hasActionAttribute(element) {
-    if (actionAttributes(element)) return true;
-
-    return Array.from(this.#attributePrefixes).some((prefix) =>
-      Array.from(element.attributes).some((attribute) =>
-        attribute.name.startsWith(prefix)
-      )
-    );
-  }
-
   /**
    * Registers the default built-in actions.
    *
@@ -421,32 +298,7 @@ class Attractive {
    * @returns {Attractive} — the instance for chaining
    */
   deactivate() {
-    if (!this.#initialized) return this;
-
-    this.#listeners.removeAll();
-
-    if (this.#observe) {
-      this.#observe.stop();
-    }
-
-    this.#eventSubscriptions.forEach((subscription, type) => {
-      (this.#scope || document).removeEventListener(
-        type,
-        subscription.listener
-      );
-      subscription.subscriptions.clear();
-    });
-
-    this.#eventSubscriptions.clear();
-
-    this.#elementAddedHooks.clear();
-    this.#elementRemovedHooks.clear();
-    this.#beforeRemoveHooks.clear();
-    this.#attributePrefixes.clear();
-
-    this.#initialized = false;
-
-    Debug.log("deactivated");
+    this.#activation.deactivate();
 
     return this;
   }
@@ -461,6 +313,36 @@ class Attractive {
     this.deactivate();
 
     return this.activate(options);
+  }
+
+  onElementAdded(callback) {
+    this.#elementLifecycle.onAdded(callback);
+
+    return this;
+  }
+
+  onElementRemoved(callback) {
+    this.#elementLifecycle.onRemoved(callback);
+
+    return this;
+  }
+
+  onBeforeElementRemoved(callback) {
+    this.#elementLifecycle.onBeforeRemove(callback);
+
+    return this;
+  }
+
+  addEventListener(type, callback) {
+    this.#subscriptions.add(type, callback);
+
+    return this;
+  }
+
+  observeAttribute(prefix) {
+    this.#attributePrefixes.add(prefix);
+
+    return this;
   }
 }
 

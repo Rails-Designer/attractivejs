@@ -2,7 +2,6 @@
 
 Addons extend Attractive instances with event modifiers, directives and behaviors. Registered via `instance.extend()` or `Attractive.extend()`.
 
-
 ## Usage
 
 ```js
@@ -13,17 +12,16 @@ const attractive = Attractive.activate();
 attractive.extend(keyboard);
 ```
 
-
 ## Available addons
 
-| Addon    | Import                  | Description                                                                |
-| -------- | ----------------------- | -------------------------------------------------------------------------- |
+| Addon    | Import                  | Description                                                              |
+| -------- | ----------------------- | ------------------------------------------------------------------------ |
 | keyboard | `attractivejs/keyboard` | Key-filter dot modifiers (.enter, .escape…) and global @hotkey shortcuts |
-
 
 ## Writing an addon
 
 An addon is a function receiving `{ instance, registry }`:
+
 ```js
 export function myAddon({ instance, registry }) {
   registry.addEventModifier("custom", (event, element) => {
@@ -31,7 +29,6 @@ export function myAddon({ instance, registry }) {
   });
 }
 ```
-
 
 ### What addons can do
 

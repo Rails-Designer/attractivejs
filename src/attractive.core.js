@@ -1,3 +1,1 @@
-import Attractive from "./attractive";
-
-export default Attractive;
+export { default } from "./core";
