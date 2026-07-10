@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
-import Attractive from "../../src/attractive.js";
+import Attractive from "../../src/core.js";
 
 describe("beforeAction", () => {
   let attractive;

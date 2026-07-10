@@ -1,4 +1,4 @@
-import Attractive from "./attractive";
+import Attractive from "./core";
 import builtinActions from "./actions";
 import { defaultDirectives } from "./core/builtin_directives";
 
