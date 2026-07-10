@@ -5,6 +5,7 @@ import Debug from "./../debug";
 
 class Activation {
   #registry;
+  #scope;
   #events;
   #eventTypes;
   #directives;
