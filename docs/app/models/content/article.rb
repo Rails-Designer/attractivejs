@@ -3,6 +3,7 @@ class Content::Article < Perron::Resource
     "get-started" => "Getting started",
     "basics" => "Basics",
     "advanced" => "Advanced",
+    "extensions" => "Extensions"
   }
 
   Category = Data.define(:key, :name, :resources)
@@ -17,7 +18,7 @@ class Content::Article < Perron::Resource
 
   delegate :category, :position, :title, :description, to: :metadata
 
-  adjacent_by :position, within: { category: %w[introduction basics advanced] }
+  adjacent_by :position, within: { category: Content::Article::CATEGORIES.keys }
 
   validates :title, :description, presence: true
   validates :category, inclusion: { in: CATEGORIES.keys }

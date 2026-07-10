@@ -1,6 +1,7 @@
 class Registry {
   #actions = new Map();
   #directives = new Map();
+  #eventModifiers = new Map();
   #activeActions = null;
 
   addAction(name, action, group = null) {
@@ -37,6 +38,14 @@ class Registry {
 
   hasDirective(name) {
     return this.#directives.has(name);
+  }
+
+  addEventModifier(name, eventModifier) {
+    this.#eventModifiers.set(name, eventModifier);
+  }
+
+  getEventModifier(name) {
+    return this.#eventModifiers.get(name);
   }
 }
 

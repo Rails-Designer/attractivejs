@@ -87,5 +87,22 @@ export default [
     }
   }),
 
+  defineConfig({
+    input: "src/addons/keyboard/index.js",
+    output: {
+      file: "dist/keyboard.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/keyboard/index.js",
+    output: {
+      file: "dist/keyboard.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
   ...actionConfigs
 ];

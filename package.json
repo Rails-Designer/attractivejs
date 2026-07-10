@@ -78,6 +78,9 @@
     },
     "./actions/style": {
       "import": "./dist/actions/style.js"
+    },
+    "./keyboard": {
+      "import": "./dist/keyboard.js"
     }
   },
   "files": [
