@@ -1,6 +1,6 @@
 import { actionAttributes, getActionAttributes } from "./attributes";
 
-class ActionController {
+class Actions {
   static #nonBubblingEvents = new Set([
     "mouseenter",
     "mouseleave",
@@ -102,7 +102,7 @@ class ActionController {
         continue;
       }
 
-      if (ActionController.#nonBubblingEvents.has(eventType)) {
+      if (Actions.#nonBubblingEvents.has(eventType)) {
         element.addEventListener(eventType, (event) =>
           this.#events.process(event, {
             on: element,
@@ -123,7 +123,7 @@ class ActionController {
 
       const eventType = eventName || this.#defaultEventType({ for: element });
 
-      if (ActionController.#nonBubblingEvents.has(eventType)) continue;
+      if (Actions.#nonBubblingEvents.has(eventType)) continue;
 
       eventTypes.add(eventType);
     }
@@ -183,4 +183,4 @@ class ActionController {
   }
 }
 
-export default ActionController;
+export default Actions;

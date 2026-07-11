@@ -1,4 +1,4 @@
-import ActionController from "./action_controller";
+import Actions from "./actions";
 import EventListeners from "./event_listeners";
 import Observer from "./observer";
 import Debug from "./../debug";
@@ -14,7 +14,7 @@ class Activation {
   #subscriptions;
   #attributePrefixes;
   #owner;
-  #controller;
+  #actions;
   #observe;
   #initialized = false;
   #extensions;
@@ -30,7 +30,7 @@ class Activation {
     this.#owner = dependencies.owner;
     this.#extensions = dependencies.extensions;
     this.#listeners = new EventListeners((event, context) =>
-      this.#controller?.process(event, context)
+      this.#actions?.process(event, context)
     );
   }
 
@@ -55,7 +55,7 @@ class Activation {
     this.#scope = on;
     this.#subscriptions.setScope(on);
 
-    this.#controller = new ActionController(
+    this.#actions = new Actions(
       this.#registry,
       this.#events,
       this.#eventTypes,
@@ -66,7 +66,7 @@ class Activation {
 
     this.#observe = new Observer(
       (element) => {
-        this.#controller.prepare(element);
+        this.#actions.prepare(element);
         this.#elementLifecycle.fireAdded(element);
       },
       (element) => {
@@ -89,7 +89,7 @@ class Activation {
     }
 
     actionElements.forEach((element) => {
-      this.#controller.prepare(element);
+      this.#actions.prepare(element);
     });
 
     for (const extension of this.#extensions) {
