@@ -27,7 +27,7 @@ describe("Reload Actions", () => {
       expect(window.location.reload).not.toHaveBeenCalled();
     });
 
-    test("reloads window for non-turbo-frame elements", () => {
+    test("does nothing for elements without reload method", () => {
       document.body.innerHTML = `
         <button id="trigger">Reload</button>
         <div id="target">Regular div</div>
@@ -36,10 +36,10 @@ describe("Reload Actions", () => {
 
       reloadActions.reload(element, { target: "target" });
 
-      expect(window.location.reload).toHaveBeenCalled();
+      expect(window.location.reload).not.toHaveBeenCalled();
     });
 
-    test("reloads window when turbo-frame lacks reload method", () => {
+    test("does nothing when turbo-frame lacks reload method", () => {
       document.body.innerHTML = `
         <button id="trigger">Reload</button>
         <turbo-frame id="target"></turbo-frame>
@@ -47,6 +47,14 @@ describe("Reload Actions", () => {
       const element = document.getElementById("trigger");
 
       reloadActions.reload(element, { target: "target" });
+
+      expect(window.location.reload).not.toHaveBeenCalled();
+    });
+
+    test("reloads window when target is 'window'", () => {
+      const element = document.createElement("button");
+
+      reloadActions.reload(element, { target: "window" });
 
       expect(window.location.reload).toHaveBeenCalled();
     });
@@ -65,7 +73,7 @@ describe("Reload Actions", () => {
       reloadActions.reload(element, { targets: ".target" });
 
       expect(frame.reload).toHaveBeenCalled();
-      expect(window.location.reload).toHaveBeenCalled();
+      expect(window.location.reload).not.toHaveBeenCalled();
     });
   });
 
@@ -79,7 +87,7 @@ describe("Reload Actions", () => {
 
       reloadActions.refresh(element, { target: "target" });
 
-      expect(window.location.reload).toHaveBeenCalled();
+      expect(window.location.reload).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,8 +1,8 @@
 ---
 title: reload
 group: reload
-description: Reload a Turbo Frame or the current page
+description: Reload elements by target or the current page via `@target: "window"`
 position: 1
 ---
 
-<button @action="reload">Reload page</button>
+<button @action="reload" @target="window">Reload page</button>

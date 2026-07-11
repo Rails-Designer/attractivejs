@@ -3,16 +3,20 @@ import ActionBase from "./base";
 class Reload extends ActionBase {
   reload() {
     this.targets.forEach((target) => {
-      this.#isTurboFrame(target) ? target.reload() : window.location.reload();
+      if (this.#reloadable(target)) target.reload();
     });
+  }
+
+  get targets() {
+    if (this.target === "window") return [window.location];
+
+    return super.targets;
   }
 
   // private
 
-  #isTurboFrame(target) {
-    return (
-      target.tagName === "TURBO-FRAME" && typeof target.reload === "function"
-    );
+  #reloadable(target) {
+    return typeof target.reload === "function";
   }
 }
 
