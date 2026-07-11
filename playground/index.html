@@ -7,13 +7,23 @@
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛝</text></svg>"
     />
     <script type="module">
-      import Attractive from "../dist/attractive.min.js"
-      import { keyboard } from "../dist/keyboard.min.js"
+      import * as Turbo from "https://unpkg.com/@hotwired/turbo/dist/turbo.es2017-esm.js";
+    </script>
 
-      Attractive.activate({ debug: true }).extend(keyboard)
+    <script type="module">
+      import Attractive from "../dist/attractive.min.js";
+      import { keyboard } from "../dist/keyboard.min.js";
+
+      Attractive.activate({ debug: true }).extend(keyboard);
     </script>
   </head>
   <body>
+    <turbo-frame id="demo" src="/playground/turbo.html"> </turbo-frame>
+
+    <button @action="reload" @target="demo">Reload frame</button>
+
+    <button @action="reload.window">Reload page</button>
+
     <h2>Keyboard</h2>
 
     <h3>1. global with dot (@hotkey.escape, bare → click delegation)</h3>
