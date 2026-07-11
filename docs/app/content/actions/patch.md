@@ -4,7 +4,7 @@ group: request
 description: Send a PATCH request
 position: 3
 options:
-  - attribute: data-request-debounce
+  - attribute: data-debounce
     description: Debounce delay in ms before making the request
     type: number
   - attribute: data-request-feedback
