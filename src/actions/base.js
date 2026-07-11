@@ -1,9 +1,22 @@
 import Debug from "./../debug";
+import debounce from "./../helpers/debounce";
+
+const debounceTimers = new WeakMap();
 
 export default class ActionBase {
   static actionFor(method) {
     return (element, options = {}) => {
       const instance = new this(element, options);
+      const delay = instance.#debounceDelay;
+
+      if (delay > 0) {
+        const timer = debounceTimers.get(element) ?? debounce();
+
+        debounceTimers.set(element, timer);
+        timer(() => instance[method](), delay);
+
+        return;
+      }
 
       return instance[method]();
     };
@@ -16,6 +29,14 @@ export default class ActionBase {
     this.target = options.target;
     this.targetsSelector = options.targets;
     this.options = options;
+  }
+
+  get #debounceDelay() {
+    const dataset = this.currentElement.dataset;
+
+    return parseInt(
+      dataset.debounce ?? dataset.formDebounce ?? dataset.requestDebounce ?? 0
+    );
   }
 
   get targets() {

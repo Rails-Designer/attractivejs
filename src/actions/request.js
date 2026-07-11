@@ -2,9 +2,7 @@ import ActionBase from "./base";
 import { CSRF } from "./request/csrf";
 import debounce from "./../helpers/debounce";
 
-const debouncedRequest = debounce();
 const debouncedFeedback = debounce();
-const debouncedFetch = debounce();
 
 const activeRequests = new WeakMap();
 
@@ -16,15 +14,6 @@ class Request extends ActionBase {
   }
 
   async get() {
-    const debounceDelay =
-      parseInt(this.currentElement.dataset.requestDebounce) || 0;
-
-    if (debounceDelay) {
-      debouncedRequest(() => this.#executeGet(), debounceDelay);
-
-      return;
-    }
-
     return this.#executeGet();
   }
 
@@ -131,15 +120,6 @@ class Request extends ActionBase {
   }
 
   #fetch(method) {
-    const debounceDelay =
-      parseInt(this.currentElement.dataset.requestDebounce) || 0;
-
-    if (debounceDelay) {
-      debouncedFetch(() => this.#executeFetch(method), debounceDelay);
-
-      return;
-    }
-
     return this.#executeFetch(method);
   }
 
