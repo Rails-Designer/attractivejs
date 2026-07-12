@@ -7,23 +7,16 @@ position: 1
 
 Keyboard adds key-filter dot modifiers for `@keydown` and global `@hotkey` shortcuts.
 
+
 ## Usage
 
 ```js
 import Attractive from "attractivejs";
 import { keyboard } from "attractivejs/keyboard";
 
-Attractive.extend(keyboard);
-
-const attractive = Attractive.activate();
+Attractive.activate({ extendWith: [keyboard] });
 ```
 
-Or per-instance:
-
-```js
-const attractive = Attractive.activate();
-attractive.extend(keyboard);
-```
 
 ## @keydown vs @hotkey
 
@@ -32,19 +25,19 @@ attractive.extend(keyboard);
 | `@keydown.*` | Element — must be focused |
 | `@hotkey.*`  | Global — suppressed when editing form fields |
 
+
 ## @keydown
 
 Dot modifiers filter which keys trigger the action. The element must be focused for `@keydown` to fire:
-
 ```html
 <input @keydown.enter="addClass#submitted" @target="status" />
 ```
 
 Children of the focused element also trigger it, since events bubble:
-
 ```html
 <form @keydown.enter="addClass#searching" @target="results">
   <input name="q" />
+
   <button>Search</button>
 </form>
 ```
@@ -67,26 +60,25 @@ Children of the focused element also trigger it, since events bubble:
 | `.document`   | Listens on `document` instead |
 
 A bare `@keydown` fires on any key:
-
 ```html
 <input @keydown="addClass#pressed" @target="status" />
 ```
 
 Multiple keys combine with `+`:
-
 ```html
 <input @keydown.ctrl+k="focus" @target="search-field" />
 <input @keydown.shift+enter="addClass#submitted" @target="status" />
 ```
 
+
 ### Global with `.window`
 
 Add `.window` to fire globally regardless of element focus. Editable elements (input, textarea, select, contenteditable) suppress the action when focused:
-
 ```html
 <div @keydown.meta+s.window="addClass#saved" @target="status">Save</div>
 <div @keydown.escape.window="removeAttribute#open" @target="menu">Close</div>
 ```
+
 
 ## @hotkey
 
@@ -101,6 +93,7 @@ Without a value, `@hotkey` calls `element.click()`:
 <button @hotkey.escape @action="removeAttribute#open" @target="menu">Close</button>
 ```
 
+
 ### Valued hotkey
 
 With a value, `@hotkey` dispatches a synthetic `hotkey` event through the action pipeline:
@@ -108,6 +101,7 @@ With a value, `@hotkey` dispatches a synthetic `hotkey` event through the action
 <button @hotkey.escape="removeAttribute#open" @target="menu">Close</button>
 <button @hotkey.ctrl+k="focus" @target="search">Search</button>
 ```
+
 
 ### Hotkey syntax
 
@@ -119,13 +113,10 @@ With a value, `@hotkey` dispatches a synthetic `hotkey` event through the action
 | Combo (+)  | `@hotkey.ctrl+k`    | `Ctrl` and `K` are held simultaneously     |
 | Sequence   | `@hotkey.g.i`       | `G` is pressed, released, then ``I`` pressed |
 
-- `+` separates keys pressed simultaneously (combo): `@hotkey.ctrl+shift+z`
-- `.` separates sequential steps: `@hotkey.g.i` (g then i)
 
 ### Cancellable event
 
 Before the action fires, `@hotkey` dispatches a cancellable `attractive:hotkey` CustomEvent on the element. Call `preventDefault()` to stop the action:
-
 ```js
 element.addEventListener("attractive:hotkey", (event) => {
   if (someCondition) event.preventDefault();
@@ -133,6 +124,7 @@ element.addEventListener("attractive:hotkey", (event) => {
 ```
 
 The event `detail` includes the matched key `path` array.
+
 
 ### Focus vs click
 

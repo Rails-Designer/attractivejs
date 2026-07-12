@@ -1,8 +1,8 @@
 import ActionBase from "./base";
 import { CSRF } from "./request/csrf";
-import debounce from "./../helpers/debounce";
+import delay from "./../helpers/delay";
 
-const debouncedFeedback = debounce();
+const clearFeedback = delay();
 
 const activeRequests = new WeakMap();
 
@@ -112,7 +112,7 @@ class Request extends ActionBase {
 
     if (!duration || state === "busy") return;
 
-    debouncedFeedback(() => {
+    clearFeedback(() => {
       this.targets.forEach((target) =>
         target.removeAttribute("data-request-success")
       );

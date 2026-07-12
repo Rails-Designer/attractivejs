@@ -1,15 +1,12 @@
 # Addons
 
-Addons extend Attractive instances with event modifiers, directives and behaviors. Registered via `instance.extend()` or `Attractive.extend()`.
-
-## Usage
+Addons extend Attractive instances with event modifiers, directives and behaviors. Registered per-instance via `extendWith`:
 
 ```js
 import Attractive from "attractivejs";
 import { keyboard } from "attractivejs/keyboard";
 
-const attractive = Attractive.activate();
-attractive.extend(keyboard);
+Attractive.activate({ extendWith: [keyboard] });
 ```
 
 ## Available addons
@@ -17,6 +14,7 @@ attractive.extend(keyboard);
 | Addon    | Import                  | Description                                                              |
 | -------- | ----------------------- | ------------------------------------------------------------------------ |
 | keyboard | `attractivejs/keyboard` | Key-filter dot modifiers (.enter, .escape…) and global @hotkey shortcuts |
+| reactive | `attractivejs/reactive` | Reactive key-value store with `@text` DOM subscriptions                  |
 
 ## Writing an addon
 

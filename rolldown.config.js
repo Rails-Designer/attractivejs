@@ -104,5 +104,22 @@ export default [
     }
   }),
 
+  defineConfig({
+    input: "src/addons/reactive/index.js",
+    output: {
+      file: "dist/reactive.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/reactive/index.js",
+    output: {
+      file: "dist/reactive.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
   ...actionConfigs
 ];

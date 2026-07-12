@@ -197,20 +197,27 @@
 
       .anchor {
         scroll-margin-top: 3rem;
+        display: inline-block;
+        width: .675rem; height: auto;
+        aspect-ratio: 1;
+        font-size: .675em;
+        line-height: 1;
+        font-weight: 400;
+        text-decoration: none;
+        color: var(--gray-400);
+
+        &:hover {
+          color: var(--brand-400);
+        }
 
         &::before {
           content: "#";
-          display: inline-block;
-          width: 1rem; height: 1rem;
-          font-size: .75em;
-          font-weight: 400;
-          color: var(--gray-500);
           opacity: 0;
         }
       }
 
       @media (hover: hover) and (width >= 1024px) {
-        margin-left: -1.25rem;
+        margin-left: -.875rem;
 
         &:hover .anchor::before {
           opacity: 1;

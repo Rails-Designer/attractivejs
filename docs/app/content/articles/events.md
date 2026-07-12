@@ -19,11 +19,6 @@ position: 3
 | `<select>`       | `change`      |
 | `<form>`         | `submit`      |
 
-```html
-<button @action="toggleClass#active">Toggle</button>
-<input @action="addClass#visible">
-```
-
 
 ## Explicit events
 
@@ -31,7 +26,7 @@ Use the event name as the attribute to override the default:
 
 ```html
 <button @mouseenter="addClass#hovered" @mouseleave="removeClass#hovered">Hover</button>
-<input @change="addClass#dirty">
+<input @input="addClass#dirty">
 <button @dblclick="toggleClass#selected" />
 <input @focus="addClass#focused" @blur="removeClass#focused" />
 ```

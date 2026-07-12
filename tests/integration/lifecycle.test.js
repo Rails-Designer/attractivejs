@@ -3,11 +3,11 @@ import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
 import { defaultDirectives } from "../../src/core/builtin_directives.js";
 
-globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
-
 let attractive;
 
 beforeEach(() => {
+  if (attractive) attractive.deactivate();
+
   document.body.innerHTML = "";
   vi.clearAllTimers();
   vi.useFakeTimers();
@@ -130,4 +130,23 @@ test("active returns true after restart", () => {
   attractive.restart();
 
   expect(attractive.active).toBe(true);
+});
+
+test("removing @action attribute cleans up action", async () => {
+  attractive.activate();
+
+  document.body.innerHTML = `<button id="btn" @action="toggleClass#toggled" @target="target"><span id="target">Target</span></button>`;
+  await vi.runAllTimersAsync();
+
+  const btn = document.getElementById("btn");
+  const target = document.getElementById("target");
+
+  btn.click();
+  expect(target.classList.contains("toggled")).toBe(true);
+
+  btn.removeAttribute("@action");
+  await vi.runAllTimersAsync();
+
+  btn.click();
+  expect(target.classList.contains("toggled")).toBe(true);
 });

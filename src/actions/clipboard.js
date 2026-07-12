@@ -1,7 +1,7 @@
 import ActionBase from "./base";
-import debounce from "./../helpers/debounce";
+import delay from "./../helpers/delay";
 
-const debouncedClearingFeedback = debounce();
+const clearFeedback = delay();
 
 class Clipboard extends ActionBase {
   constructor(currentElement, options = {}) {
@@ -36,7 +36,7 @@ class Clipboard extends ActionBase {
 
     if (!delay) return;
 
-    debouncedClearingFeedback(
+    clearFeedback(
       () =>
         this.targets.forEach((target) =>
           target.removeAttribute(this.#attributeName)

@@ -5,7 +5,7 @@ category: get-started
 position: 3
 ---
 
-Install Attractive.js via npm or your package manager of choice.
+Install Attractive.js via pnpm or your package manager of choice.
 
 
 ## pnpm
@@ -21,31 +21,33 @@ pnpm add attractivejs
 npm install attractivejs
 ```
 
-
-## yarn
-
-```bash
-yarn add attractivejs
-```
-
-
-Then import it into your JavaScript entrypoint and activate it. 🧲
+Then import it into your JavaScript entrypoint and activate it.
 ```js
 import Attractive from "attractivejs";
 
-const attractive = Attractive.activate();
+Attractive.activate();
 ```
+
+
+## CDN
+
+```html
+<script type="module">
+  import Attractive from "//unpkg.com/attractivejs@latest/dist/attractive.min.js";
+
+  Attractive.activate();
+</script>
+```
+
 
 By default, Attractive observes the entire `document`. Pass a specific element to scope it:
 ```js
-const attractive = Attractive.activate({
-  on: document.getElementById("sidebar")
-});
+Attractive.activate({ on: document.getElementById("sidebar") });
 ```
 
 Enable debug logging:
 ```js
-const attractive = Attractive.activate({ debug: true });
+Attractive.activate({ debug: true });
 ```
 
 
@@ -55,4 +57,4 @@ const attractive = Attractive.activate({ debug: true });
 Attractive.activate().withActions(["class", "attribute"]);
 ```
 
-Only the `class` and `attribute` actions will be available.
+Only the `class` and `attribute` actions will be available. [Read also about core](/docs/core-build/) if you want to tree-shakeable actions.

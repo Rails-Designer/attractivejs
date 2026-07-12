@@ -21,24 +21,12 @@ class Attractive {
   #subscriptions = new EventSubscriptions();
   #attributePrefixes = new AttributePrefixes();
 
-  static #extensions = new Set();
-
   static activate(options = {}) {
     const instance = new this(options);
 
     instance.activate(options);
 
     return instance;
-  }
-
-  static extend(extensions) {
-    if (Array.isArray(extensions)) {
-      extensions.forEach((extension) => this.#extensions.add(extension));
-    } else {
-      this.#extensions.add(extensions);
-    }
-
-    return this;
   }
 
   /**
@@ -103,8 +91,7 @@ class Attractive {
       elementLifecycle: this.#elementLifecycle,
       subscriptions: this.#subscriptions,
       attributePrefixes: this.#attributePrefixes,
-      owner: this,
-      extensions: Attractive.#extensions
+      owner: this
     });
   }
 
@@ -276,18 +263,6 @@ class Attractive {
    */
   registerDirectives(directivesLoader) {
     directivesLoader(this.#registry);
-
-    return this;
-  }
-
-  extend(extensions) {
-    if (Array.isArray(extensions)) {
-      extensions.forEach((extension) =>
-        extension({ instance: this, registry: this.#registry })
-      );
-    } else {
-      extensions({ instance: this, registry: this.#registry });
-    }
 
     return this;
   }

@@ -1,7 +1,13 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
+
+import Attractive from "../../src/index.js";
 import formActions from "../../src/actions/form.js";
+import builtinActions from "../../src/actions/index.js";
+import { defaultDirectives } from "../../src/core/builtin_directives.js";
 
 describe("Form Actions", () => {
+  let attractive;
+
   beforeEach(() => {
     document.body.innerHTML = "";
     vi.clearAllTimers();
@@ -24,17 +30,31 @@ describe("Form Actions", () => {
       expect(form.requestSubmit).toHaveBeenCalled();
     });
 
-    test("submits form after delay", () => {
+    test("submits form after delay", async () => {
+      attractive = new Attractive();
+      attractive.registerActions((registry) => {
+        Object.entries(builtinActions).forEach(([name, action]) =>
+          registry.addAction(name, action)
+        );
+      });
+
+      attractive.registerDirectives((directives) => {
+        defaultDirectives(directives);
+      });
+
+      attractive.activate();
+
       document.body.innerHTML = `
-        <button id="trigger" data-form-debounce="100">Submit</button>
+        <button id="trigger" @click="submit#target" @target="target" data-form-debounce="100">Submit</button>
         <form id="target"></form>
       `;
-      const element = document.getElementById("trigger");
+      await vi.runAllTimersAsync();
+
       const form = document.getElementById("target");
 
       form.requestSubmit = vi.fn();
 
-      formActions.submit(element, { target: "target" });
+      document.getElementById("trigger").click();
 
       expect(form.requestSubmit).not.toHaveBeenCalled();
 

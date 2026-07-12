@@ -1,7 +1,7 @@
 import ActionBase from "./base";
-import debounce from "./../helpers/debounce";
+import delay from "./../helpers/delay";
 
-const debouncedClearingFeedback = debounce();
+const clearFeedback = delay();
 
 class Confirm extends ActionBase {
   confirm() {
@@ -21,7 +21,7 @@ class Confirm extends ActionBase {
 
     if (!duration) return;
 
-    debouncedClearingFeedback(
+    clearFeedback(
       () => this.currentElement.removeAttribute("data-confirm-success"),
       parseInt(duration)
     );
