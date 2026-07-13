@@ -30,8 +30,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown.enter fires only on Enter key", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown.enter="addClass#enter" @target="target" />
@@ -51,8 +50,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown.enter does not fire on other keys", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown.enter="addClass#enter" @target="target" />
@@ -72,8 +70,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown.escape fires only on Escape key", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown.escape="addClass#escape" @target="target" />
@@ -93,8 +90,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown.ctrl.k fires on Ctrl+K combo", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown.ctrl.k="addClass#combo" @target="target" />
@@ -114,8 +110,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown.ctrl.k does not fire on K without Ctrl", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown.ctrl.k="addClass#combo" @target="target" />
@@ -135,8 +130,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@keydown without modifiers still fires on any key", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <input id="input" @keydown="addClass#pressed" @target="target" />
@@ -156,8 +150,7 @@ describe("Keyboard addon", () => {
   });
 
   test("keyboard addon does not break @click.window", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div id="outer" @click.window="addClass#clicked:whenOutside" @target="target">
@@ -177,8 +170,7 @@ describe("Keyboard addon", () => {
   });
 
   test("keyboard addon does not break regular click events", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <button id="btn" @click="addClass#clicked" @target="target">
@@ -196,8 +188,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.escape with value executes action", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.escape="addClass#fired" @target="target"></div>
@@ -216,8 +207,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.ctrl+k with value fires on combo", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.ctrl+k="addClass#fired" @target="target"></div>
@@ -236,8 +226,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.ctrl+k does not fire on K without Ctrl", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.ctrl+k="addClass#fired" @target="target"></div>
@@ -256,8 +245,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.g.i sequence fires after g then i", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.g.i="addClass#fired" @target="target"></div>
@@ -288,8 +276,7 @@ describe("Keyboard addon", () => {
   });
 
   test("bare @hotkey.escape triggers click on element", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <button @hotkey.escape id="btn">Close</button>
@@ -310,8 +297,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.g+i fires when both keys are held", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.g+i="addClass#fired" @target="target"></div>
@@ -338,8 +324,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.g+i combo clears held keys after firing", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.g+i="addClass#fired" @target="target"></div>
@@ -374,8 +359,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.g+i combo does not fire after keyup", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.g+i="addClass#fired" @target="target"></div>
@@ -414,8 +398,7 @@ describe("Keyboard addon", () => {
   });
 
   test("@hotkey.g+i combo fires alongside same-key sequence", async () => {
-    attractive.extend(keyboard);
-    attractive.activate();
+    attractive.activate({ extendWith: [keyboard] });
 
     document.body.innerHTML = `
       <div @hotkey.g.i="addClass#seq" @target="seqTarget"></div>

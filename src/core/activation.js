@@ -17,7 +17,6 @@ class Activation {
   #actions;
   #observe;
   #initialized = false;
-  #extensions;
 
   constructor(dependencies) {
     this.#registry = dependencies.registry;
@@ -28,7 +27,6 @@ class Activation {
     this.#subscriptions = dependencies.subscriptions;
     this.#attributePrefixes = dependencies.attributePrefixes;
     this.#owner = dependencies.owner;
-    this.#extensions = dependencies.extensions;
     this.#listeners = new EventListeners((event, context) =>
       this.#actions?.process(event, context)
     );
@@ -39,7 +37,7 @@ class Activation {
   }
 
   activate(options = {}) {
-    const { on = document, debug = false } = options;
+    const { on = document, debug = false, extendWith = [] } = options;
 
     Debug.enabled = debug;
 
@@ -67,12 +65,16 @@ class Activation {
     this.#observe = new Observer(
       (element) => {
         this.#actions.prepare(element);
+
         this.#elementLifecycle.fireAdded(element);
       },
+
       (element) => {
         this.#listeners.cleanup(element);
+
         this.#elementLifecycle.fireRemoved(element);
       },
+
       on,
       (element) => {
         this.#elementLifecycle.fireBeforeRemove(element);
@@ -88,13 +90,13 @@ class Activation {
       }
     }
 
+    for (const extension of extendWith) {
+      extension({ instance: this.#owner, registry: this.#registry });
+    }
+
     actionElements.forEach((element) => {
       this.#actions.prepare(element);
     });
-
-    for (const extension of this.#extensions) {
-      extension({ instance: this.#owner, registry: this.#registry });
-    }
 
     this.#observe.start((element) => this.#attributePrefixes.matches(element));
 

@@ -81,6 +81,9 @@
     },
     "./keyboard": {
       "import": "./dist/keyboard.js"
+    },
+    "./reactive": {
+      "import": "./dist/reactive.js"
     }
   },
   "files": [

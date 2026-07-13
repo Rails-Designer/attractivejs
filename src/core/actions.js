@@ -1,4 +1,7 @@
+import debounce from "./../helpers/debounce";
 import { actionAttributes, getActionAttributes } from "./attributes";
+
+const debounceTimers = new WeakMap();
 
 class Actions {
   static #nonBubblingEvents = new Set([
@@ -48,6 +51,36 @@ class Actions {
 
     if (!element) return;
 
+    if (!this.#scope.contains(element)) return;
+
+    const delay = this.#debounceDelay(element);
+
+    if (delay > 0) {
+      let timer = debounceTimers.get(element);
+
+      if (!timer) {
+        timer = debounce();
+        debounceTimers.set(element, timer);
+      }
+
+      timer(() => this.#execute({ event, with: context, on: element }), delay);
+
+      return;
+    }
+
+    this.#execute({ event, with: context, on: element });
+  }
+
+  #debounceDelay(element) {
+    return parseInt(
+      element.dataset.debounce ??
+        element.dataset.formDebounce ??
+        element.dataset.requestDebounce ??
+        0
+    );
+  }
+
+  #execute({ event, with: context, on: element }) {
     if (!this.#scope.contains(element)) return;
 
     const defaultEventType = context

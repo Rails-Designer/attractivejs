@@ -120,6 +120,7 @@ class Execute {
   async #invoke({ name, on: element, context: actionContext }) {
     try {
       const actionFunction = this.#registry.getAction(name);
+
       return await actionFunction(element, actionContext);
     } catch (error) {
       this.#handleError({ name, on: element, error });

@@ -58,7 +58,7 @@ You can also batch register multiple actions at once with `addActions({ sharePag
 
 ## addTrigger
 
-Triggers fire the action when a condition is met (rather than on a user event). The function receives `(element, fire)` — call `fire()` to execute the action.
+Triggers fire the action when a condition is met (rather than on a user event). The function receives `(element, fire)`. Call `fire()` to execute the action.
 ```js
 attractive.addTrigger("onceTurboLoaded", (element, fire) => {
   document.addEventListener("turbo:load", fire, { once: true });

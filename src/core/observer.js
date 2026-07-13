@@ -1,5 +1,9 @@
 import Debug from "./../debug";
 
+const ELEMENT_NODE = (typeof Node !== "undefined" && Node.ELEMENT_NODE) || 1;
+const ATTRIBUTE_PREFIX = "@";
+const RESERVED_ATTRIBUTES = new Set(["@target", "@targets"]);
+
 class Observer {
   #prepare;
   #cleanup;
@@ -25,13 +29,26 @@ class Observer {
     this.#observer = new MutationObserver((mutations) => {
       const added = new Set();
       const removed = new Set();
+      const changed = new Set();
 
-      mutations.forEach((mutation) =>
-        this.#processMutation(mutation, {
-          for: action,
-          elements: { added, removed }
-        })
-      );
+      for (const mutation of mutations) {
+        if (mutation.type === "childList") {
+          this.#processChildMutation(mutation, {
+            for: action,
+            elements: { added, removed }
+          });
+
+          continue;
+        }
+
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName.startsWith(ATTRIBUTE_PREFIX) &&
+          !RESERVED_ATTRIBUTES.has(mutation.attributeName)
+        ) {
+          changed.add(mutation.target);
+        }
+      }
 
       added.forEach((element) => {
         Debug.log(
@@ -55,9 +72,31 @@ class Observer {
           this.#cleanup?.(element);
         });
       }
+
+      if (this.#cleanup) {
+        changed.forEach((element) => {
+          if (removed.has(element)) return;
+
+          Debug.log(
+            "Attribute changed:",
+            element.tagName.toLowerCase(),
+            "#" + (element.id || "")
+          );
+
+          this.#cleanup(element);
+
+          if (action(element)) {
+            this.#prepare(element);
+          }
+        });
+      }
     });
 
-    this.#observer.observe(this.#scope, { childList: true, subtree: true });
+    this.#observer.observe(this.#scope, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
 
     return this;
   }
@@ -70,9 +109,10 @@ class Observer {
 
   // private
 
-  #processMutation(mutation, { for: action, elements: { added, removed } }) {
-    if (mutation.type !== "childList") return;
-
+  #processChildMutation(
+    mutation,
+    { for: action, elements: { added, removed } }
+  ) {
     mutation.addedNodes.forEach((node) => {
       this.#processNode(node, { for: action, and: added });
     });
@@ -83,7 +123,7 @@ class Observer {
   }
 
   #processNode(node, { for: action, and: elements }) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.nodeType !== ELEMENT_NODE) return;
     if (action(node)) elements.add(node);
     if (!node.querySelectorAll) return;
 

@@ -7,82 +7,28 @@
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛝</text></svg>"
     />
     <script type="module">
-      import * as Turbo from "https://unpkg.com/@hotwired/turbo/dist/turbo.es2017-esm.js";
-    </script>
-
-    <script type="module">
       import Attractive from "../dist/attractive.min.js";
-      import { keyboard } from "../dist/keyboard.min.js";
 
-      Attractive.activate({ debug: true }).extend(keyboard);
+      Attractive.activate({ debug: true });
     </script>
   </head>
   <body>
-    <turbo-frame id="demo" src="/playground/turbo.html"> </turbo-frame>
+    <h2>Toggle</h2>
+    <button @action="toggleClass#active" @target="target">Toggle</button>
+    <p id="target">This toggles the <code>active</code> class.</p>
 
-    <button @action="reload" @target="demo">Reload frame</button>
-
-    <button @action="reload.window">Reload page</button>
-
-    <h2>Keyboard</h2>
-
-    <h3>1. global with dot (@hotkey.escape, bare → click delegation)</h3>
-    <p>
-      <button @hotkey.escape @action="removeClass#active" @target="keyTarget1">
-        Press Escape globally
-      </button>
-      <code id="keyTarget1" class="active">target (class reset)</code>
-    </p>
-
-    <h3>2. global with + (@hotkey.ctrl+k, valued → synthetic hotkey event)</h3>
-    <p>
-      <button @hotkey.ctrl+k="addClass#active" @target="keyTarget2">
-        Press Ctrl+K globally
-      </button>
-      <code id="keyTarget2">target (class added)</code>
-    </p>
-
-    <h3>3. hotkey with dot — sequence (@hotkey.g.i, bare → click)</h3>
-    <p>
-      <a @hotkey.g.i @action="toggleClass#active" @target="keyTarget3" href="#">
-        Inbox (press g then i)
-      </a>
-      <code id="keyTarget3">target (toggled)</code>
-    </p>
-
-    <h3>4. hotkey with + — combo (@hotkey.g+i, valued → synthetic event)</h3>
-    <p>
-      <button @hotkey.g+i="toggleClass#active" @target="keyTarget4">
-        Press g+i simultaneously
-      </button>
-      <code id="keyTarget4">target (toggled)</code>
-    </p>
-
-    <h3>5. keydown on input (@keydown, element-scoped)</h3>
-    <p>
-      <input
-        @keydown.meta+enter="addClass#active"
-        @keydown.escape="removeClass#active"
-        @target="kbTarget"
-        placeholder="Focus here, press Cmd+Enter or Escape"
-      />
-      <code id="kbTarget">target</code>
-    </p>
-
-    <h2>Toggle (@="" syntax)</h2>
-    <button @action="toggleClass#active" @target="toggleTarget">Toggle</button>
-    <p id="toggleTarget">This toggles the <code>active</code> class.</p>
-
-    <h2>Copy (old data-action syntax — should warn once)</h2>
-    <button data-action="copy" data-target="copySource">Copy</button>
-    <input id="copySource" value="copied text" readonly />
+    <h2>Copy</h2>
+    <button @action="copy" @target="source">Copy</button>
+    <input id="source" value="copied text" readonly />
 
     <style>
-      [open],
-      [data-open="true"],
       .active {
         color: red;
         font-weight: bold;
+      }
+
+      [data-copy-success="true"] {
+        border-color: aqua;
       }
     </style>
   </body>
