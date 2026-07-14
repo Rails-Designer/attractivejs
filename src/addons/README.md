@@ -31,7 +31,7 @@ export function myAddon({ instance, registry }) {
 
 ### What addons can do
 
-- `registry.addEventModifier(name, handler)`; register a dot modifier (`.custom`) for event directives
+- `registry.addEventModifier(name, eventModifier)`; register a dot modifier (`.custom`) for event directives
 - `instance.onElementAdded(callback)` / `instance.onElementRemoved(callback)`; observe DOM element lifecycle
-- `instance.addEventListener(type, handler)`; register global event listeners on the instance scope
+- `instance.addEventListener(type, listener)`; register global event listeners on the instance scope
 - `instance.addAction(name, action)`; register a custom action

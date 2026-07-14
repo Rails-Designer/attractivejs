@@ -1,7 +1,9 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -13,20 +15,13 @@ beforeEach(() => {
   vi.useFakeTimers();
 
   attractive = new Attractive();
-
-  attractive.registerActions((registry) => {
-    Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.addAction(name, action)
-    );
-  });
-
-  attractive.registerDirectives((directives) => {
-    defaultDirectives(directives);
-  });
 });
 
 test("deactivate removes event listeners", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="toggleClass#toggled" @target="target">
@@ -48,7 +43,10 @@ test("deactivate removes event listeners", async () => {
 });
 
 test("activate after deactivate works fresh", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="addClass#toggled" @target="target">
@@ -63,7 +61,10 @@ test("activate after deactivate works fresh", async () => {
   document.body.innerHTML = "";
   vi.clearAllTimers();
 
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="addClass#toggled" @target="target">
@@ -81,7 +82,10 @@ test("activate after deactivate works fresh", async () => {
 });
 
 test("restart chains deactivate and activate", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="addClass#toggled" @target="target">
@@ -91,7 +95,11 @@ test("restart chains deactivate and activate", async () => {
 
   await vi.runAllTimersAsync();
 
-  attractive.restart({ debug: true });
+  attractive.restart({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives,
+    debug: true
+  });
 
   document.querySelector("button").click();
 
@@ -105,35 +113,56 @@ test("active returns false before activation", () => {
 });
 
 test("active returns true after activation", () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   expect(attractive.active).toBe(true);
 });
 
 test("active returns false after deactivation", () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
   attractive.deactivate();
 
   expect(attractive.active).toBe(false);
 });
 
 test("active returns true after reactivation", () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
   attractive.deactivate();
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   expect(attractive.active).toBe(true);
 });
 
 test("active returns true after restart", () => {
-  attractive.activate();
-  attractive.restart();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
+  attractive.restart({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   expect(attractive.active).toBe(true);
 });
 
 test("removing @action attribute cleans up action", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `<button id="btn" @action="toggleClass#toggled" @target="target"><span id="target">Target</span></button>`;
   await vi.runAllTimersAsync();

@@ -1,6 +1,12 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
 import Attractive from "../../src/core.js";
 
+const testOptions = {
+  addActions: {
+    noop: () => {}
+  }
+};
+
 describe("beforeAction", () => {
   let attractive;
 
@@ -10,8 +16,6 @@ describe("beforeAction", () => {
     vi.useFakeTimers();
 
     attractive = new Attractive();
-
-    attractive.addAction("noop", () => {});
   });
 
   afterEach(() => {
@@ -22,7 +26,7 @@ describe("beforeAction", () => {
     const callback = vi.fn();
 
     attractive.beforeAction(callback);
-    attractive.activate();
+    attractive.activate(testOptions);
 
     document.body.innerHTML = `
       <button id="btn" @action="noop">Click</button>
@@ -47,7 +51,7 @@ describe("beforeAction", () => {
 
     attractive.beforeAction(() => order.push("first"));
     attractive.beforeAction(() => order.push("second"));
-    attractive.activate();
+    attractive.activate(testOptions);
 
     document.body.innerHTML = `
       <button id="btn" @action="noop">Click</button>
@@ -64,9 +68,11 @@ describe("beforeAction", () => {
     const actionRan = vi.fn();
 
     attractive = new Attractive();
-    attractive.addAction("guarded", actionRan);
     attractive.beforeAction(() => false);
-    attractive.activate();
+
+    attractive.activate({
+      addActions: { guarded: actionRan }
+    });
 
     document.body.innerHTML = `
       <button id="btn" @action="guarded">Click</button>
@@ -84,7 +90,7 @@ describe("beforeAction", () => {
 
     attractive.beforeAction(() => false);
     attractive.beforeAction(afterCancelled);
-    attractive.activate();
+    attractive.activate(testOptions);
 
     document.body.innerHTML = `
       <button id="btn" @action="noop">Click</button>
@@ -101,7 +107,7 @@ describe("beforeAction", () => {
     const callback = vi.fn();
 
     attractive.beforeAction(callback);
-    attractive.activate();
+    attractive.activate(testOptions);
 
     document.body.innerHTML = `
       <button id="btn" @action="noop">Click</button>
@@ -131,7 +137,6 @@ describe("afterAction", () => {
     vi.useFakeTimers();
 
     attractive = new Attractive();
-    attractive.addAction("noop", () => {});
   });
 
   afterEach(() => {
@@ -142,7 +147,7 @@ describe("afterAction", () => {
     const callback = vi.fn();
 
     attractive.afterAction(callback);
-    attractive.activate();
+    attractive.activate(testOptions);
 
     document.body.innerHTML = `
       <button id="btn" @action="noop">Click</button>
@@ -182,11 +187,15 @@ describe("onError", () => {
     const hook = vi.fn();
     const error = new Error("boom");
 
-    attractive.addAction("thrower", () => {
-      throw error;
-    });
     attractive.onError(hook);
-    attractive.activate();
+
+    attractive.activate({
+      addActions: {
+        thrower: () => {
+          throw error;
+        }
+      }
+    });
 
     document.body.innerHTML = `
       <button id="btn" @action="thrower">Click</button>

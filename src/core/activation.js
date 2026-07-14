@@ -37,7 +37,13 @@ class Activation {
   }
 
   activate(options = {}) {
-    const { on = document, debug = false, extendWith = [] } = options;
+    const {
+      on = document,
+      debug = false,
+      extendWith = [],
+      addActions = {},
+      addDirectives = {}
+    } = options;
 
     Debug.enabled = debug;
 
@@ -49,6 +55,12 @@ class Activation {
     }
 
     if (this.#initialized) return this;
+
+    for (const [name, fn] of Object.entries(addActions))
+      this.#registry.addAction(name, fn);
+
+    for (const [name, fn] of Object.entries(addDirectives))
+      this.#registry.addDirective(name, fn);
 
     this.#scope = on;
     this.#subscriptions.setScope(on);

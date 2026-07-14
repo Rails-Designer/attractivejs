@@ -1,6 +1,7 @@
 ---
 title: post
 group: request
+builtin: false
 description: Send a POST request
 position: 2
 options:
@@ -12,6 +13,15 @@ options:
     type: number
     default: 2000
 ---
+
+```js
+import Attractive from "attractivejs";
+import { post } from "attractivejs/actions/request";
+
+Attractive.activate({
+  addActions: { post }
+});
+```
 
 <button @action="post /api/save" @target="output">Save</button>
 

@@ -1,10 +1,8 @@
 import ActionBase from "./base";
-import { CSRF } from "./request/csrf";
-import delay from "./../helpers/delay";
-
-const clearFeedback = delay();
-
-const activeRequests = new WeakMap();
+import { csrf } from "./request/csrf";
+import Debug from "./../debug";
+import Get from "./request/get";
+import { activeRequests, crossingOrigin, setFeedback } from "./request/helpers";
 
 class Request extends ActionBase {
   constructor(currentElement, options = {}) {
@@ -14,59 +12,12 @@ class Request extends ActionBase {
   }
 
   async get() {
-    return this.#executeGet();
-  }
-
-  // private
-
-  async #executeGet() {
-    if (!this.value) {
-      console.warn("No URL provided in the action value");
-
-      return;
-    }
-
-    if (this.#crossingOrigin({ with: this.value })) {
-      console.warn(
-        `Cross-origin request to: ${this.value}. Missing the correct CORS headers.`
-      );
-    }
-
-    const previous = activeRequests.get(this.currentElement);
-    if (previous) previous.abort();
-
-    const controller = new AbortController();
-    activeRequests.set(this.currentElement, controller);
-
-    this.#setFeedback("busy");
-
-    try {
-      const response = await fetch(this.value, {
-        method: "GET",
-        signal: controller.signal
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const html = await response.text();
-      this.targets.forEach((target) => {
-        target.innerHTML = html;
-      });
-
-      this.#setFeedback("success");
-      activeRequests.delete(this.currentElement);
-
-      return response;
-    } catch (error) {
-      if (error.name === "AbortError") return;
-
-      activeRequests.delete(this.currentElement);
-      this.#setFeedback("error");
-
-      throw error;
-    }
+    return new Get(
+      this.currentElement,
+      this.value,
+      this.targets,
+      this.options.onJSON
+    ).execute();
   }
 
   post() {
@@ -83,85 +34,68 @@ class Request extends ActionBase {
 
   // private
 
-  #crossingOrigin({ with: url }) {
-    try {
-      const requestUrl = new URL(url, window.location.href);
-
-      return requestUrl.origin !== window.location.origin;
-    } catch {
-      console.error("Invalid URL:", url);
-
-      return false;
-    }
-  }
-
-  #setFeedback(state) {
-    const duration = this.currentElement.dataset.requestFeedback;
-
-    this.targets.forEach((target) => {
-      if (state === "busy") {
-        target.setAttribute("data-request-busy", "true");
-
-        target.removeAttribute("data-request-success");
-      } else {
-        target.removeAttribute("data-request-busy");
-
-        target.setAttribute("data-request-success", state === "success");
-      }
-    });
-
-    if (!duration || state === "busy") return;
-
-    clearFeedback(() => {
-      this.targets.forEach((target) =>
-        target.removeAttribute("data-request-success")
-      );
-    }, parseInt(duration));
-  }
-
   #fetch(method) {
     return this.#executeFetch(method);
   }
 
   #executeFetch(method) {
     if (!this.value) {
-      console.warn("No URL provided in the action value");
+      Debug.warn("No URL provided in the action value");
 
       return;
     }
 
-    const previous = activeRequests.get(this.currentElement);
+    if (crossingOrigin({ for: this.value })) {
+      Debug.warn(
+        `Cross-origin request to: ${this.value}. Missing the correct CORS headers.`
+      );
+    }
+
+    const previous = activeRequests.get({ on: this.currentElement });
     if (previous) previous.abort();
 
     const controller = new AbortController();
-    activeRequests.set(this.currentElement, controller);
+    activeRequests.set({ on: this.currentElement, with: controller });
 
-    this.#setFeedback("busy");
+    setFeedback("busy", { on: this.currentElement, for: this.targets });
+
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    if (csrf.token) {
+      headers[csrf.header] =
+        typeof csrf.token === "function" ? csrf.token() : csrf.token;
+    }
 
     return fetch(this.value, {
       method,
       signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": CSRF.get()
-      },
+      headers,
 
       body: JSON.stringify(this.#body)
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
 
-        this.#setFeedback("success");
-        activeRequests.delete(this.currentElement);
+        const contentType = response.headers.get("content-type");
+        if (contentType?.includes("application/json") && this.options.onJSON) {
+          const json = await response.json();
+
+          this.options.onJSON(json);
+        }
+
+        setFeedback("success", { on: this.currentElement, for: this.targets });
+        activeRequests.delete({ on: this.currentElement });
 
         return response;
       })
       .catch((error) => {
         if (error.name === "AbortError") return;
 
-        activeRequests.delete(this.currentElement);
-        this.#setFeedback("error");
+        activeRequests.delete({ on: this.currentElement });
+        setFeedback("error", { on: this.currentElement, for: this.targets });
 
         throw error;
       });
@@ -201,16 +135,22 @@ class Request extends ActionBase {
   }
 }
 
-export const get = Request.actionFor("get");
-export const post = Request.actionFor("post");
-export const patch = Request.actionFor("patch");
-export const put = Request.actionFor("put");
+export function get(element, options) {
+  return new Request(element, { ...options, onJSON: get.onJSON }).get();
+}
+get.onJSON = null;
 
-const actions = { get, post, patch, put };
+export function post(element, options) {
+  return new Request(element, { ...options, onJSON: post.onJSON }).post();
+}
+post.onJSON = null;
 
-export default actions;
+export function patch(element, options) {
+  return new Request(element, { ...options, onJSON: patch.onJSON }).patch();
+}
+patch.onJSON = null;
 
-export const requestAction = {
-  name: "request",
-  actions
-};
+export function put(element, options) {
+  return new Request(element, { ...options, onJSON: put.onJSON }).put();
+}
+put.onJSON = null;

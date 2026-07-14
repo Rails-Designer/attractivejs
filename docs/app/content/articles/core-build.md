@@ -16,22 +16,22 @@ import { toggleClass } from "attractivejs/actions/class";
 import { copy } from "attractivejs/actions/clipboard";
 ```
 
-Register them individually with `addAction(name, action)`. The name is what you use in `@action=""`, the action is the imported function:
+Pass them as the `addActions` option to `activate()`. The key is the action name used in `@action=""`, the value is the imported function:
 ```js
-const attractive = new Attractive();
+import Attractive from "attractivejs/core";
 
-attractive.addAction("toggleClass", toggleClass);
-attractive.addAction("copy", copy);
-// or batch them: addActions({ toggleClass: toggleClass, copy: copy })
-// or shorthand: addActions({ toggleClass, copy })
-
-attractive.activate();
+Attractive.activate({
+  addActions: { toggleClass, copy }
+});
 ```
 
 Custom actions work the same way. The action is a function you define:
 ```js
 // const analytics = (element, context) => { … };
-attractive.addAction("analytics", analytics);
+
+Attractive.activate({
+  addActions: { analytics }
+});
 ```
 
 You get a minimal build with exactly the actions your project uses.

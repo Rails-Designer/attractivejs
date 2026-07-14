@@ -2,9 +2,11 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 import { reactive } from "../../src/addons/reactive/index.js";
 import { store } from "../../src/addons/reactive/store.js";
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -16,16 +18,6 @@ describe("Reactive addon", () => {
     vi.useFakeTimers();
 
     attractive = new Attractive();
-
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
-    });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
   });
 
   describe("Store", () => {
@@ -43,7 +35,11 @@ describe("Reactive addon", () => {
     test("sets initial textContent from store", async () => {
       store.set("text-greeting", { with: "Hello" });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p @text="text-greeting"></p>`;
       await vi.runAllTimersAsync();
@@ -53,7 +49,11 @@ describe("Reactive addon", () => {
     });
 
     test("updates textContent on store change", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p id="p" @text="text-update"></p>`;
       await vi.runAllTimersAsync();
@@ -64,7 +64,11 @@ describe("Reactive addon", () => {
     });
 
     test("shows empty string for unset key", () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p @text="text-unset"></p>`;
 
@@ -73,7 +77,11 @@ describe("Reactive addon", () => {
     });
 
     test("preserves element content when store has no value for the key", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<span @text="text-preserve">Betty</span>`;
       await vi.runAllTimersAsync();
@@ -83,7 +91,11 @@ describe("Reactive addon", () => {
     });
 
     test("element content seeds the store when no value is set", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<span @text="text-seed">Betty</span>`;
       await vi.runAllTimersAsync();
@@ -92,7 +104,11 @@ describe("Reactive addon", () => {
     });
 
     test("seeded value updates when store is set", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<span id="s" @text="text-seeded">Betty</span>`;
       await vi.runAllTimersAsync();
@@ -105,7 +121,11 @@ describe("Reactive addon", () => {
     test("shows empty string for null value", () => {
       store.set("text-null", { with: null });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p @text="text-null"></p>`;
 
@@ -116,7 +136,11 @@ describe("Reactive addon", () => {
     test("shows empty string for undefined value", () => {
       store.set("text-undefined", { with: undefined });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p @text="text-undefined"></p>`;
 
@@ -125,7 +149,11 @@ describe("Reactive addon", () => {
     });
 
     test("multiple elements bound to same key all update", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <p id="a" @text="text-multi"></p>
@@ -142,7 +170,11 @@ describe("Reactive addon", () => {
     test("removing @text attribute unbinds listener", async () => {
       store.set("text-removal", { with: "hello" });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `<p id="p" @text="text-removal"></p>`;
       await Promise.resolve();
@@ -159,7 +191,11 @@ describe("Reactive addon", () => {
     });
 
     test("works inside template clone", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       const template = document.createElement("template");
       template.innerHTML = `<p @text="text-template"></p>`;
@@ -178,7 +214,11 @@ describe("Reactive addon", () => {
     test("on input writes element value to store", async () => {
       store.set("action-input", { with: "" });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <input id="input" @input="setStore#action-input" />
@@ -194,7 +234,11 @@ describe("Reactive addon", () => {
     });
 
     test("debounce delays store update", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <input id="input" @input="setStore#action-delay" data-debounce="200" />
@@ -214,7 +258,11 @@ describe("Reactive addon", () => {
     });
 
     test("on non-input element sets true", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <button id="btn" @click="setStore#action-active"></button>
@@ -230,7 +278,11 @@ describe("Reactive addon", () => {
 
   describe("whenTrue / whenFalse", () => {
     test("whenTrue fires action on truthy store value", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <div id="el" data-store="st" @action="addClass#fired:whenTrue"></div>
@@ -248,7 +300,11 @@ describe("Reactive addon", () => {
     test("whenTrue does not fire on falsy store value", async () => {
       store.set("st", { with: false });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <div id="el" data-store="st" @action="addClass#fired:whenTrue"></div>
@@ -266,7 +322,11 @@ describe("Reactive addon", () => {
     test("whenFalse fires action on falsy store value", async () => {
       store.set("st", { with: true });
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <div id="el" data-store="st" @action="removeAttribute#fired:whenFalse"></div>
@@ -280,7 +340,11 @@ describe("Reactive addon", () => {
     });
 
     test("whenTrue and whenFalse pair for set/remove", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <div id="el" data-store="st" @action="addAttribute#fired:whenTrue removeAttribute#fired:whenFalse"></div>
@@ -297,7 +361,11 @@ describe("Reactive addon", () => {
     });
 
     test("does not fire when store.set is never called", async () => {
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
 
       document.body.innerHTML = `
         <div id="el" data-store="st" @action="addClass#fired:whenTrue"></div>
@@ -314,7 +382,11 @@ describe("Reactive addon", () => {
         <div id="el" data-store="st" @action="addClass#fired:whenTrue"></div>
       `;
 
-      attractive.activate({ extendWith: [reactive] });
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
       await vi.runAllTimersAsync();
 
       store.set("st", { with: true });

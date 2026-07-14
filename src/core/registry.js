@@ -5,13 +5,13 @@ class Registry {
   #activeActions = null;
 
   addAction(name, action, group = null) {
-    this.#actions.set(name, { handler: action, group });
+    this.#actions.set(name, { action, group });
   }
 
   getAction(name) {
     const entry = this.#actions.get(name);
 
-    return entry ? entry.handler : undefined;
+    return entry ? entry.action : undefined;
   }
 
   hasAction(name) {

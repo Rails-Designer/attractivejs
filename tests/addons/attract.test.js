@@ -2,12 +2,14 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 import { Template } from "../../src/addons/attract/template.js";
 import { store } from "../../src/addons/reactive/store.js";
 import { attract } from "../../src/addons/attract/index.js";
 import { reactive } from "../../src/addons/reactive/index.js";
 import Debug from "../../src/debug.js";
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -176,18 +178,14 @@ describe("attract addon", () => {
     vi.useFakeTimers();
 
     attractive = new Attractive();
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
-    });
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
   });
 
   test("activates without error", () => {
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
     expect(attractive.active).toBe(true);
   });
 
@@ -202,7 +200,11 @@ describe("attract addon", () => {
       </form>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     form.dispatchEvent(
@@ -226,7 +228,11 @@ describe("attract addon", () => {
       </form>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     form.dispatchEvent(
@@ -252,7 +258,11 @@ describe("attract addon", () => {
       </form>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     form.dispatchEvent(
@@ -278,7 +288,11 @@ describe("attract addon", () => {
       </form>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     const input = document.querySelector("input");
@@ -306,7 +320,11 @@ describe("attract addon", () => {
       </div>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     form.dispatchEvent(
@@ -343,7 +361,11 @@ describe("attract addon", () => {
       <div id="list"></div>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const form = document.querySelector("form");
     form.dispatchEvent(
@@ -363,7 +385,11 @@ describe("attract addon", () => {
       <button @action="append#card" @target="list">Add</button>
     `;
 
-    attractive.activate({ extendWith: [reactive, attract] });
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [reactive, attract]
+    });
 
     const list = document.getElementById("list");
     const button = document.querySelector("button");
