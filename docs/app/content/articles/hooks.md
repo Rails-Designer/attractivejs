@@ -43,7 +43,7 @@ attractive.onError(({ name, element, options, event, error }) => {
 ```
 
 
-## Global error handler
+## Global onError
 
 Set a fallback for all instances:
 ```js
@@ -52,7 +52,7 @@ Attractive.onError = (error, message, detail) => {
 };
 ```
 
-The default global handler logs to console and delegates to `window.onerror`.
+By default it logs to console and delegates to `window.onerror`.
 
 
 ## Error propagation
@@ -60,6 +60,6 @@ The default global handler logs to console and delegates to `window.onerror`.
 When an action throws, Attractive catches it and forwards to two layers:
 
 1. Instance `onError` hooks (per-component UI feedback)
-2. Global `Attractive.onError` handler (monitoring services like Sentry, Rollbar)
+2. Global `Attractive.onError` fallback (monitoring services like Sentry, Rollbar)
 
 The error is contained. No unhandled rejection. Remaining actions in a chain still run.

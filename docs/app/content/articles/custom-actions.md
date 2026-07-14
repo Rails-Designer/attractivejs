@@ -5,12 +5,13 @@ category: advanced
 position: 1
 ---
 
-The same interface used by built-in actions is available to you. Register custom actions, triggers and gates.
+The same interface used by built-in actions is available to you. Register custom actions, triggers and gates via the `addActions` and `addDirectives` options on `activate()`.
 
 
-## addAction
+## Add actions
 
-`addAction(name, action)`. The name is what you use in `@action=""`, the action receives `(element, context)`:
+Pass actions as an object to `addActions`. The key is the action name used in `@action=""`, the value is a function receiving `(element, context)`:
+
 ```js
 import Attractive from "attractivejs";
 
@@ -25,9 +26,9 @@ const sharePage = (element, { dataset }) => {
   }
 };
 
-const attractive = Attractive.activate();
-
-attractive.addAction("sharePage", sharePage);
+Attractive.activate({
+  addActions: { sharePage }
+});
 ```
 
 ```html
@@ -35,54 +36,56 @@ attractive.addAction("sharePage", sharePage);
 ```
 
 The action function receives the element and a context object:
+
 ```js
-attractive.addAction(
-  "myAction",
-  (
-    element,
-    { value, target, targets, event, dataset, actionName, triggeredBy }
-  ) => {
-    // value: the string after # (e.g. "active" from toggleClass#active)
-    // target: single target element by ID
-    // targets: multiple target elements by CSS selector
-    // event: the triggering event
-    // dataset: element.dataset
-    // actionName: the registered action name
-    // triggeredBy: the trigger/gate that initiated this action or null
-  }
-);
+(element, { value, target, targets, event, dataset, actionName, triggeredBy }) => {
+  // value: the string after # (e.g. "active" from toggleClass#active)
+  // target: single target element by ID
+  // targets: multiple target elements by CSS selector
+  // event: the triggering event
+  // dataset: element.dataset
+  // actionName: the registered action name
+  // triggeredBy: the trigger/gate that initiated this action or null
+}
 ```
 
-You can also batch register multiple actions at once with `addActions({ sharePage, myAction })`.
+Multiple actions at once:
 
-
-## addTrigger
-
-Triggers fire the action when a condition is met (rather than on a user event). The function receives `(element, fire)`. Call `fire()` to execute the action.
 ```js
-attractive.addTrigger("onceTurboLoaded", (element, fire) => {
-  document.addEventListener("turbo:load", fire, { once: true });
+Attractive.activate({
+  addActions: { sharePage, myAction }
+});
+```
+
+
+## Add directives (triggers and gates)
+
+Pass triggers and gates as an object to `addDirectives`. They are registered together, the distinction is purely semantic:
+
+- A **trigger** fires the action. The function receives `(element, fire)`. Call `fire()` to execute the action.
+- A **gate** evaluates a condition. Return `false` to block the action.
+
+```js
+import Attractive from "attractivejs";
+
+Attractive.activate({
+  addDirectives: {
+    onceTurboLoaded: (element, fire) => {
+      document.addEventListener("turbo:load", fire, { once: true });
+    },
+
+    whenSmallScreen: ({ event, element }) => {
+      return window.matchMedia("(max-width: 768px)").matches;
+    },
+
+    whenLargeScreen: ({ event, element }) => {
+      return window.matchMedia("(min-width: 769px)").matches;
+    }
+  }
 });
 ```
 
 ```html
 <button @action="toggleClass#active:onceTurboLoaded">Toggle</button>
-```
-
-Batch register triggers with `addTriggers({ onceTurboLoaded, … })`.
-
-
-## addGate
-
-Gates evaluate a condition before allowing the action to fire. Return `false` to block the action.
-```js
-attractive.addGate("whenSmallScreen", ({ event, element }) => {
-  return window.matchMedia("(max-width: 768px)").matches;
-});
-```
-
-```html
 <button @action="removeClass#hidden:whenSmallScreen">Delete</button>
 ```
-
-Batch register gates with `addGates({ whenSmallScreen, … })`.

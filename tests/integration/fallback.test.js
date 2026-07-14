@@ -1,9 +1,11 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -13,20 +15,13 @@ beforeEach(() => {
   vi.useFakeTimers();
 
   attractive = new Attractive();
-
-  attractive.registerActions((registry) => {
-    Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.addAction(name, action)
-    );
-  });
-
-  attractive.registerDirectives((directives) => {
-    defaultDirectives(directives);
-  });
 });
 
 test("fallback action syntax with hash", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="nonExistentAction#addClass#fallback:mounted" @target="target">
@@ -41,7 +36,10 @@ test("fallback action syntax with hash", async () => {
 });
 
 test("unregistered action name does not throw", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button @action="nonExistentAction">Click me</button>

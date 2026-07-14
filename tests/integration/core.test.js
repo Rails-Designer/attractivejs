@@ -4,9 +4,11 @@ import Core from "../../src/core.js";
 import builtinActions from "../../src/actions/index.js";
 import { addClass, removeClass } from "../../src/actions/class.js";
 import { remove } from "../../src/addons/attract/actions.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
+
+const allBuiltinActions = builtinActions;
 
 describe("Core build with selective actions", () => {
   beforeEach(() => {
@@ -19,11 +21,10 @@ describe("Core build with selective actions", () => {
   test("registers actions and makes them available", async () => {
     const attractive = new Core();
 
-    attractive.addAction("addClass", addClass);
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass },
+      addDirectives: builtinDirectives
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="addClass#active" @target="target">
@@ -42,13 +43,10 @@ describe("Core build with selective actions", () => {
   test("registers actions from different modules", async () => {
     const attractive = new Core();
 
-    attractive.addAction("addClass", addClass);
-    attractive.addAction("remove", remove);
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass, remove },
+      addDirectives: builtinDirectives
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <div id="container">
@@ -67,13 +65,10 @@ describe("Core build with selective actions", () => {
   test("registers multiple actions from a single module", async () => {
     const attractive = new Core();
 
-    attractive.addAction("addClass", addClass);
-    attractive.addAction("removeClass", removeClass);
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass, removeClass },
+      addDirectives: builtinDirectives
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="removeClass#inactive" @target="target">
@@ -92,12 +87,10 @@ describe("Core build with selective actions", () => {
   test("unregistered actions are not available", async () => {
     const attractive = new Core();
 
-    attractive.addAction("addClass", addClass);
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass },
+      addDirectives: builtinDirectives
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="copy">Copy</button>
@@ -113,12 +106,10 @@ describe("Core build with selective actions", () => {
   test("addActions registers multiple actions at once", async () => {
     const attractive = new Core();
 
-    attractive.addActions({ addClass, removeClass });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass, removeClass },
+      addDirectives: builtinDirectives
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="removeClass#inactive" @target="target">
@@ -137,16 +128,10 @@ describe("Core build with selective actions", () => {
   test("@ shorthand works for default event action", async () => {
     const attractive = new Attractive();
 
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives
     });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @="addClass#toggled" @target="target">
@@ -165,16 +150,10 @@ describe("Core build with selective actions", () => {
   test("data-action backward compat works when no @action present", async () => {
     const attractive = new Attractive();
 
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives
     });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" data-action="addClass#toggled" data-target="target">
@@ -193,16 +172,10 @@ describe("Core build with selective actions", () => {
   test("@action takes priority over data-action", async () => {
     const attractive = new Attractive();
 
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives
     });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="addClass#primary" data-action="addClass#ignored" @target="target">
@@ -222,13 +195,13 @@ describe("Core build with selective actions", () => {
   test("addTriggers/addGates register directives at once", async () => {
     const attractive = new Core();
 
-    attractive.addAction("addClass", addClass);
-    attractive.addGates({ enabled: (_context) => true });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
+    attractive.activate({
+      addActions: { addClass },
+      addDirectives: {
+        ...builtinDirectives,
+        enabled: (_context) => true
+      }
     });
-    attractive.activate();
 
     document.body.innerHTML = `
       <button id="btn" @action="addClass#active:enabled" @target="target">
@@ -247,16 +220,10 @@ describe("Core build with selective actions", () => {
   test("action on template element processes correctly", async () => {
     const attractive = new Attractive();
 
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives
     });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
-    attractive.activate();
 
     document.body.innerHTML = `
       <template @action="focus" @target="inputField">Content</template>

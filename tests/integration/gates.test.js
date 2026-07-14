@@ -1,9 +1,11 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -13,20 +15,13 @@ beforeEach(() => {
   vi.useFakeTimers();
 
   attractive = new Attractive();
-
-  attractive.registerActions((registry) => {
-    Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.addAction(name, action)
-    );
-  });
-
-  attractive.registerDirectives((directives) => {
-    defaultDirectives(directives);
-  });
 });
 
 test("once gate allows action only on first click", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <button id="btn" @action="addClass#toggled:once" @target="target">
@@ -48,7 +43,10 @@ test("once gate allows action only on first click", async () => {
 });
 
 test("whenOutside gate blocks action when clicking inside element", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <div id="outer" @click.window="addClass#clicked:whenOutside" @target="target">
@@ -66,7 +64,10 @@ test("whenOutside gate blocks action when clicking inside element", async () => 
 });
 
 test("whenOutside gate allows action when clicking outside element", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <div id="outer" @click.window="addClass#clicked:whenOutside" @target="target">
@@ -85,7 +86,10 @@ test("whenOutside gate allows action when clicking outside element", async () =>
 });
 
 test("preventDefault gate stops default browser behavior", async () => {
-  attractive.activate();
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addDirectives: builtinDirectives
+  });
 
   document.body.innerHTML = `
     <a href="https://example.com" @action="addClass#clicked:preventDefault" @target="target">Click me</a>

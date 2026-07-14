@@ -1,5 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
-import requestActions from "../../src/actions/request.js";
+import { get, post, patch, put } from "../../src/actions/request.js";
+import Debug from "../../src/debug.js";
+import { csrf } from "../../src/actions/request/csrf.js";
 
 describe("Request Actions", () => {
   beforeEach(() => {
@@ -9,14 +11,10 @@ describe("Request Actions", () => {
     vi.useFakeTimers();
 
     global.fetch = vi.fn();
-    console.warn = vi.fn();
-    console.error = vi.fn();
+    Debug.enabled = true;
 
-    vi.mock("../src/actions/request/csrf", () => ({
-      CSRF: {
-        get: () => null
-      }
-    }));
+    csrf.header = null;
+    csrf.token = null;
   });
 
   describe("get", () => {
@@ -30,10 +28,11 @@ describe("Request Actions", () => {
 
       fetch.mockResolvedValue({
         ok: true,
+        headers: new Headers({ "Content-Type": "text/html" }),
         text: () => Promise.resolve("<p>Response content</p>")
       });
 
-      await requestActions.get(element, {
+      await get(element, {
         target: "target",
         value: "/api/data"
       });
@@ -57,11 +56,15 @@ describe("Request Actions", () => {
         () =>
           new Promise((resolve) => {
             expect(target.getAttribute("data-request-busy")).toBe("true");
-            resolve({ ok: true, text: () => Promise.resolve("content") });
+            resolve({
+              ok: true,
+              headers: new Headers({ "Content-Type": "text/html" }),
+              text: () => Promise.resolve("content")
+            });
           })
       );
 
-      await requestActions.get(element, {
+      await get(element, {
         target: "target",
         value: "/api/data"
       });
@@ -77,10 +80,11 @@ describe("Request Actions", () => {
 
       fetch.mockResolvedValue({
         ok: true,
+        headers: new Headers({ "Content-Type": "text/html" }),
         text: () => Promise.resolve("content")
       });
 
-      await requestActions.get(element, {
+      await get(element, {
         target: "target",
         value: "/api/data"
       });
@@ -100,7 +104,7 @@ describe("Request Actions", () => {
       fetch.mockResolvedValue({ ok: false, status: 404 });
 
       await expect(
-        requestActions.get(element, { target: "target", value: "/api/data" })
+        get(element, { target: "target", value: "/api/data" })
       ).rejects.toThrow("HTTP error! status: 404");
 
       expect(target.getAttribute("data-request-success")).toBe("false");
@@ -113,11 +117,16 @@ describe("Request Actions", () => {
       `;
       const element = document.getElementById("trigger");
 
-      await requestActions.get(element, { target: "target" });
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      expect(console.warn).toHaveBeenCalledWith(
+      await get(element, { target: "target" });
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "🧲 ",
         "No URL provided in the action value"
       );
+
+      warnSpy.mockRestore();
     });
 
     test("warns about cross-origin requests", async () => {
@@ -129,17 +138,23 @@ describe("Request Actions", () => {
 
       fetch.mockResolvedValue({
         ok: true,
+        headers: new Headers({ "Content-Type": "text/html" }),
         text: () => Promise.resolve("content")
       });
 
-      await requestActions.get(element, {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      await get(element, {
         target: "target",
         value: "https://external.com/api"
       });
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(warnSpy).toHaveBeenCalledWith(
+        "🧲 ",
         "Cross-origin request to: https://external.com/api. Missing the correct CORS headers."
       );
+
+      warnSpy.mockRestore();
     });
 
     test("removes success state after duration", async () => {
@@ -152,10 +167,11 @@ describe("Request Actions", () => {
 
       fetch.mockResolvedValue({
         ok: true,
+        headers: new Headers({ "Content-Type": "text/html" }),
         text: () => Promise.resolve("content")
       });
 
-      await requestActions.get(element, {
+      await get(element, {
         target: "target",
         value: "/api/data"
       });
@@ -165,6 +181,56 @@ describe("Request Actions", () => {
       vi.advanceTimersByTime(100);
 
       expect(target.hasAttribute("data-request-success")).toBe(false);
+    });
+
+    test("calls onJSON with parsed JSON when Content-Type is application/json", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Get</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+      const jsonData = { message: "hello" };
+      const onJSON = vi.fn();
+
+      get.onJSON = onJSON;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve(jsonData),
+        text: () => Promise.resolve("should not be called")
+      });
+
+      await get(element, {
+        target: "target",
+        value: "/api/data"
+      });
+
+      expect(onJSON).toHaveBeenCalledWith(jsonData);
+    });
+
+    test("does not call onJSON when Content-Type is text/html", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Get</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+      const onJSON = vi.fn();
+
+      get.onJSON = onJSON;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "text/html" }),
+        text: () => Promise.resolve("<p>html</p>")
+      });
+
+      await get(element, {
+        target: "target",
+        value: "/api/data"
+      });
+
+      expect(onJSON).not.toHaveBeenCalled();
     });
   });
 
@@ -179,9 +245,13 @@ describe("Request Actions", () => {
       `;
       const element = document.getElementById("trigger");
 
-      fetch.mockResolvedValue({ ok: true });
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
 
-      await requestActions.post(element, {
+      await post(element, {
         target: "target",
         value: "/api/users"
       });
@@ -191,8 +261,7 @@ describe("Request Actions", () => {
         expect.objectContaining({
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": null
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({ name: "John", email: "john@example.com" })
         })
@@ -206,9 +275,13 @@ describe("Request Actions", () => {
       `;
       const element = document.getElementById("trigger");
 
-      fetch.mockResolvedValue({ ok: true });
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
 
-      await requestActions.post(element, {
+      await post(element, {
         target: "target",
         value: "/api/messages"
       });
@@ -218,12 +291,36 @@ describe("Request Actions", () => {
         expect.objectContaining({
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": null
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({ message: "Hello" })
         })
       );
+    });
+
+    test("calls onJSON with parsed JSON for POST", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Post</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+      const jsonData = { status: "saved" };
+      const onJSON = vi.fn();
+
+      post.onJSON = onJSON;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve(jsonData)
+      });
+
+      await post(element, {
+        target: "target",
+        value: "/api/save"
+      });
+
+      expect(onJSON).toHaveBeenCalledWith(jsonData);
     });
   });
 
@@ -235,9 +332,13 @@ describe("Request Actions", () => {
       `;
       const element = document.getElementById("trigger");
 
-      fetch.mockResolvedValue({ ok: true });
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
 
-      await requestActions.patch(element, {
+      await patch(element, {
         target: "target",
         value: "/api/users/1"
       });
@@ -249,6 +350,31 @@ describe("Request Actions", () => {
         })
       );
     });
+
+    test("calls onJSON with parsed JSON for PATCH", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Patch</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+      const jsonData = { status: "updated" };
+      const onJSON = vi.fn();
+
+      patch.onJSON = onJSON;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve(jsonData)
+      });
+
+      await patch(element, {
+        target: "target",
+        value: "/api/users/1"
+      });
+
+      expect(onJSON).toHaveBeenCalledWith(jsonData);
+    });
   });
 
   describe("put", () => {
@@ -259,9 +385,13 @@ describe("Request Actions", () => {
       `;
       const element = document.getElementById("trigger");
 
-      fetch.mockResolvedValue({ ok: true });
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
 
-      await requestActions.put(element, {
+      await put(element, {
         target: "target",
         value: "/api/users/1"
       });
@@ -272,6 +402,164 @@ describe("Request Actions", () => {
           method: "PUT"
         })
       );
+    });
+
+    test("calls onJSON with parsed JSON for PUT", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Put</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+      const jsonData = { status: "replaced" };
+      const onJSON = vi.fn();
+
+      put.onJSON = onJSON;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve(jsonData)
+      });
+
+      await put(element, {
+        target: "target",
+        value: "/api/users/1"
+      });
+
+      expect(onJSON).toHaveBeenCalledWith(jsonData);
+    });
+  });
+
+  describe("CSRF", () => {
+    test("omits CSRF header when csrf.token is null", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Post</button>
+        <form id="target">
+          <input name="name" value="John">
+        </form>
+      `;
+      const element = document.getElementById("trigger");
+
+      csrf.header = "X-CSRF-Token";
+      csrf.token = null;
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
+
+      await post(element, {
+        target: "target",
+        value: "/api/users"
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/users",
+        expect.objectContaining({
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+      );
+    });
+
+    test("includes CSRF header when csrf.token and csrf.header are set", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Post</button>
+        <form id="target">
+          <input name="name" value="John">
+        </form>
+      `;
+      const element = document.getElementById("trigger");
+
+      csrf.header = "X-CSRF-Token";
+      csrf.token = "abc123";
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
+
+      await post(element, {
+        target: "target",
+        value: "/api/users"
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/users",
+        expect.objectContaining({
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": "abc123"
+          }
+        })
+      );
+    });
+
+    test("calls csrf.token as a function", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Post</button>
+        <form id="target">
+          <input name="name" value="John">
+        </form>
+      `;
+      const element = document.getElementById("trigger");
+
+      csrf.header = "X-CSRF-Token";
+      csrf.token = () => "dynamic-token";
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
+
+      await post(element, {
+        target: "target",
+        value: "/api/users"
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/users",
+        expect.objectContaining({
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": "dynamic-token"
+          }
+        })
+      );
+    });
+  });
+
+  describe("post cross-origin", () => {
+    test("warns about cross-origin POST request", async () => {
+      document.body.innerHTML = `
+        <button id="trigger">Post</button>
+        <div id="target"></div>
+      `;
+      const element = document.getElementById("trigger");
+
+      fetch.mockResolvedValue({
+        ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
+        json: () => Promise.resolve({})
+      });
+
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      await post(element, {
+        target: "target",
+        value: "https://external.com/api"
+      });
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "🧲 ",
+        "Cross-origin request to: https://external.com/api. Missing the correct CORS headers."
+      );
+
+      warnSpy.mockRestore();
     });
   });
 });

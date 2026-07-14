@@ -20,7 +20,7 @@ class EventListeners {
 
     Debug.log("Added event listener for", eventType, "to", element);
 
-    this.#eventListeners.set(eventType, { handler: processEvent, element });
+    this.#eventListeners.set(eventType, { listener: processEvent, element });
   }
 
   addTargetedEventListener({ for: eventType, on: target, element }) {
@@ -65,10 +65,10 @@ class EventListeners {
 
         if (events.size === 0) {
           const [targetName, eventType] = key.split(":");
-          const handler = this.#targetedEventListeners.get(key);
+          const listener = this.#targetedEventListeners.get(key);
           const target = targetName === "window" ? window : document;
 
-          target.removeEventListener(eventType, handler);
+          target.removeEventListener(eventType, listener);
           this.#targetedEventListeners.delete(key);
           this.#targetedEvents.delete(key);
         }
@@ -79,17 +79,17 @@ class EventListeners {
   }
 
   removeAll() {
-    for (const [eventType, { handler, element }] of this.#eventListeners) {
-      element.removeEventListener(eventType, handler);
+    for (const [eventType, { listener, element }] of this.#eventListeners) {
+      element.removeEventListener(eventType, listener);
     }
 
     this.#eventListeners.clear();
 
-    for (const [key, handler] of this.#targetedEventListeners) {
+    for (const [key, listener] of this.#targetedEventListeners) {
       const [targetName, eventType] = key.split(":");
       const target = targetName === "window" ? window : document;
 
-      target.removeEventListener(eventType, handler);
+      target.removeEventListener(eventType, listener);
     }
 
     this.#targetedEventListeners.clear();

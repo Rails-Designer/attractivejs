@@ -1,36 +1,32 @@
 const onceTracker = new WeakSet();
 
-export function defaultDirectives(directives) {
-  directives.addDirective("mounted", (_, trigger) => {
-    trigger();
+const whenIntersecting = (check) => (element, trigger) => {
+  let fired = false;
+
+  const observer = new IntersectionObserver((entries) => {
+    if (check(entries) && !fired) {
+      fired = true;
+
+      observer.disconnect();
+
+      trigger();
+    }
   });
 
-  directives.addDirective("now", (_, trigger) => {
+  observer.observe(element);
+};
+
+export const builtinDirectives = {
+  mounted: (_, trigger) => {
     trigger();
-  });
-
-  const whenIntersecting = (check) => (element, trigger) => {
-    let fired = false;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (check(entries) && !fired) {
-        fired = true;
-
-        observer.disconnect();
-
-        trigger();
-      }
-    });
-
-    observer.observe(element);
-  };
-
-  directives.addDirective(
-    "whenVisible",
-    whenIntersecting((entries) => entries.some((entry) => entry.isIntersecting))
-  );
-
-  directives.addDirective("whenOutside", ({ event, element }) => {
+  },
+  now: (_, trigger) => {
+    trigger();
+  },
+  whenVisible: whenIntersecting((entries) =>
+    entries.some((entry) => entry.isIntersecting)
+  ),
+  whenOutside: ({ event, element }) => {
     if (
       typeof element.checkVisibility === "function" &&
       !element.checkVisibility()
@@ -38,30 +34,28 @@ export function defaultDirectives(directives) {
       return false;
 
     return !element.contains(event.target);
-  });
-
-  directives.addDirective("once", ({ element }) => {
+  },
+  once: ({ element }) => {
     if (onceTracker.has(element)) return false;
 
     onceTracker.add(element);
 
     return true;
-  });
-
-  directives.addDirective(
-    "whenInView",
-    whenIntersecting((entries) => entries[0].isIntersecting)
-  );
-
-  directives.addDirective("preventDefault", ({ event }) => {
+  },
+  whenInView: whenIntersecting((entries) => entries[0].isIntersecting),
+  preventDefault: ({ event }) => {
     event.preventDefault();
 
     return true;
-  });
-
-  directives.addDirective("stopPropagation", ({ event }) => {
+  },
+  stopPropagation: ({ event }) => {
     event.stopPropagation();
 
     return true;
-  });
+  }
+};
+
+export function defaultDirectives(directives) {
+  for (const [name, fn] of Object.entries(builtinDirectives))
+    directives.addDirective(name, fn);
 }

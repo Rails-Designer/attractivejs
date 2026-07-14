@@ -1,9 +1,11 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
+
+const allBuiltinActions = builtinActions;
 
 let attractive;
 
@@ -13,26 +15,20 @@ beforeEach(() => {
   vi.useFakeTimers();
 
   attractive = new Attractive();
-
-  attractive.registerActions((registry) => {
-    Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.addAction(name, action)
-    );
-  });
-
-  attractive.registerDirectives((directives) => {
-    defaultDirectives(directives);
-  });
 });
 
 test("async action resolves correctly", async () => {
-  attractive.addAction("asyncAction", async (element) => {
-    const result = await Promise.resolve("done");
+  attractive.activate({
+    addActions: {
+      ...allBuiltinActions,
+      asyncAction: async (element) => {
+        const result = await Promise.resolve("done");
 
-    element.dataset.asyncResult = result;
+        element.dataset.asyncResult = result;
+      }
+    },
+    addDirectives: builtinDirectives
   });
-
-  attractive.activate();
 
   document.body.innerHTML = `
     <button id="btn" @action="asyncAction">Async</button>
@@ -52,13 +48,17 @@ test("async action resolves correctly", async () => {
 test("false returned from async action prevents default", async () => {
   let actionCalled = false;
 
-  attractive.addAction("asyncPrevent", async () => {
-    actionCalled = true;
+  attractive.activate({
+    addActions: {
+      ...allBuiltinActions,
+      asyncPrevent: async () => {
+        actionCalled = true;
 
-    return false;
+        return false;
+      }
+    },
+    addDirectives: builtinDirectives
   });
-
-  attractive.activate();
 
   document.body.innerHTML = `
     <button id="btn" @action="asyncPrevent">Click</button>
@@ -76,17 +76,20 @@ test("false returned from async action prevents default", async () => {
 test("false short-circuits subsequent actions", async () => {
   const order = [];
 
-  attractive.addAction("first", async () => {
-    order.push("first");
+  attractive.activate({
+    addActions: {
+      ...allBuiltinActions,
+      first: async () => {
+        order.push("first");
 
-    return false;
+        return false;
+      },
+      second: () => {
+        order.push("second");
+      }
+    },
+    addDirectives: builtinDirectives
   });
-
-  attractive.addAction("second", () => {
-    order.push("second");
-  });
-
-  attractive.activate();
 
   document.body.innerHTML = `
     <button id="btn" @action="first second">Multi</button>

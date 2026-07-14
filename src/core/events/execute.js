@@ -123,11 +123,11 @@ class Execute {
 
       return await actionFunction(element, actionContext);
     } catch (error) {
-      this.#handleError({ name, on: element, error });
+      this.#reportError({ name, on: element, error });
     }
   }
 
-  #handleError({ name: actionName, on: element, error }) {
+  #reportError({ name: actionName, on: element, error }) {
     const targetId = element.id || this.#getTargetValue(element) || "";
     const message = `${actionName} on ${element.tagName.toLowerCase()}#${targetId}: ${error.message}`;
 

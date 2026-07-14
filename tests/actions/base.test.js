@@ -1,7 +1,14 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
+
+const allBuiltinActions = builtinActions;
+
+const defaultOptions = {
+  addActions: allBuiltinActions,
+  addDirectives: builtinDirectives
+};
 
 describe("Global Debounce", () => {
   let attractive;
@@ -12,20 +19,10 @@ describe("Global Debounce", () => {
     vi.useFakeTimers();
 
     attractive = new Attractive();
-
-    attractive.registerActions((registry) => {
-      Object.entries(builtinActions).forEach(([name, action]) =>
-        registry.addAction(name, action)
-      );
-    });
-
-    attractive.registerDirectives((directives) => {
-      defaultDirectives(directives);
-    });
   });
 
   test("fires action immediately without data-debounce", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target">Focus</button>
@@ -42,7 +39,7 @@ describe("Global Debounce", () => {
   });
 
   test("delays action with data-debounce", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target" data-debounce="100">Focus</button>
@@ -63,7 +60,7 @@ describe("Global Debounce", () => {
   });
 
   test("debounces multiple rapid calls to same element", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target" data-debounce="100">Focus</button>
@@ -86,7 +83,7 @@ describe("Global Debounce", () => {
   });
 
   test("different elements have independent debounce timers", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="a" @click="focus#target-a" @target="target-a" data-debounce="100">A</button>
@@ -114,7 +111,7 @@ describe("Global Debounce", () => {
   });
 
   test("supports legacy data-form-debounce attribute", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target" data-form-debounce="100">Focus</button>
@@ -135,7 +132,7 @@ describe("Global Debounce", () => {
   });
 
   test("supports legacy data-request-debounce attribute", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target" data-request-debounce="100">Focus</button>
@@ -156,7 +153,7 @@ describe("Global Debounce", () => {
   });
 
   test("data-debounce takes precedence over legacy attributes", async () => {
-    attractive.activate();
+    attractive.activate(defaultOptions);
 
     document.body.innerHTML = `
       <button id="trigger" @click="focus#target" @target="target" data-debounce="50">Focus</button>

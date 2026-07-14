@@ -1,21 +1,17 @@
 import Attractive from "./core";
 import builtinActions from "./actions";
-import { defaultDirectives } from "./core/builtin_directives";
+import { builtinDirectives } from "./core/builtin_directives";
+
+const allBuiltinActions = builtinActions;
 
 Attractive.activate = function (options = {}) {
   const attractive = new this(options);
 
-  attractive.registerActions((registry) => {
-    Object.entries(builtinActions).forEach(([name, action]) =>
-      registry.addAction(name, action)
-    );
+  attractive.activate({
+    ...options,
+    addActions: { ...allBuiltinActions, ...options.addActions },
+    addDirectives: { ...builtinDirectives, ...options.addDirectives }
   });
-
-  attractive.registerDirectives((directives) => {
-    defaultDirectives(directives);
-  });
-
-  attractive.activate(options);
 
   return attractive;
 };

@@ -126,87 +126,6 @@ class Attractive {
   }
 
   /**
-   * Adds a custom action.
-   *
-   * @param {string} name — action name used in `@action=""`
-   * @param {Function} action — the action function
-   * @returns {Attractive} — the instance for chaining
-   */
-  addAction(name, action) {
-    this.#registry.addAction(name, action);
-
-    return this;
-  }
-
-  /**
-   * Adds a custom trigger.
-   *
-   * @param {string} name — trigger name used in `:name`
-   * @param {Function} trigger — trigger function (element, fire)
-   * @returns {Attractive} — the instance for chaining
-   */
-  addTrigger(name, trigger) {
-    this.#registry.addDirective(name, trigger);
-
-    return this;
-  }
-
-  /**
-   * Adds a custom gate.
-   *
-   * @param {string} name — gate name used in `:name`
-   * @param {Function} gate — gate function ({ event, element }) — return false to block
-   * @returns {Attractive} — the instance for chaining
-   */
-  addGate(name, gate) {
-    this.#registry.addDirective(name, gate);
-
-    return this;
-  }
-
-  /**
-   * Adds multiple actions at once.
-   *
-   * @param {Object<string, Function>} actions — object mapping action names to handler functions
-   * @returns {Attractive} — the instance for chaining
-   */
-  addActions(actions) {
-    Object.entries(actions).forEach(([name, action]) =>
-      this.#registry.addAction(name, action)
-    );
-
-    return this;
-  }
-
-  /**
-   * Adds multiple triggers at once.
-   *
-   * @param {Object<string, Function>} triggers — object mapping trigger names to trigger functions
-   * @returns {Attractive} — the instance for chaining
-   */
-  addTriggers(triggers) {
-    Object.entries(triggers).forEach(([name, fn]) =>
-      this.#registry.addDirective(name, fn)
-    );
-
-    return this;
-  }
-
-  /**
-   * Adds multiple gates at once.
-   *
-   * @param {Object<string, Function>} gates — object mapping gate names to gate functions
-   * @returns {Attractive} — the instance for chaining
-   */
-  addGates(gates) {
-    Object.entries(gates).forEach(([name, fn]) =>
-      this.#registry.addDirective(name, fn)
-    );
-
-    return this;
-  }
-
-  /**
    * Registers a callback that runs before each action.
    * Return false to cancel the action.
    *
@@ -239,30 +158,6 @@ class Attractive {
    */
   onError(callback) {
     this.#hooks.addError(callback);
-
-    return this;
-  }
-
-  /**
-   * Registers the default built-in actions.
-   *
-   * @param {Function} actionsLoader — receives the registry to register actions
-   * @returns {Attractive} — the instance for chaining
-   */
-  registerActions(actionsLoader) {
-    actionsLoader(this.#registry);
-
-    return this;
-  }
-
-  /**
-   * Registers the default built-in directives.
-   *
-   * @param {Function} directivesLoader — receives the registry to register directives
-   * @returns {Attractive} — the instance for chaining
-   */
-  registerDirectives(directivesLoader) {
-    directivesLoader(this.#registry);
 
     return this;
   }

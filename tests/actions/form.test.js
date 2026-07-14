@@ -3,7 +3,9 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import formActions from "../../src/actions/form.js";
 import builtinActions from "../../src/actions/index.js";
-import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { builtinDirectives } from "../../src/core/builtin_directives.js";
+
+const allBuiltinActions = builtinActions;
 
 describe("Form Actions", () => {
   let attractive;
@@ -32,17 +34,11 @@ describe("Form Actions", () => {
 
     test("submits form after delay", async () => {
       attractive = new Attractive();
-      attractive.registerActions((registry) => {
-        Object.entries(builtinActions).forEach(([name, action]) =>
-          registry.addAction(name, action)
-        );
-      });
 
-      attractive.registerDirectives((directives) => {
-        defaultDirectives(directives);
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives
       });
-
-      attractive.activate();
 
       document.body.innerHTML = `
         <button id="trigger" @click="submit#target" @target="target" data-form-debounce="100">Submit</button>

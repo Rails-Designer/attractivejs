@@ -6,7 +6,6 @@ import dialogActions from "./dialog";
 import focusActions from "./focus";
 import formActions from "./form";
 import reloadActions from "./reload";
-import requestActions from "./request";
 import scrollToActions from "./scroll_to";
 import styleActions from "./style";
 
@@ -20,7 +19,6 @@ export const actions = {
   focus: focusActions,
   form: formActions,
   reload: reloadActions,
-  request: requestActions,
   scrollTo: scrollToActions,
   style: styleActions
 };
