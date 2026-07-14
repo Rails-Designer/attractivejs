@@ -6,7 +6,6 @@ const actions = [
   { name: "confirm", file: "confirm.js" },
   { name: "data-attribute", file: "data_attribute.js" },
   { name: "dialog", file: "dialog.js" },
-  { name: "element", file: "element.js" },
   { name: "focus", file: "focus.js" },
   { name: "form", file: "form.js" },
   { name: "reload", file: "reload.js" },
@@ -116,6 +115,23 @@ export default [
     input: "src/addons/reactive/index.js",
     output: {
       file: "dist/reactive.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/attract/index.js",
+    output: {
+      file: "dist/attract.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/attract/index.js",
+    output: {
+      file: "dist/attract.min.js",
       format: "es",
       minify: true
     }

@@ -3,7 +3,6 @@ import clipboardActions from "./clipboard";
 import confirmActions from "./confirm";
 import attributeActions, { dataAttributeActions } from "./dom_attributes";
 import dialogActions from "./dialog";
-import elementActions from "./element";
 import focusActions from "./focus";
 import formActions from "./form";
 import reloadActions from "./reload";
@@ -18,7 +17,6 @@ export const actions = {
   confirm: confirmActions,
   dataAttribute: dataAttributeActions,
   dialog: dialogActions,
-  element: elementActions,
   focus: focusActions,
   form: formActions,
   reload: reloadActions,

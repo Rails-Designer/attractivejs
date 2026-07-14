@@ -1,0 +1,439 @@
+import { describe, test, expect, beforeEach, vi } from "vitest";
+
+import Attractive from "../../src/index.js";
+import builtinActions from "../../src/actions/index.js";
+import { defaultDirectives } from "../../src/core/builtin_directives.js";
+import { Template } from "../../src/addons/attract/template.js";
+import { store } from "../../src/addons/reactive/store.js";
+import { attract } from "../../src/addons/attract/index.js";
+import { reactive } from "../../src/addons/reactive/index.js";
+import Debug from "../../src/debug.js";
+
+let attractive;
+
+beforeEach(() => {
+  document.body.innerHTML = "";
+});
+
+describe("Template", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  test("appends template clone to target", () => {
+    document.body.innerHTML = `
+      <template id="card"><div class="item">content</div></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: {}
+    });
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("content");
+  });
+
+  test("prepends template clone before existing content", () => {
+    document.body.innerHTML = `
+      <template id="card"><div class="item">new</div></template>
+      <div id="list"><div class="item">existing</div></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "prepend",
+      with: {}
+    });
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(2);
+    expect(list.children[0].textContent).toBe("new");
+  });
+
+  test("replaces target element", () => {
+    document.body.innerHTML = `
+      <template id="card"><div class="replacement">replaced</div></template>
+      <div id="original">original</div>
+    `;
+
+    new Template("card").render({
+      target: "original",
+      position: "replace",
+      with: {}
+    });
+
+    const replacement = document.querySelector(".replacement");
+    expect(replacement).toBeTruthy();
+    expect(replacement.textContent).toBe("replaced");
+    expect(document.getElementById("original")).toBeNull();
+  });
+
+  test("removes target elements", () => {
+    document.body.innerHTML = `<div id="gone"></div>`;
+
+    new Template(null).render({
+      target: "gone",
+      position: "remove",
+      with: {}
+    });
+
+    expect(document.getElementById("gone")).toBeNull();
+  });
+
+  test("renders each item from array data", () => {
+    document.body.innerHTML = `
+      <template id="card"><div class="item"></div></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: [{}, {}]
+    });
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(2);
+  });
+
+  test("warns on missing template", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    document.body.innerHTML = `<div id="target"></div>`;
+    Debug.enabled = true;
+
+    new Template("nonexistent").render({
+      target: "target",
+      position: "append",
+      with: {}
+    });
+
+    expect(warn).toHaveBeenCalled();
+    Debug.enabled = false;
+    warn.mockRestore();
+  });
+
+  test("sets store values from data", () => {
+    document.body.innerHTML = `
+      <template id="card"><div @text="name"></div></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { name: "Alice" }
+    });
+
+    expect(store.get("name")).toBe("Alice");
+  });
+
+  test("strips @text from clone by default", () => {
+    document.body.innerHTML = `
+      <template id="card"><div @text="name"></div></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { name: "Alice" }
+    });
+
+    const clone = document.querySelector("#list > div");
+    expect(clone).toBeTruthy();
+    expect(clone.textContent).toBe("Alice");
+    expect(clone.hasAttribute("@text")).toBe(false);
+  });
+
+  test("preserves @text when remainReactive is true", () => {
+    document.body.innerHTML = `
+      <template id="card"><div @text="name"></div></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { name: "Alice" },
+      remainReactive: true
+    });
+
+    const clone = document.querySelector("#list > div");
+    expect(clone).toBeTruthy();
+    expect(clone.getAttribute("@text")).toBe("name");
+  });
+});
+
+describe("attract addon", () => {
+  beforeEach(() => {
+    if (attractive) attractive.deactivate();
+    document.body.innerHTML = "";
+    vi.clearAllTimers();
+    vi.useFakeTimers();
+
+    attractive = new Attractive();
+    attractive.registerActions((registry) => {
+      Object.entries(builtinActions).forEach(([name, action]) =>
+        registry.addAction(name, action)
+      );
+    });
+    attractive.registerDirectives((directives) => {
+      defaultDirectives(directives);
+    });
+  });
+
+  test("activates without error", () => {
+    attractive.activate({ extendWith: [reactive, attract] });
+    expect(attractive.active).toBe(true);
+  });
+
+  test("sets busy on form submit before fetch resolves", () => {
+    const fetchMock = vi.fn().mockReturnValue(new Promise(() => {}));
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages" method="post">
+        <input name="body" value="hello" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+
+    expect(form.hasAttribute("data-attract-busy")).toBe(true);
+  });
+
+  test("sets success on ok response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({})
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages" method="post">
+        <input name="body" value="hello" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    expect(form.getAttribute("data-attract-success")).toBe("true");
+  });
+
+  test("sets error on failed response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 422,
+      json: () => Promise.resolve({ errors: { body: "can't be blank" } })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages" method="post">
+        <input name="body" value="" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    expect(form.getAttribute("data-attract-error")).toBe("true");
+  });
+
+  test("sets custom validity on field errors", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 422,
+      json: () => Promise.resolve({ errors: { body: "can't be blank" } })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages" method="post">
+        <input name="body" value="" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    const input = document.querySelector("input");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    expect(input.validationMessage).toBe("can't be blank");
+  });
+
+  test("intercepts form inside container with @attract", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({})
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <div @attract>
+        <form action="/messages" method="post">
+          <input name="body" value="hello" />
+          <button>Submit</button>
+        </form>
+      </div>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).toHaveBeenCalled();
+  });
+
+  test("processes actions from response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: { title: "Hello" }
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div class="item">dynamic</div></template>
+      <form @attract action="/messages" method="post">
+        <input name="title" value="Hello" />
+        <button>Submit</button>
+      </form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("dynamic");
+  });
+
+  test("registers append action accessible via @action", () => {
+    document.body.innerHTML = `
+      <template id="card"><div class="item">registered</div></template>
+      <div id="list"></div>
+      <button @action="append#card" @target="list">Add</button>
+    `;
+
+    attractive.activate({ extendWith: [reactive, attract] });
+
+    const list = document.getElementById("list");
+    const button = document.querySelector("button");
+    button.click();
+
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("registered");
+  });
+});
+
+describe("actions", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  describe("append", () => {
+    test("clones template and appends to target", async () => {
+      const { append } = await import("../../src/addons/attract/actions.js");
+
+      document.body.innerHTML = `
+        <template id="card"><div class="item">hello</div></template>
+        <div id="list"></div>
+      `;
+
+      const button = document.createElement("button");
+      button.dataset.template = "card";
+
+      append(button, {
+        target: "list",
+        value: null,
+        dataset: button.dataset
+      });
+
+      const list = document.getElementById("list");
+      expect(list.children).toHaveLength(1);
+      expect(list.children[0].textContent).toBe("hello");
+    });
+
+    test("reads template from action value", async () => {
+      const { append } = await import("../../src/addons/attract/actions.js");
+
+      document.body.innerHTML = `
+        <template id="card"><div class="item">from value</div></template>
+        <div id="list"></div>
+      `;
+
+      const button = document.createElement("button");
+
+      append(button, {
+        target: "list",
+        value: "card",
+        dataset: button.dataset
+      });
+
+      const list = document.getElementById("list");
+      expect(list.children[0].textContent).toBe("from value");
+    });
+  });
+
+  describe("remove", () => {
+    test("removes target element", async () => {
+      const { remove } = await import("../../src/addons/attract/actions.js");
+
+      document.body.innerHTML = `<div id="gone"></div>`;
+
+      const button = document.createElement("button");
+
+      remove(button, { target: "gone" });
+
+      expect(document.getElementById("gone")).toBeNull();
+    });
+  });
+});

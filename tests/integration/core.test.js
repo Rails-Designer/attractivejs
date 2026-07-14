@@ -3,7 +3,7 @@ import Attractive from "../../src/index.js";
 import Core from "../../src/core.js";
 import builtinActions from "../../src/actions/index.js";
 import { addClass, removeClass } from "../../src/actions/class.js";
-import { remove } from "../../src/actions/element.js";
+import { remove } from "../../src/addons/attract/actions.js";
 import { defaultDirectives } from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
