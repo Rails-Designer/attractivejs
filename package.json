@@ -58,9 +58,6 @@
     "./actions/dialog": {
       "import": "./dist/actions/dialog.js"
     },
-    "./actions/element": {
-      "import": "./dist/actions/element.js"
-    },
     "./actions/focus": {
       "import": "./dist/actions/focus.js"
     },
@@ -84,6 +81,9 @@
     },
     "./reactive": {
       "import": "./dist/reactive.js"
+    },
+    "./attract": {
+      "import": "./dist/attract.js"
     }
   },
   "files": [

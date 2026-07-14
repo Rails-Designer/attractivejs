@@ -15,6 +15,7 @@ Attractive.activate({ extendWith: [keyboard] });
 | -------- | ----------------------- | ------------------------------------------------------------------------ |
 | keyboard | `attractivejs/keyboard` | Key-filter dot modifiers (.enter, .escape…) and global @hotkey shortcuts |
 | reactive | `attractivejs/reactive` | Reactive key-value store with `@text` DOM subscriptions                  |
+| attract  | `attractivejs/attract`  | Self-describing data mutations via cached templates and JSON responses   |
 
 ## Writing an addon
 

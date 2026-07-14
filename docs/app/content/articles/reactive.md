@@ -22,7 +22,7 @@ Attractive.activate({ extendWith: [reactive] });
 
 The store is a singleton shared by all instances. Write from JavaScript via `store.set()` or from HTML via `setStore`, all subscribers react regardless of source.
 ```js
-store.set("name", { with: "Alice" });
+store.set("name", { with: "Cameron" });
 
 store.get("name"); // => "Alice"
 ```

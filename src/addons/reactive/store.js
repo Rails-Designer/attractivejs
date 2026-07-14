@@ -15,6 +15,14 @@ export const store = {
 
   get(key) {
     return data.get(key);
+  },
+
+  /**
+   * Remove all keys from the store.
+   * Subscriptions are not notified -- existing @text bindings keep their current textContent.
+   */
+  clear() {
+    data.clear();
   }
 };
 
