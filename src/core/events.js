@@ -47,6 +47,8 @@ class Events {
   // private
 
   #splitActions(action) {
+    if (action.startsWith("js:")) return [action];
+
     return action.split(" ").filter((action) => action);
   }
 }

@@ -5,10 +5,21 @@ import { store } from "./store.js";
 
 export { store };
 
+function js(element, { value: expression, event, target, targets }) {
+  return new Function(
+    "event",
+    "target",
+    "targets",
+    "$store",
+    `return ${expression}`
+  ).call(element, event, target, targets, store);
+}
+
 export function reactive({ instance, registry }) {
   instance.store = store;
 
   registry.addAction("setStore", setStore);
+  registry.addAction("js", js);
   registry.addDirective("whenTrue", whenTrue);
   registry.addDirective("whenFalse", whenFalse);
 

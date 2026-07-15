@@ -169,12 +169,14 @@ class Actions {
   #setupDirectiveTriggers({ on: element, from: attributes }) {
     const directives = [
       ...new Set(
-        attributes.flatMap(({ value }) =>
-          value
-            .split(" ")
-            .filter((name) => name.includes(":"))
-            .flatMap((name) => name.split(":").slice(1))
-        )
+        attributes
+          .filter(({ value }) => !value.startsWith("js:"))
+          .flatMap(({ value }) =>
+            value
+              .split(" ")
+              .filter((name) => name.includes(":"))
+              .flatMap((name) => name.split(":").slice(1))
+          )
       )
     ];
 
