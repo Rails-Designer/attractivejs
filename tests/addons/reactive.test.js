@@ -4,7 +4,7 @@ import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
 import { builtinDirectives } from "../../src/core/builtin_directives.js";
 import { reactive } from "../../src/addons/reactive/index.js";
-import { store } from "../../src/addons/reactive/store.js";
+import { store, subscribe } from "../../src/addons/reactive/store.js";
 
 const allBuiltinActions = builtinActions;
 
@@ -28,6 +28,57 @@ describe("Reactive addon", () => {
 
     test("get returns undefined for unset key", () => {
       expect(store.get("nonexistent")).toBeUndefined();
+    });
+
+    test("clear removes all keys", () => {
+      store.set("a", { with: 1 });
+      store.set("b", { with: 2 });
+      store.clear();
+
+      expect(store.get("a")).toBeUndefined();
+      expect(store.get("b")).toBeUndefined();
+    });
+
+    test("clear notifies subscribers with undefined", () => {
+      const fnA = vi.fn();
+      const fnB = vi.fn();
+      subscribe("x", { with: fnA });
+      subscribe("y", { with: fnB });
+
+      store.set("x", { with: "hello" });
+      store.set("y", { with: "world" });
+
+      store.clear();
+
+      expect(fnA).toHaveBeenCalledWith(undefined);
+      expect(fnB).toHaveBeenCalledWith(undefined);
+    });
+
+    test("clear does not remove subscriptions", () => {
+      const fn = vi.fn();
+      subscribe("z", { with: fn });
+
+      store.clear();
+      store.set("z", { with: "after" });
+
+      expect(fn).toHaveBeenCalledWith("after");
+    });
+
+    test("subscriber is notified exactly once per clear", () => {
+      const fn = vi.fn();
+      subscribe("k", { with: fn });
+
+      store.set("k", { with: "value" });
+      fn.mockClear();
+
+      store.clear();
+
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).toHaveBeenCalledWith(undefined);
+    });
+
+    test("clear with no subscriptions does not throw", () => {
+      expect(() => store.clear()).not.toThrow();
     });
   });
 

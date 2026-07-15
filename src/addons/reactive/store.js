@@ -1,5 +1,6 @@
 const data = new Map();
 const subscriptions = new Map();
+const all = new Set();
 
 export const store = {
   set(key, { with: value }) {
@@ -19,9 +20,11 @@ export const store = {
 
   /**
    * Remove all keys from the store.
-   * Subscriptions are not notified -- existing @text bindings keep their current textContent.
+   * All subscribers are notified with undefined so bound elements clear their content.
    */
   clear() {
+    all.forEach((listener) => listener(undefined));
+
     data.clear();
   }
 };
@@ -36,8 +39,10 @@ export function subscribe(key, { with: listener }) {
   }
 
   subscriptions.get(key).add(listener);
+  all.add(listener);
 
   return () => {
     subscriptions.get(key)?.delete(listener);
+    all.delete(listener);
   };
 }
