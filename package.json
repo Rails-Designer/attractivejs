@@ -61,6 +61,9 @@
     "./actions/focus": {
       "import": "./dist/actions/focus.js"
     },
+    "./actions/inline": {
+      "import": "./dist/actions/inline.js"
+    },
     "./actions/form": {
       "import": "./dist/actions/form.js"
     },

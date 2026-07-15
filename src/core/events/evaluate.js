@@ -15,6 +15,12 @@ class Evaluate {
     },
     { execute }
   ) {
+    if (action.startsWith("js:")) {
+      return await execute(action, {
+        with: { on: element, for: event, triggeredBy: directive || null }
+      });
+    }
+
     const hasDirectives = action.includes(":");
 
     if (hasDirectives)

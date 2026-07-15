@@ -3,15 +3,28 @@ title: Attractive.js
 description: A humble set of declarative HTML actions — extensible when you need more
 ---
 
-<div>99% of static sites and server-rendered apps don't need heavy frameworks. Modern HTML and CSS are powerful, but sometimes you just need a touch of interactivity.</div>
-
-<p>Attractive.js gives you declarative actions through data attributes. It is not a framework. It is just a humble set of actions. Write less. Ship more.</p>
-
-<p><strong>6.6 kB gzipped. The full library.</strong></p>
+<div>
+  <p>A humble set of declarative HTML actions. Extensible when you need more</p>
+  <pre><code>&lt;button @action="toggleClass#active" @target="panel"&gt;Toggle&lt;/button&gt;
+&lt;div id="panel"&gt;Content&lt;/div&gt;</code></pre>
+</div>
 
 <button @action="toggleClass#active" @target="panel">Toggle</button>
 <div id="panel">Content</div>
 
 <a href="/docs/quickstart">Get started</a>
 
-<pre><code>&lt;script src="//unpkg.com/attractivejs" type="module" activate&gt;&lt;/script&gt;</code></pre>
+<p>First JS library you use on your site and app.</p>
+
+<ul>
+  <li>Bundled actions for common actions (great for SSG)</li>
+  <li>Go beyond (for web apps) with addons: keyboard, reactive, attract</li>
+  <li>Bring your own actions</li>
+</ul>
+
+<ul>
+  <li>Custom actions: inline, functions or classes; based on complexity</li>
+  <li>Core build: only use what you need</li>
+  <li>Enhanced custom elements</li>
+  <li>Bring your own addons</li>
+</ul>

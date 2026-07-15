@@ -69,6 +69,10 @@ class Execute {
   // private
 
   #resolve({ from: action }) {
+    if (action.startsWith("js:")) {
+      return { name: "js", value: action.slice(3) };
+    }
+
     const parts = action.split("#");
     const [possibleAction, fallbackAction, fallbackValue] = parts;
 

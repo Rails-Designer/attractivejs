@@ -1,6 +1,7 @@
 import { defineConfig } from "rolldown";
 
 const actions = [
+  { name: "attribute", file: "attribute.js" },
   { name: "class", file: "class.js" },
   { name: "clipboard", file: "clipboard.js" },
   { name: "confirm", file: "confirm.js" },
@@ -8,10 +9,10 @@ const actions = [
   { name: "dialog", file: "dialog.js" },
   { name: "focus", file: "focus.js" },
   { name: "form", file: "form.js" },
+  { name: "inline", file: "inline.js" },
   { name: "reload", file: "reload.js" },
   { name: "request", file: "request.js" },
   { name: "scroll-to", file: "scroll_to.js" },
-  { name: "attribute", file: "attribute.js" },
   { name: "style", file: "style.js" }
 ];
 
