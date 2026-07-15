@@ -4,7 +4,7 @@ import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
 import { builtinDirectives } from "../../src/core/builtin_directives.js";
 import { reactive } from "../../src/addons/reactive/index.js";
-import { store } from "../../src/addons/reactive/store.js";
+import { store, subscribe } from "../../src/addons/reactive/store.js";
 
 const allBuiltinActions = builtinActions;
 
@@ -28,6 +28,57 @@ describe("Reactive addon", () => {
 
     test("get returns undefined for unset key", () => {
       expect(store.get("nonexistent")).toBeUndefined();
+    });
+
+    test("clear removes all keys", () => {
+      store.set("a", { with: 1 });
+      store.set("b", { with: 2 });
+      store.clear();
+
+      expect(store.get("a")).toBeUndefined();
+      expect(store.get("b")).toBeUndefined();
+    });
+
+    test("clear notifies subscribers with undefined", () => {
+      const fnA = vi.fn();
+      const fnB = vi.fn();
+      subscribe("x", { with: fnA });
+      subscribe("y", { with: fnB });
+
+      store.set("x", { with: "hello" });
+      store.set("y", { with: "world" });
+
+      store.clear();
+
+      expect(fnA).toHaveBeenCalledWith(undefined);
+      expect(fnB).toHaveBeenCalledWith(undefined);
+    });
+
+    test("clear does not remove subscriptions", () => {
+      const fn = vi.fn();
+      subscribe("z", { with: fn });
+
+      store.clear();
+      store.set("z", { with: "after" });
+
+      expect(fn).toHaveBeenCalledWith("after");
+    });
+
+    test("subscriber is notified exactly once per clear", () => {
+      const fn = vi.fn();
+      subscribe("k", { with: fn });
+
+      store.set("k", { with: "value" });
+      fn.mockClear();
+
+      store.clear();
+
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).toHaveBeenCalledWith(undefined);
+    });
+
+    test("clear with no subscriptions does not throw", () => {
+      expect(() => store.clear()).not.toThrow();
     });
   });
 
@@ -273,6 +324,89 @@ describe("Reactive addon", () => {
       await vi.runAllTimersAsync();
 
       expect(store.get("action-active")).toBe(true);
+    });
+  });
+
+  describe("setStore initial value", () => {
+    test("input with value seeds the store", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-name" value="Bob" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-name")).toBe("Bob");
+    });
+
+    test("input without value attribute does not seed", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-empty-input" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-empty-input")).toBeUndefined();
+    });
+
+    test("input with empty string value does not seed", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-empty-value" value="" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-empty-value")).toBeUndefined();
+    });
+
+    test("seed does not overwrite existing store value", async () => {
+      store.set("init-existing", { with: "Alice" });
+
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input @input="setStore#init-existing" value="Bob" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-existing")).toBe("Alice");
+    });
+
+    test("select seeds store from selected option", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <select @change="setStore#init-selected">
+          <option value="a">A</option>
+          <option value="b" selected>B</option>
+          <option value="c">C</option>
+        </select>
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-selected")).toBe("b");
     });
   });
 
