@@ -277,7 +277,7 @@ describe("Reactive addon", () => {
   });
 
   describe("whenTrue / whenFalse", () => {
-    test("whenTrue fires action on truthy store value", async () => {
+    test("whenTrue runs action on truthy store value", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
         addDirectives: builtinDirectives,
@@ -297,7 +297,7 @@ describe("Reactive addon", () => {
       );
     });
 
-    test("whenTrue does not fire on falsy store value", async () => {
+    test("whenTrue does not run on falsy store value", async () => {
       store.set("st", { with: false });
 
       attractive.activate({
@@ -319,7 +319,7 @@ describe("Reactive addon", () => {
       );
     });
 
-    test("whenFalse fires action on falsy store value", async () => {
+    test("whenFalse runs action on falsy store value", async () => {
       store.set("st", { with: true });
 
       attractive.activate({
@@ -360,7 +360,7 @@ describe("Reactive addon", () => {
       expect(document.getElementById("el").hasAttribute("fired")).toBe(false);
     });
 
-    test("does not fire when store.set is never called", async () => {
+    test("does not run when store.set is never called", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
         addDirectives: builtinDirectives,

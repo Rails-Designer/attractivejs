@@ -193,7 +193,7 @@ test("can be combined with other actions via separate attributes", async () => {
   expect(document.getElementById("btn").dataset.jsRan).toBe("true");
 });
 
-test("before and after hooks fire for js action", async () => {
+test("before and after hooks run for js action", async () => {
   const before = vi.fn();
   const after = vi.fn();
 

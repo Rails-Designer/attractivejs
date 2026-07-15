@@ -1,4 +1,5 @@
 export function js(element, { value: expression, event, target, targets }) {
+  // eslint-disable-next-line no-new-func
   return new Function(
     "event",
     "target",

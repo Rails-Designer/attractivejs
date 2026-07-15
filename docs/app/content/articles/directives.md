@@ -1,11 +1,11 @@
 ---
 title: Triggers and gates
-description: Control when and how actions fire with triggers and gates
+description: Control when and how actions run with triggers and gates
 category: basics
 position: 2
 ---
 
-Triggers and gates control when and how actions fire. They are appended to the action value with a colon.
+Triggers and gates control when and how actions run. They are appended to the action value with a colon.
 ```html
 <button @action="addClass#visible:mounted">Appears on load</button>
 <button @action="toggleClass#open:once">Toggle once</button>
@@ -15,11 +15,11 @@ Triggers and gates control when and how actions fire. They are appended to the a
 
 ## Triggers
 
-Triggers fire the action when a condition is met, rather than on a user event.
+Triggers run the action when a condition is met, rather than on a user event.
 
 | Trigger       | Description                                                              |
 | ------------- | ------------------------------------------------------------------------ |
-| `:mounted`    | Fires immediately when the element is added to the DOM                   |
+| `:mounted`    | Runs immediately when the element is added to the DOM                   |
 | `:now`        | Alias for `:mounted`                                                     |
 | `:whenVisible`| Fires once when the element scrolls into view (via IntersectionObserver) |
 | `:whenInView` | Alias for `:whenVisible`                                                 |
@@ -32,11 +32,11 @@ Triggers fire the action when a condition is met, rather than on a user event.
 
 ## Gates
 
-Gates evaluate a condition before allowing the action to fire. Returns `false` to block the action.
+Gates evaluate a condition before allowing the action to run. Returns `false` to block the action.
 
 | Gate               | Description                                                |
 | ------------------ | ---------------------------------------------------------- |
-| `:once`            | Prevents the action from firing more than once per element |
+| `:once`            | Prevents the action from running more than once per element |
 | `:preventDefault`  | Calls `event.preventDefault()`                             |
 | `:stopPropagation` | Calls `event.stopPropagation()`                            |
 | `:whenOutside`     | Only fires when the click target is outside the element    |

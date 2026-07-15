@@ -1,11 +1,11 @@
 const onceTracker = new WeakSet();
 
 const whenIntersecting = (check) => (element, trigger) => {
-  let fired = false;
+  let done = false;
 
   const observer = new IntersectionObserver((entries) => {
-    if (check(entries) && !fired) {
-      fired = true;
+    if (check(entries) && !done) {
+      done = true;
 
       observer.disconnect();
 

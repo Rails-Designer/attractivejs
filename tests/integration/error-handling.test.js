@@ -39,7 +39,7 @@ test("error from action does not bubble up as unhandled", async () => {
   }).not.toThrow();
 });
 
-test("instance onError hook fires when action throws", async () => {
+test("instance onError hook runs when action throws", async () => {
   const hook = vi.fn();
   const error = new Error("boom");
 

@@ -21,7 +21,7 @@ describe("Global Debounce", () => {
     attractive = new Attractive();
   });
 
-  test("fires action immediately without data-debounce", async () => {
+  test("runs action immediately without data-debounce", async () => {
     attractive.activate(defaultOptions);
 
     document.body.innerHTML = `

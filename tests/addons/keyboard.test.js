@@ -21,7 +21,7 @@ describe("Keyboard addon", () => {
     attractive = new Attractive();
   });
 
-  test("@keydown.enter fires only on Enter key", async () => {
+  test("@keydown.enter runs only on Enter key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -45,7 +45,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("enter")).toBe(true);
   });
 
-  test("@keydown.enter does not fire on other keys", async () => {
+  test("@keydown.enter does not run on other keys", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -69,7 +69,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("enter")).toBe(false);
   });
 
-  test("@keydown.escape fires only on Escape key", async () => {
+  test("@keydown.escape runs only on Escape key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -93,7 +93,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("escape")).toBe(true);
   });
 
-  test("@keydown.ctrl.k fires on Ctrl+K combo", async () => {
+  test("@keydown.ctrl.k runs on Ctrl+K combo", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -117,7 +117,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("combo")).toBe(true);
   });
 
-  test("@keydown.ctrl.k does not fire on K without Ctrl", async () => {
+  test("@keydown.ctrl.k does not run on K without Ctrl", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -141,7 +141,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("combo")).toBe(false);
   });
 
-  test("@keydown without modifiers still fires on any key", async () => {
+  test("@keydown without modifiers still runs on any key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -234,7 +234,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("fired")).toBe(true);
   });
 
-  test("@hotkey.ctrl+k with value fires on combo", async () => {
+  test("@hotkey.ctrl+k with value runs on combo", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -257,7 +257,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("fired")).toBe(true);
   });
 
-  test("@hotkey.ctrl+k does not fire on K without Ctrl", async () => {
+  test("@hotkey.ctrl+k does not run on K without Ctrl", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -280,7 +280,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("fired")).toBe(false);
   });
 
-  test("@hotkey.g.i sequence fires after g then i", async () => {
+  test("@hotkey.g.i sequence runs after g then i", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -340,7 +340,7 @@ describe("Keyboard addon", () => {
     expect(clicked).toHaveBeenCalled();
   });
 
-  test("@hotkey.g+i fires when both keys are held", async () => {
+  test("@hotkey.g+i runs when both keys are held", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -410,7 +410,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("fired")).toBe(false);
   });
 
-  test("@hotkey.g+i combo does not fire after keyup", async () => {
+  test("@hotkey.g+i combo does not run after keyup", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
@@ -453,7 +453,7 @@ describe("Keyboard addon", () => {
     expect(target.classList.contains("fired")).toBe(false);
   });
 
-  test("@hotkey.g+i combo fires alongside same-key sequence", async () => {
+  test("@hotkey.g+i combo runs alongside same-key sequence", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,

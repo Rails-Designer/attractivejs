@@ -17,7 +17,7 @@ beforeEach(() => {
   attractive = new Attractive();
 });
 
-test("mounted trigger fires addClass immediately when element is added to DOM", async () => {
+test("mounted trigger runs addClass immediately when element is added to DOM", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
     addDirectives: builtinDirectives
@@ -53,7 +53,7 @@ test("custom event types", async () => {
   expect(trigger.classList.contains("hovered")).toBe(true);
 });
 
-test("whenVisible trigger fires when element becomes visible", async () => {
+test("whenVisible trigger runs when element becomes visible", async () => {
   const mockObserve = vi.fn();
   const mockDisconnect = vi.fn();
 
@@ -78,7 +78,7 @@ test("whenVisible trigger fires when element becomes visible", async () => {
   expect(mockObserve).toHaveBeenCalled();
 });
 
-test("whenInView trigger fires when element becomes visible", async () => {
+test("whenInView trigger runs when element becomes visible", async () => {
   let observerCallback;
 
   global.IntersectionObserver = vi.fn().mockImplementation((callback) => {

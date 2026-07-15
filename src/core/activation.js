@@ -78,18 +78,18 @@ class Activation {
       (element) => {
         this.#actions.prepare(element);
 
-        this.#elementLifecycle.fireAdded(element);
+        this.#elementLifecycle.runAdded(element);
       },
 
       (element) => {
         this.#listeners.cleanup(element);
 
-        this.#elementLifecycle.fireRemoved(element);
+        this.#elementLifecycle.runRemoved(element);
       },
 
       on,
       (element) => {
-        this.#elementLifecycle.fireBeforeRemove(element);
+        this.#elementLifecycle.runBeforeRemove(element);
       }
     );
 
@@ -113,7 +113,7 @@ class Activation {
     this.#observe.start((element) => this.#attributePrefixes.matches(element));
 
     actionElements.forEach((element) => {
-      this.#elementLifecycle.fireAdded(element);
+      this.#elementLifecycle.runAdded(element);
     });
 
     this.#initialized = true;

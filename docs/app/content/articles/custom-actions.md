@@ -62,7 +62,7 @@ Attractive.activate({
 
 Pass triggers and gates as an object to `addDirectives`. They are registered together, the distinction is purely semantic:
 
-- A **trigger** fires the action. The function receives `(element, fire)`. Call `fire()` to execute the action.
+- A **trigger** runs the action. The function receives `(element, run)`. Call `run()` to execute the action.
 - A **gate** evaluates a condition. Return `false` to block the action.
 
 ```js
@@ -70,8 +70,8 @@ import Attractive from "attractivejs";
 
 Attractive.activate({
   addDirectives: {
-    onceTurboLoaded: (element, fire) => {
-      document.addEventListener("turbo:load", fire, { once: true });
+    onceTurboLoaded: (element, run) => {
+      document.addEventListener("turbo:load", run, { once: true });
     },
 
     whenSmallScreen: ({ event, element }) => {

@@ -28,7 +28,7 @@ Attractive.activate({ extendWith: [keyboard] });
 
 ## @keydown
 
-Dot modifiers filter which keys trigger the action. The element must be focused for `@keydown` to fire:
+Dot modifiers filter which keys trigger the action. The element must be focused for `@keydown` to run:
 ```html
 <input @keydown.enter="addClass#submitted" @target="status" />
 ```
@@ -59,7 +59,7 @@ Children of the focused element also trigger it, since events bubble:
 | `.window`     | Listens on `window` instead   |
 | `.document`   | Listens on `document` instead |
 
-A bare `@keydown` fires on any key:
+A bare `@keydown` runs on any key:
 ```html
 <input @keydown="addClass#pressed" @target="status" />
 ```
@@ -73,7 +73,7 @@ Multiple keys combine with `+`:
 
 ### Global with `.window`
 
-Add `.window` to fire globally regardless of element focus. Editable elements (input, textarea, select, contenteditable) suppress the action when focused:
+Add `.window` to run globally regardless of element focus. Editable elements (input, textarea, select, contenteditable) suppress the action when focused:
 ```html
 <div @keydown.meta+s.window="addClass#saved" @target="status">Save</div>
 <div @keydown.escape.window="removeAttribute#open" @target="menu">Close</div>
@@ -82,7 +82,7 @@ Add `.window` to fire globally regardless of element focus. Editable elements (i
 
 ## @hotkey
 
-`@hotkey` fires globally, no `.window` required. It handles focus isolation automatically.
+`@hotkey` runs globally, no `.window` required. It handles focus isolation automatically.
 
 
 ### Bare hotkey
@@ -116,7 +116,7 @@ With a value, `@hotkey` dispatches a synthetic `hotkey` event through the action
 
 ### Cancellable event
 
-Before the action fires, `@hotkey` dispatches a cancellable `attractive:hotkey` CustomEvent on the element. Call `preventDefault()` to stop the action:
+Before the action runs, `@hotkey` dispatches a cancellable `attractive:hotkey` CustomEvent on the element. Call `preventDefault()` to stop the action:
 ```js
 element.addEventListener("attractive:hotkey", (event) => {
   if (someCondition) event.preventDefault();

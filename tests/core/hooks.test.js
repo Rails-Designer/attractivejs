@@ -22,7 +22,7 @@ describe("beforeAction", () => {
     attractive.deactivate();
   });
 
-  test("fires callback with context", async () => {
+  test("runs callback with context", async () => {
     const callback = vi.fn();
 
     attractive.beforeAction(callback);
@@ -46,7 +46,7 @@ describe("beforeAction", () => {
     );
   });
 
-  test("fires multiple callbacks in order", async () => {
+  test("runs multiple callbacks in order", async () => {
     const order = [];
 
     attractive.beforeAction(() => order.push("first"));
@@ -143,7 +143,7 @@ describe("afterAction", () => {
     attractive.deactivate();
   });
 
-  test("fires callback with context and result", async () => {
+  test("runs callback with context and result", async () => {
     const callback = vi.fn();
 
     attractive.afterAction(callback);
@@ -183,7 +183,7 @@ describe("onError", () => {
     attractive.deactivate();
   });
 
-  test("fires callback when action throws", async () => {
+  test("runs callback when action throws", async () => {
     const hook = vi.fn();
     const error = new Error("boom");
 

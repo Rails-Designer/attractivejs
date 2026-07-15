@@ -21,15 +21,15 @@ class ElementLifecycleHooks {
     return this;
   }
 
-  fireAdded(element) {
+  runAdded(element) {
     this.#added.forEach((fn) => fn(element));
   }
 
-  fireRemoved(element) {
+  runRemoved(element) {
     this.#removed.forEach((fn) => fn(element));
   }
 
-  fireBeforeRemove(element) {
+  runBeforeRemove(element) {
     this.#beforeRemove.forEach((fn) => fn(element));
   }
 

@@ -43,7 +43,7 @@ A `js:` expression goes through the full action pipeline. It is not a bypass. Th
 - `@target` and `@targets` are available as `target` and `targets` in the expression
 - `data-debounce` on the element works
 - Event modifiers like `@click.window` and `@keydown.enter` work
-- before and after hooks fire
+- before and after hooks run
 - Debug logs show the action name and timing
 - Errors are caught, logged and routed to `onError`
 - `return false` prevents default
