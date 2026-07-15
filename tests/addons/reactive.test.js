@@ -327,6 +327,89 @@ describe("Reactive addon", () => {
     });
   });
 
+  describe("setStore initial value", () => {
+    test("input with value seeds the store", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-name" value="Bob" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-name")).toBe("Bob");
+    });
+
+    test("input without value attribute does not seed", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-empty-input" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-empty-input")).toBeUndefined();
+    });
+
+    test("input with empty string value does not seed", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input id="input" @input="setStore#init-empty-value" value="" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-empty-value")).toBeUndefined();
+    });
+
+    test("seed does not overwrite existing store value", async () => {
+      store.set("init-existing", { with: "Alice" });
+
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <input @input="setStore#init-existing" value="Bob" />
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-existing")).toBe("Alice");
+    });
+
+    test("select seeds store from selected option", async () => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addDirectives: builtinDirectives,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <select @change="setStore#init-selected">
+          <option value="a">A</option>
+          <option value="b" selected>B</option>
+          <option value="c">C</option>
+        </select>
+      `;
+      await vi.runAllTimersAsync();
+
+      expect(store.get("init-selected")).toBe("b");
+    });
+  });
+
   describe("whenTrue / whenFalse", () => {
     test("whenTrue runs action on truthy store value", async () => {
       attractive.activate({

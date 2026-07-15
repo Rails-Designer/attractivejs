@@ -1,7 +1,7 @@
 import { bindText, unbindText } from "./attribute.js";
 import { setStore } from "./actions/set_store.js";
 import { whenTrue, whenFalse, unbindStore } from "./directives.js";
-import { store } from "./store.js";
+import { store, has } from "./store.js";
 
 export { store };
 
@@ -25,11 +25,28 @@ export function reactive({ instance, registry }) {
   registry.addDirective("whenFalse", whenFalse);
 
   instance.onElementAdded((element) => {
-    const key = element.getAttribute("@text");
+    const textKey = element.getAttribute("@text");
 
-    if (!key) return;
+    if (textKey) {
+      bindText({ on: element, with: textKey.trim() });
+    }
 
-    bindText({ on: element, with: key.trim() });
+    if (!element.value) return;
+    if (!["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName)) return;
+
+    for (const attribute of element.attributes) {
+      if (!attribute.name.startsWith("@")) continue;
+
+      const setStorePrefix = "setStore#";
+      if (!attribute.value.includes(setStorePrefix)) continue;
+
+      const storeKey = attribute.value
+        .slice(attribute.value.indexOf(setStorePrefix) + setStorePrefix.length)
+        .split("=")[0];
+      if (storeKey && !has(storeKey)) {
+        store.set(storeKey, { with: element.value });
+      }
+    }
   });
 
   instance.onElementRemoved((element) => {
