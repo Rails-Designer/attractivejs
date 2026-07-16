@@ -121,11 +121,20 @@ class Execute {
     };
   }
 
-  async #invoke({ name, on: element, context: actionContext }) {
+  async #invoke({ name, on: element, context }) {
     try {
-      const actionFunction = this.#registry.getAction(name);
+      const Action = this.#registry.getAction(name);
 
-      return await actionFunction(element, actionContext);
+      if (typeof Action === "function" && Action.prototype?.run) {
+        const instance = new Action(element, context);
+
+        instance.currentElement = element;
+        instance.options = context;
+
+        return await instance.run();
+      }
+
+      return await Action(element, context);
     } catch (error) {
       this.#reportError({ name, on: element, error });
     }

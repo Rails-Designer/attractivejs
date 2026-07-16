@@ -1,6 +1,7 @@
 import Attractive from "./core";
 import builtinActions from "./actions";
 import { builtinDirectives } from "./core/builtin_directives";
+import from from "./helpers/from";
 
 const allBuiltinActions = builtinActions;
 
@@ -31,4 +32,5 @@ if (
     : Attractive.activate();
 }
 
+export { from };
 export default Attractive;
