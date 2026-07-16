@@ -49,11 +49,6 @@ Sets the store key to `true`:
 <button @click="setStore#active">Activate</button>
 ```
 
-Combine with `data-debounce` for rate-limited updates:
-```html
-<input @input="setStore#query" data-debounce="300" />
-```
-
 
 ## `:whenTrue` / `:whenFalse` triggers
 

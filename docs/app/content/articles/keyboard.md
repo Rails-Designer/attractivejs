@@ -5,7 +5,7 @@ category: extensions
 position: 1
 ---
 
-Keyboard adds key-filter dot modifiers for `@keydown` and global `@hotkey` shortcuts.
+The keyboard addon adds key-filter dot modifiers for `@keydown` and global `@hotkey` shortcuts.
 
 
 ## Usage
@@ -22,8 +22,8 @@ Attractive.activate({ extendWith: [keyboard] });
 
 | Directive    | Scope    |
 | ------------ | -------- |
-| `@keydown.*` | Element — must be focused |
-| `@hotkey.*`  | Global — suppressed when editing form fields |
+| `@keydown.*` | Element; must be focused |
+| `@hotkey.*`  | Global; suppressed when editing form fields |
 
 
 ## @keydown

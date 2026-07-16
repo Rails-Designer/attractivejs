@@ -8,8 +8,7 @@ function positionAction(position) {
     new Template(templateId).render({
       target: target || dataset?.attractTarget,
       targets,
-      position,
-      remainReactive: true
+      position
     });
   };
 }
