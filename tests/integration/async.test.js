@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -27,7 +30,8 @@ test("async action resolves correctly", async () => {
         element.dataset.asyncResult = result;
       }
     },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -57,7 +61,8 @@ test("false returned from async action prevents default", async () => {
         return false;
       }
     },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -88,7 +93,8 @@ test("false short-circuits subsequent actions", async () => {
         order.push("second");
       }
     },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `

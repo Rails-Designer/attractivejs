@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -20,7 +23,8 @@ beforeEach(() => {
 test("once gate allows action only on first click", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -45,7 +49,8 @@ test("once gate allows action only on first click", async () => {
 test("whenOutside gate blocks action when clicking inside element", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -66,7 +71,8 @@ test("whenOutside gate blocks action when clicking inside element", async () => 
 test("whenOutside gate allows action when clicking outside element", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -88,7 +94,8 @@ test("whenOutside gate allows action when clicking outside element", async () =>
 test("preventDefault gate stops default browser behavior", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `

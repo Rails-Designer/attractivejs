@@ -36,26 +36,26 @@ class Evaluate {
   // private
 
   #stripDirectives({ from: action, for: event, on: element }) {
-    const parts = action.split(":");
-    const allPass = parts
-      .slice(1)
-      .every((name) =>
-        this.#passesGate({ gate: name, for: event, on: element })
-      );
+    const [base, ...directives] = action.split(":");
 
-    if (!allPass) return;
+    if (
+      !directives
+        .filter(
+          (name) => !(this.#registry.hasTrigger(name) && event.type === name)
+        )
+        .every((name) => this.#passes(name, { for: event, on: element }))
+    )
+      return;
 
-    return parts[0];
+    return base;
   }
 
-  #passesGate({ gate: name, for: event, on: element }) {
-    const gateFn = this.#registry.getDirective(name);
+  #passes(name, { for: event, on: element }) {
+    const gated = this.#registry.getGate(name);
 
-    if (gateFn && gateFn.length === 1) {
-      return gateFn({ event, element }) !== false;
-    }
+    if (!gated) return event.type === name;
 
-    return event.type === name;
+    return gated(element, { event }) !== false;
   }
 }
 

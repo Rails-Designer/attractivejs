@@ -1,6 +1,9 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 describe("Class actions", () => {
   let attractive;
@@ -30,7 +33,8 @@ describe("Class actions", () => {
 
     attractive.activate({
       addActions: { testAction: TestAction },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -54,7 +58,8 @@ describe("Class actions", () => {
 
     attractive.activate({
       addActions: { myFunc: fn },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -78,7 +83,8 @@ describe("Class actions", () => {
 
     attractive.activate({
       addActions: { broken: BrokenAction },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -97,7 +103,8 @@ describe("Class actions", () => {
 
     attractive.activate({
       addActions: { notAction: fn },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `

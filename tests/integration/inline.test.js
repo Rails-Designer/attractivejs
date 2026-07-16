@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 import { js } from "../../src/actions/inline.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
@@ -21,7 +24,8 @@ beforeEach(() => {
 test("evaluates expression on click", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -39,7 +43,8 @@ test("evaluates expression on click", async () => {
 test("this refers to the element in expression", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -57,7 +62,8 @@ test("this refers to the element in expression", async () => {
 test("event is passed to expression", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -77,7 +83,8 @@ test("returning false prevents default behavior", async () => {
 
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -95,7 +102,8 @@ test("returning false prevents default behavior", async () => {
 test("works with event modifier on window", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -113,7 +121,8 @@ test("works with event modifier on window", async () => {
 test("works with key modifier", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -135,7 +144,8 @@ test("works with key modifier", async () => {
 test("@action on input uses default event", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -154,7 +164,8 @@ test("@action on input uses default event", async () => {
 test("data-debounce delays execution", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -178,7 +189,8 @@ test("data-debounce delays execution", async () => {
 test("can be combined with other actions via separate attributes", async () => {
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -202,7 +214,8 @@ test("before and after hooks run for js action", async () => {
 
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -228,7 +241,8 @@ test("errors are caught and routed to onError", async () => {
 
   attractive.activate({
     addActions: { ...allBuiltinActions, js },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `

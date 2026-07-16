@@ -1,7 +1,10 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 import { keyboard } from "../../src/addons/keyboard/index.js";
 import { hotkey } from "../../src/addons/keyboard/hotkey.js";
 
@@ -24,7 +27,8 @@ describe("Keyboard addon", () => {
   test("@keydown.enter runs only on Enter key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -48,7 +52,8 @@ describe("Keyboard addon", () => {
   test("@keydown.enter does not run on other keys", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -72,7 +77,8 @@ describe("Keyboard addon", () => {
   test("@keydown.escape runs only on Escape key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -96,7 +102,8 @@ describe("Keyboard addon", () => {
   test("@keydown.ctrl.k runs on Ctrl+K combo", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -120,7 +127,8 @@ describe("Keyboard addon", () => {
   test("@keydown.ctrl.k does not run on K without Ctrl", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -144,7 +152,8 @@ describe("Keyboard addon", () => {
   test("@keydown without modifiers still runs on any key", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -168,7 +177,8 @@ describe("Keyboard addon", () => {
   test("keyboard addon does not break @click.window", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -192,7 +202,8 @@ describe("Keyboard addon", () => {
   test("keyboard addon does not break regular click events", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -214,7 +225,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.escape with value executes action", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -237,7 +249,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.ctrl+k with value runs on combo", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -260,7 +273,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.ctrl+k does not run on K without Ctrl", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -283,7 +297,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.g.i sequence runs after g then i", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -318,7 +333,8 @@ describe("Keyboard addon", () => {
   test("bare @hotkey.escape triggers click on element", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -343,7 +359,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.g+i runs when both keys are held", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -374,7 +391,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.g+i combo clears held keys after firing", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -413,7 +431,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.g+i combo does not run after keyup", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 
@@ -456,7 +475,8 @@ describe("Keyboard addon", () => {
   test("@hotkey.g+i combo runs alongside same-key sequence", async () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [keyboard]
     });
 

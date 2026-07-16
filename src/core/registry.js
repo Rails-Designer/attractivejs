@@ -1,6 +1,7 @@
 class Registry {
   #actions = new Map();
-  #directives = new Map();
+  #gates = new Map();
+  #triggers = new Map();
   #eventModifiers = new Map();
   #activeActions = null;
 
@@ -28,16 +29,28 @@ class Registry {
     return this.#activeActions.has(actionName);
   }
 
-  addDirective(name, directive) {
-    this.#directives.set(name, directive);
+  addGate(name, gate) {
+    this.#gates.set(name, gate);
   }
 
-  getDirective(name) {
-    return this.#directives.get(name);
+  getGate(name) {
+    return this.#gates.get(name);
   }
 
-  hasDirective(name) {
-    return this.#directives.has(name);
+  hasGate(name) {
+    return this.#gates.has(name);
+  }
+
+  addTrigger(name, trigger) {
+    this.#triggers.set(name, trigger);
+  }
+
+  getTrigger(name) {
+    return this.#triggers.get(name);
+  }
+
+  hasTrigger(name) {
+    return this.#triggers.has(name);
   }
 
   addEventModifier(name, eventModifier) {

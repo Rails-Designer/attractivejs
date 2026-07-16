@@ -2,7 +2,7 @@ import Hooks from "./core/hooks";
 import Registry from "./core/registry";
 import Events from "./core/events";
 import EventTypes from "./core/event_types";
-import Directives from "./core/directives";
+import Triggers from "./core/triggers";
 import ElementLifecycleHooks from "./core/element_lifecycle_hooks";
 import EventSubscriptions from "./core/event_subscriptions";
 import AttributePrefixes from "./core/attribute_prefixes";
@@ -14,7 +14,7 @@ class Attractive {
   #registry = new Registry();
   #events;
   #eventTypes;
-  #directives;
+  #triggers;
   #activation;
   #hooks = new Hooks();
   #elementLifecycle = new ElementLifecycleHooks();
@@ -79,7 +79,7 @@ class Attractive {
       (error, message, detail) => Attractive.onError(error, message, detail)
     );
     this.#eventTypes = new EventTypes();
-    this.#directives = new Directives(this.#registry);
+    this.#triggers = new Triggers(this.#registry);
 
     defaultEventModifier(this.#registry);
 
@@ -87,7 +87,7 @@ class Attractive {
       registry: this.#registry,
       events: this.#events,
       eventTypes: this.#eventTypes,
-      directives: this.#directives,
+      triggers: this.#triggers,
       elementLifecycle: this.#elementLifecycle,
       subscriptions: this.#subscriptions,
       attributePrefixes: this.#attributePrefixes,

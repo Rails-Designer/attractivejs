@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -27,7 +30,8 @@ test("chained gates both evaluate correctly", async () => {
         callCount++;
       }
     },
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -46,7 +50,8 @@ test("chained gates both evaluate correctly", async () => {
 test("chained with trigger and gate still works", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `

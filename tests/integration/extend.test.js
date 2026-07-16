@@ -1,7 +1,10 @@
 import { describe, test, expect, vi } from "vitest";
 import Core from "../../src/core.js";
 import { addClass } from "../../src/actions/class.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -14,7 +17,8 @@ describe("Extend", () => {
 
     attractive.activate({
       addActions: { addClass },
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [first, second]
     });
 

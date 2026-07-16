@@ -16,7 +16,7 @@ const whenIntersecting = (check) => (element, trigger) => {
   observer.observe(element);
 };
 
-export const builtinDirectives = {
+export const builtinTriggers = {
   mounted: (_, trigger) => {
     trigger();
   },
@@ -26,7 +26,11 @@ export const builtinDirectives = {
   whenVisible: whenIntersecting((entries) =>
     entries.some((entry) => entry.isIntersecting)
   ),
-  whenOutside: ({ event, element }) => {
+  whenInView: whenIntersecting((entries) => entries[0].isIntersecting)
+};
+
+export const builtinGates = {
+  whenOutside: (element, { event }) => {
     if (
       typeof element.checkVisibility === "function" &&
       !element.checkVisibility()
@@ -35,27 +39,21 @@ export const builtinDirectives = {
 
     return !element.contains(event.target);
   },
-  once: ({ element }) => {
+  once: (element) => {
     if (onceTracker.has(element)) return false;
 
     onceTracker.add(element);
 
     return true;
   },
-  whenInView: whenIntersecting((entries) => entries[0].isIntersecting),
-  preventDefault: ({ event }) => {
+  preventDefault: (element, { event }) => {
     event.preventDefault();
 
     return true;
   },
-  stopPropagation: ({ event }) => {
+  stopPropagation: (element, { event }) => {
     event.stopPropagation();
 
     return true;
   }
 };
-
-export function defaultDirectives(directives) {
-  for (const [name, fn] of Object.entries(builtinDirectives))
-    directives.addDirective(name, fn);
-}

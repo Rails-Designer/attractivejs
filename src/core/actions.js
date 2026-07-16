@@ -19,16 +19,16 @@ class Actions {
   #registry;
   #events;
   #eventTypes;
-  #directives;
+  #triggers;
   #listeners;
   #element;
   #scope;
 
-  constructor(registry, events, eventTypes, directives, listeners, element) {
+  constructor(registry, events, eventTypes, triggers, listeners, element) {
     this.#registry = registry;
     this.#events = events;
     this.#eventTypes = eventTypes;
-    this.#directives = directives;
+    this.#triggers = triggers;
     this.#listeners = listeners;
     this.#element = element;
     this.#scope = element;
@@ -183,7 +183,7 @@ class Actions {
     const defaultEventType = this.#defaultEventType({ for: element });
 
     directives.forEach((name) => {
-      this.#directives.setup({
+      this.#triggers.setup({
         for: name,
         on: element,
         trigger: () => {

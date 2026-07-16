@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 const allBuiltinActions = builtinActions;
 
@@ -20,7 +23,8 @@ beforeEach(() => {
 test("deactivate removes event listeners", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -45,7 +49,8 @@ test("deactivate removes event listeners", async () => {
 test("activate after deactivate works fresh", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -63,7 +68,8 @@ test("activate after deactivate works fresh", async () => {
 
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -84,7 +90,8 @@ test("activate after deactivate works fresh", async () => {
 test("restart chains deactivate and activate", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -97,7 +104,8 @@ test("restart chains deactivate and activate", async () => {
 
   attractive.restart({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives,
+    addGates: builtinGates,
+    addTriggers: builtinTriggers,
     debug: true
   });
 
@@ -115,7 +123,8 @@ test("active returns false before activation", () => {
 test("active returns true after activation", () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   expect(attractive.active).toBe(true);
@@ -124,7 +133,8 @@ test("active returns true after activation", () => {
 test("active returns false after deactivation", () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
   attractive.deactivate();
 
@@ -134,12 +144,14 @@ test("active returns false after deactivation", () => {
 test("active returns true after reactivation", () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
   attractive.deactivate();
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   expect(attractive.active).toBe(true);
@@ -148,11 +160,13 @@ test("active returns true after reactivation", () => {
 test("active returns true after restart", () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
   attractive.restart({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   expect(attractive.active).toBe(true);
@@ -161,7 +175,8 @@ test("active returns true after restart", () => {
 test("removing @action attribute cleans up action", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `<button id="btn" @action="toggleClass#toggled" @target="target"><span id="target">Target</span></button>`;

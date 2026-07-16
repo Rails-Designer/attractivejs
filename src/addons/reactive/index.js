@@ -21,8 +21,8 @@ export function reactive({ instance, registry }) {
 
   registry.addAction("setStore", setStore);
   registry.addAction("js", js);
-  registry.addDirective("whenTrue", whenTrue);
-  registry.addDirective("whenFalse", whenFalse);
+  registry.addTrigger("whenTrue", whenTrue);
+  registry.addTrigger("whenFalse", whenFalse);
 
   instance.onElementAdded((element) => {
     const textKey = element.getAttribute("@text");

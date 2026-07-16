@@ -1,6 +1,6 @@
 import Attractive from "./core";
 import builtinActions from "./actions";
-import { builtinDirectives } from "./core/builtin_directives";
+import { builtinGates, builtinTriggers } from "./core/builtin_directives";
 import from from "./helpers/from";
 
 const allBuiltinActions = builtinActions;
@@ -11,7 +11,8 @@ Attractive.activate = function (options = {}) {
   attractive.activate({
     ...options,
     addActions: { ...allBuiltinActions, ...options.addActions },
-    addDirectives: { ...builtinDirectives, ...options.addDirectives }
+    addGates: { ...builtinGates, ...options.addGates },
+    addTriggers: { ...builtinTriggers, ...options.addTriggers }
   });
 
   return attractive;
