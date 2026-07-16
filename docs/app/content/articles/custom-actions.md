@@ -5,7 +5,7 @@ category: advanced
 position: 1
 ---
 
-The same interface used by built-in actions is available to you. Register custom actions, triggers and gates via the `addActions` and `addDirectives` options on `activate()`.
+The same interface used by built-in actions is available to you. Register custom actions via `addActions`, triggers via `addTriggers`, and gates via `addGates` on `activate()`.
 
 
 ## Add actions
@@ -129,27 +129,36 @@ Attractive.activate({ addActions: actions });
 If your setup can produce a map of paths to modules (Vite, Rolldown, Webpack, or any tool with a glob import feature), the `from` helper takes that map and converts it into the same format. The snake_case filename becomes the camelCase action name.
 
 
-## Add directives (triggers and gates)
+## Add triggers
 
-Pass triggers and gates as an object to `addDirectives`. They are registered together, the distinction is purely semantic:
-
-- A **trigger** runs the action. The function receives `(element, run)`. Call `run()` to execute the action.
-- A **gate** evaluates a condition. Return `false` to block the action.
+Pass triggers as an object to `addTriggers`. A **trigger** runs the action. The function receives `(element, run)`. Call `run()` to execute the action.
 
 ```js
 import Attractive from "attractivejs";
 
 Attractive.activate({
-  addDirectives: {
+  addTriggers: {
     onceTurboLoaded: (element, run) => {
       document.addEventListener("turbo:load", run, { once: true });
-    },
+    }
+  }
+});
+```
 
-    whenSmallScreen: ({ event, element }) => {
+## Add gates
+
+Pass gates as an object to `addGates`. A **gate** evaluates a condition. The function receives `(element, { event })`. Return `false` to block the action.
+
+```js
+import Attractive from "attractivejs";
+
+Attractive.activate({
+  addGates: {
+    whenSmallScreen: (element, { event }) => {
       return window.matchMedia("(max-width: 768px)").matches;
     },
 
-    whenLargeScreen: ({ event, element }) => {
+    whenLargeScreen: (element, { event }) => {
       return window.matchMedia("(min-width: 769px)").matches;
     }
   }

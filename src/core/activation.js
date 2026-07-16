@@ -8,7 +8,7 @@ class Activation {
   #scope;
   #events;
   #eventTypes;
-  #directives;
+  #triggers;
   #listeners;
   #elementLifecycle;
   #subscriptions;
@@ -22,7 +22,7 @@ class Activation {
     this.#registry = dependencies.registry;
     this.#events = dependencies.events;
     this.#eventTypes = dependencies.eventTypes;
-    this.#directives = dependencies.directives;
+    this.#triggers = dependencies.triggers;
     this.#elementLifecycle = dependencies.elementLifecycle;
     this.#subscriptions = dependencies.subscriptions;
     this.#attributePrefixes = dependencies.attributePrefixes;
@@ -42,7 +42,8 @@ class Activation {
       debug = false,
       extendWith = [],
       addActions = {},
-      addDirectives = {}
+      addGates = {},
+      addTriggers = {}
     } = options;
 
     Debug.enabled = debug;
@@ -56,11 +57,14 @@ class Activation {
 
     if (this.#initialized) return this;
 
-    for (const [name, fn] of Object.entries(addActions))
-      this.#registry.addAction(name, fn);
+    for (const [name, action] of Object.entries(addActions))
+      this.#registry.addAction(name, action);
 
-    for (const [name, fn] of Object.entries(addDirectives))
-      this.#registry.addDirective(name, fn);
+    for (const [name, action] of Object.entries(addGates))
+      this.#registry.addGate(name, action);
+
+    for (const [name, action] of Object.entries(addTriggers))
+      this.#registry.addTrigger(name, action);
 
     this.#scope = on;
     this.#subscriptions.setScope(on);
@@ -69,7 +73,7 @@ class Activation {
       this.#registry,
       this.#events,
       this.#eventTypes,
-      this.#directives,
+      this.#triggers,
       this.#listeners,
       on
     );

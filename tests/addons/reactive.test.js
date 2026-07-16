@@ -2,7 +2,10 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 import { reactive } from "../../src/addons/reactive/index.js";
 import { store, subscribe } from "../../src/addons/reactive/store.js";
 
@@ -88,7 +91,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -102,7 +106,8 @@ describe("Reactive addon", () => {
     test("updates textContent on store change", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -117,7 +122,8 @@ describe("Reactive addon", () => {
     test("shows empty string for unset key", () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -130,7 +136,8 @@ describe("Reactive addon", () => {
     test("preserves element content when store has no value for the key", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -144,7 +151,8 @@ describe("Reactive addon", () => {
     test("element content seeds the store when no value is set", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -157,7 +165,8 @@ describe("Reactive addon", () => {
     test("seeded value updates when store is set", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -174,7 +183,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -189,7 +199,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -202,7 +213,8 @@ describe("Reactive addon", () => {
     test("multiple elements bound to same key all update", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -223,7 +235,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -244,7 +257,8 @@ describe("Reactive addon", () => {
     test("works inside template clone", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -267,7 +281,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -287,7 +302,8 @@ describe("Reactive addon", () => {
     test("debounce delays store update", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -311,7 +327,8 @@ describe("Reactive addon", () => {
     test("on non-input element sets true", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -331,7 +348,8 @@ describe("Reactive addon", () => {
     test("input with value seeds the store", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -346,7 +364,8 @@ describe("Reactive addon", () => {
     test("input without value attribute does not seed", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -361,7 +380,8 @@ describe("Reactive addon", () => {
     test("input with empty string value does not seed", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -378,7 +398,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -393,7 +414,8 @@ describe("Reactive addon", () => {
     test("select seeds store from selected option", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -414,7 +436,8 @@ describe("Reactive addon", () => {
     test("whenTrue runs action on truthy store value", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -436,7 +459,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -458,7 +482,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -476,7 +501,8 @@ describe("Reactive addon", () => {
     test("whenTrue and whenFalse pair for set/remove", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -497,7 +523,8 @@ describe("Reactive addon", () => {
     test("does not run when store.set is never called", async () => {
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
 
@@ -518,7 +545,8 @@ describe("Reactive addon", () => {
 
       attractive.activate({
         addActions: allBuiltinActions,
-        addDirectives: builtinDirectives,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
         extendWith: [reactive]
       });
       await vi.runAllTimersAsync();

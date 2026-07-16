@@ -1,7 +1,10 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -20,7 +23,8 @@ beforeEach(() => {
 test("mounted trigger runs addClass immediately when element is added to DOM", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -38,7 +42,8 @@ test("mounted trigger runs addClass immediately when element is added to DOM", a
 test("custom event types", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -64,7 +69,8 @@ test("whenVisible trigger runs when element becomes visible", async () => {
 
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `
@@ -108,7 +114,8 @@ test("whenInView trigger runs when element becomes visible", async () => {
 test("focus action focuses the target element", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
-    addDirectives: builtinDirectives
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
   });
 
   document.body.innerHTML = `

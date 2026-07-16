@@ -4,7 +4,10 @@ import Core from "../../src/core.js";
 import builtinActions from "../../src/actions/index.js";
 import { addClass, removeClass } from "../../src/actions/class.js";
 import { remove } from "../../src/addons/attract/actions.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -23,7 +26,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -45,7 +49,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass, remove },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -67,7 +72,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass, removeClass },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -89,7 +95,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -108,7 +115,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass, removeClass },
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -130,7 +138,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -152,7 +161,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -174,7 +184,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `
@@ -197,9 +208,12 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: { addClass },
-      addDirectives: {
-        ...builtinDirectives,
-        enabled: (_context) => true
+      addGates: {
+        ...builtinGates,
+        enabled: (element, { event }) => true
+      },
+      addTriggers: {
+        ...builtinTriggers
       }
     });
 
@@ -222,7 +236,8 @@ describe("Core build with selective actions", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives
+      addGates: builtinGates,
+      addTriggers: builtinTriggers
     });
 
     document.body.innerHTML = `

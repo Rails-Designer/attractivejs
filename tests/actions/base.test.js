@@ -1,13 +1,17 @@
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 
 const allBuiltinActions = builtinActions;
 
 const defaultOptions = {
   addActions: allBuiltinActions,
-  addDirectives: builtinDirectives
+  addGates: builtinGates,
+  addTriggers: builtinTriggers
 };
 
 describe("Global Debounce", () => {

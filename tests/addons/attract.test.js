@@ -2,7 +2,10 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 
 import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
-import { builtinDirectives } from "../../src/core/builtin_directives.js";
+import {
+  builtinGates,
+  builtinTriggers
+} from "../../src/core/builtin_directives.js";
 import { Template } from "../../src/addons/attract/template.js";
 import { attract } from "../../src/addons/attract/index.js";
 import { reactive } from "../../src/addons/reactive/index.js";
@@ -198,7 +201,8 @@ describe("attract addon", () => {
   test("activates without error alongside reactive", () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [reactive, attract]
     });
     expect(attractive.active).toBe(true);
@@ -207,7 +211,8 @@ describe("attract addon", () => {
   test("activates standalone without reactive", () => {
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
     expect(attractive.active).toBe(true);
@@ -226,7 +231,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -254,7 +260,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -284,7 +291,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -314,7 +322,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -355,7 +364,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -397,7 +407,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -438,7 +449,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
@@ -462,7 +474,8 @@ describe("attract addon", () => {
 
     attractive.activate({
       addActions: allBuiltinActions,
-      addDirectives: builtinDirectives,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
       extendWith: [attract]
     });
 
