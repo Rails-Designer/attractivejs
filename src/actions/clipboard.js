@@ -1,5 +1,5 @@
 import ActionBase from "./base";
-import delay from "./../helpers/delay";
+import delay from "./helpers/delay";
 
 const clearFeedback = delay();
 

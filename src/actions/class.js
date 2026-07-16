@@ -1,5 +1,5 @@
 import ActionBase from "./base";
-import { sanitize } from "./../helpers/sanitize";
+import { sanitize } from "./helpers/sanitize";
 
 class Class extends ActionBase {
   constructor(currentElement, options = {}) {

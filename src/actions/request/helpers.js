@@ -1,5 +1,5 @@
 import Debug from "./../../debug";
-import delay from "./../../helpers/delay";
+import delay from "../helpers/delay";
 
 const clearFeedback = delay();
 

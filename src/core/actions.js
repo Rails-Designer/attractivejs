@@ -1,4 +1,4 @@
-import debounce from "./../helpers/debounce";
+import debounce from "./helpers/debounce";
 import { actionAttributes, getActionAttributes } from "./attributes";
 
 const debounceTimers = new WeakMap();

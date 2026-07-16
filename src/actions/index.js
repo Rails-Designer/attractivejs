@@ -1,3 +1,4 @@
+import Action from "../action-class";
 import classActions from "./class";
 import clipboardActions from "./clipboard";
 import confirmActions from "./confirm";
@@ -8,6 +9,8 @@ import formActions from "./form";
 import reloadActions from "./reload";
 import scrollToActions from "./scroll_to";
 import styleActions from "./style";
+
+export { Action };
 
 export const actions = {
   attribute: attributeActions,
