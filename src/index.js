@@ -1,5 +1,5 @@
 import Attractive from "./core";
-import builtinActions from "./actions";
+import builtinActions, { Action } from "./actions";
 import { builtinGates, builtinTriggers } from "./core/builtin_directives";
 import from from "./helpers/from";
 
@@ -33,5 +33,5 @@ if (
     : Attractive.activate();
 }
 
-export { from };
+export { from, Action };
 export default Attractive;
