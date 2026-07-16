@@ -56,6 +56,16 @@ Feedback states on the form element:
 | Error | `data-attract-error="true"` |
 
 
+## Attract request header
+
+Every attract-originated request sends an `Attract: true` header. The server can check for this header to know the request came from an attract client and return JSON instead of HTML.
+
+The header is sent on three request paths:
+- **Form submissions** via `@attract`
+- **Generic request actions** (`post`, `patch`, `put`)
+- **GET request action** (`get`)
+
+
 ## JSON response format
 The response is an `action` hash or an `actions` array. Each action describes a DOM operation.
 

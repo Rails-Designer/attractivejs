@@ -88,7 +88,7 @@ class Form {
   async #fetch({ action, method, body }) {
     const headers = {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      Attract: "true"
     };
 
     if (csrf.token) {
