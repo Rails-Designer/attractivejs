@@ -63,7 +63,8 @@ export default class Get {
   #fetch(controller) {
     return fetch(this.#url, {
       method: "GET",
-      signal: controller.signal
+      signal: controller.signal,
+      headers: { Attract: "true" }
     });
   }
 

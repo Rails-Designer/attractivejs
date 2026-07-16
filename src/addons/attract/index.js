@@ -1,16 +1,9 @@
-import Debug from "../../debug.js";
 import { append, prepend, replace, before, after, remove } from "./actions.js";
 import { Form } from "./form.js";
 
 const forms = new WeakMap();
 
 export function attract({ instance, registry }) {
-  if (!instance.store) {
-    Debug.warn("Attract requires the reactive addon");
-
-    return;
-  }
-
   registry.addAction("append", append);
   registry.addAction("prepend", prepend);
   registry.addAction("replace", replace);

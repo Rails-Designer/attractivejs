@@ -261,7 +261,8 @@ describe("Request Actions", () => {
         expect.objectContaining({
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Attract: "true"
           },
           body: JSON.stringify({ name: "John", email: "john@example.com" })
         })
@@ -291,7 +292,8 @@ describe("Request Actions", () => {
         expect.objectContaining({
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Attract: "true"
           },
           body: JSON.stringify({ message: "Hello" })
         })
@@ -458,7 +460,8 @@ describe("Request Actions", () => {
         "/api/users",
         expect.objectContaining({
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Attract: "true"
           }
         })
       );
@@ -492,7 +495,8 @@ describe("Request Actions", () => {
         expect.objectContaining({
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": "abc123"
+            "X-CSRF-Token": "abc123",
+            Attract: "true"
           }
         })
       );
@@ -526,7 +530,8 @@ describe("Request Actions", () => {
         expect.objectContaining({
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": "dynamic-token"
+            "X-CSRF-Token": "dynamic-token",
+            Attract: "true"
           }
         })
       );

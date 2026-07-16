@@ -1,20 +1,17 @@
 ---
 title: Attract
-description: "Form submissions via cached templates and JSON responses: optimistic render, server enrichment, replace cycle"
+description: "Attract makes optimistic UI easy to add to your app's UI. Define a template, attach the attributes and you are ready."
 category: extensions
 position: 3
 ---
 
 The `@attract` attribute intercepts a `<form>` submit and sends a fetch request instead. A cached `<template>` can be used to render an optimistic preview while the server processes the request.
 
-Requires the [reactive](/docs/reactive/) addon.
-
 ```js
 import Attractive from "attractivejs";
-import { reactive } from "attractivejs/reactive";
 import { attract } from "attractivejs/attract";
 
-Attractive.activate({ extendWith: [reactive, attract] });
+Attractive.activate({ extendWith: [attract] });
 ```
 
 
@@ -56,6 +53,28 @@ Feedback states on the form element:
 | Error | `data-attract-error="true"` |
 
 
+## Mapping response data to elements
+
+Place `attract-field="key"` on elements inside an attract `<template>`. When the template renders with JSON data, the matching key's value is applied to the element based on its type:
+
+| Element | Behavior |
+|---|---|
+| `<input type="checkbox">` / `<input type="radio">` | `element.checked = !!value` |
+| `<input>` / `<textarea>` / `<select>` | `element.value = value` |
+| `<option>` | `element.selected = !!value` |
+| Everything else (div, span, h1, p, etc.) | `element.textContent = value` |
+
+```html
+<template id="message">
+  <div class="message">
+    <strong attract-field="author"></strong>
+
+    <p attract-field="body"></p>
+  </div>
+</template>
+```
+
+
 ## JSON response format
 The response is an `action` hash or an `actions` array. Each action describes a DOM operation.
 
@@ -63,9 +82,9 @@ The response is an `action` hash or an `actions` array. Each action describes a 
 
 ```json
 {
-  "action": "append",
+  "action": "prepend",
   "target": "messages",
-  "template": "message-card",
+  "template": "message",
   "data": { "author": "Cameron", "body": "Hello" }
   // "data": [
   //   { "author": "Cameron", "body": "Hello" },
@@ -77,16 +96,16 @@ The response is an `action` hash or an `actions` array. Each action describes a 
 Actions without `data` work too. The `target` field specifies the element:
 ```json
 { "action": "remove", "target": "spinner" }
-{ "action": "setAttribute#id=msg-42", "target": "new-message" }
+{ "action": "setAttribute#id=42", "target": "new-message" }
 ```
 
 Multiple actions in one response:
 ```json
 {
   "actions": [
-    { "action": "replace", "target": "new-message", "template": "message-card", "data": { "author": "Cameron", "body": "Hello!" } },
+    { "action": "replace", "target": "new-message", "template": "message", "data": { "author": "Cameron", "body": "Hello!" } },
     { "action": "remove", "target": "spinner" },
-    { "action": "setAttribute#id=msg-42", "target": "new-message" }
+    { "action": "setAttribute#id=42", "target": "new-message" }
   ]
 }
 ```
@@ -99,9 +118,19 @@ For validation errors, the server returns an `errors` object. Each key maps to a
 
 ```json
 {
-  "errors": { "body": "can't be blank" }
+  "errors": { "body": "Cannot be empty" }
 }
 ```
+
+
+## Attract request header
+
+Every attract request sends an `Attract: true` header. The server can check for this header to know the request came from an attract client and return JSON instead of HTML.
+
+The header is sent on three request paths:
+- **Form submissions** via `@attract`
+- **Generic request actions** (`post`, `patch`, `put`)
+- **GET request action** (`get`)
 
 
 ## Attract added actions
@@ -118,12 +147,15 @@ These actions work from both `@action="…"` in HTML and from JSON responses:
 | `remove` | Remove target element(s) |
 
 ```html
-<button @action="append#message-card" @target="list">Add</button>
+<ul id="messages"></ul>
+
+<button @action="append#message" @target="messages">Add</button>
+
+<template id="message">
+  <div class="message">
+    <strong>Cameron</strong>
+
+    <p>Hello</p>
+  </div>
+</template>
 ```
-
-
-## `@text` on cloned templates
-
-When a template is cloned via `@attract`, `@text` is removed from the clone. Use `data-attract-preserve-text` to keep it [reactive](/docs/reactive/).
-
-The attract-added actions also work via `@action` directly. In that case `@text` is preserved and the clone stays reactive.

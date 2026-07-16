@@ -60,7 +60,8 @@ class Request extends ActionBase {
     setFeedback("busy", { on: this.currentElement, for: this.targets });
 
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Attract: "true"
     };
 
     if (csrf.token) {

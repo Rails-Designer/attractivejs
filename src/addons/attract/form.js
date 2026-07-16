@@ -1,9 +1,10 @@
-import { store } from "../reactive/store.js";
 import { csrf } from "../../actions/request/csrf.js";
 import { Template } from "./template.js";
 import Debug from "../../debug.js";
 
 class Form {
+  #optimisticElements = [];
+
   constructor({ form, registry }) {
     this.form = form;
     this.registry = registry;
@@ -31,8 +32,10 @@ class Form {
 
     try {
       const request = await this.#fetch({ action, method, body });
+
       if (!request) {
         this.#clear({ error: true });
+        this.#removeOptimistic();
 
         return;
       }
@@ -41,13 +44,15 @@ class Form {
 
       if (request.json.errors) {
         this.#validity({ errors: request.json.errors });
-      }
+        this.#removeOptimistic();
 
-      store.clear();
+        return;
+      }
 
       this.#actions(request.json);
     } catch {
       this.#clear({ error: true });
+      this.#removeOptimistic();
     }
   }
 
@@ -57,8 +62,6 @@ class Form {
 
     for (const [key, value] of formData.entries()) {
       body[key] = value;
-
-      store.set(key, { with: value });
     }
 
     return body;
@@ -74,8 +77,20 @@ class Form {
     const position = this.form.dataset.attractPosition || "append";
 
     if (templateId && target && Object.keys(body).length > 0) {
-      new Template(templateId).render({ target, position, with: body });
+      this.#optimisticElements = new Template(templateId).render({
+        target,
+        position,
+        with: body
+      });
     }
+  }
+
+  #removeOptimistic() {
+    for (const element of this.#optimisticElements) {
+      element.remove();
+    }
+
+    this.#optimisticElements = [];
   }
 
   #busy() {
@@ -88,7 +103,7 @@ class Form {
   async #fetch({ action, method, body }) {
     const headers = {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      Attract: "true"
     };
 
     if (csrf.token) {
@@ -123,7 +138,13 @@ class Form {
     for (const [name, message] of Object.entries(errors)) {
       const field = this.form.elements[name];
 
-      if (field) field.setCustomValidity(message);
+      if (field) {
+        field.setCustomValidity(message);
+
+        field.addEventListener("input", () => field.setCustomValidity(""), {
+          once: true
+        });
+      }
     }
 
     this.form.reportValidity();

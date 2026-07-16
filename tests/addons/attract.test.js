@@ -4,7 +4,6 @@ import Attractive from "../../src/index.js";
 import builtinActions from "../../src/actions/index.js";
 import { builtinDirectives } from "../../src/core/builtin_directives.js";
 import { Template } from "../../src/addons/attract/template.js";
-import { store } from "../../src/addons/reactive/store.js";
 import { attract } from "../../src/addons/attract/index.js";
 import { reactive } from "../../src/addons/reactive/index.js";
 import Debug from "../../src/debug.js";
@@ -118,24 +117,9 @@ describe("Template", () => {
     warn.mockRestore();
   });
 
-  test("sets store values from data", () => {
+  test("sets textContent via attract-field on clone", () => {
     document.body.innerHTML = `
-      <template id="card"><div @text="name"></div></template>
-      <div id="list"></div>
-    `;
-
-    new Template("card").render({
-      target: "list",
-      position: "append",
-      with: { name: "Alice" }
-    });
-
-    expect(store.get("name")).toBe("Alice");
-  });
-
-  test("strips @text from clone by default", () => {
-    document.body.innerHTML = `
-      <template id="card"><div @text="name"></div></template>
+      <template id="card"><div attract-field="name"></div></template>
       <div id="list"></div>
     `;
 
@@ -148,25 +132,56 @@ describe("Template", () => {
     const clone = document.querySelector("#list > div");
     expect(clone).toBeTruthy();
     expect(clone.textContent).toBe("Alice");
-    expect(clone.hasAttribute("@text")).toBe(false);
   });
 
-  test("preserves @text when remainReactive is true", () => {
+  test("preserves attract-field on clone after render", () => {
     document.body.innerHTML = `
-      <template id="card"><div @text="name"></div></template>
+      <template id="card"><div attract-field="name"></div></template>
       <div id="list"></div>
     `;
 
     new Template("card").render({
       target: "list",
       position: "append",
-      with: { name: "Alice" },
-      remainReactive: true
+      with: { name: "Alice" }
     });
 
     const clone = document.querySelector("#list > div");
     expect(clone).toBeTruthy();
-    expect(clone.getAttribute("@text")).toBe("name");
+    expect(clone.textContent).toBe("Alice");
+    expect(clone.hasAttribute("attract-field")).toBe(true);
+  });
+
+  test("sets input value via attract-field", () => {
+    document.body.innerHTML = `
+      <template id="card"><input attract-field="title" /></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { title: "Hello" }
+    });
+
+    const clone = document.querySelector("#list > input");
+    expect(clone.value).toBe("Hello");
+  });
+
+  test("sets checkbox checked via attract-field", () => {
+    document.body.innerHTML = `
+      <template id="card"><input type="checkbox" attract-field="active" /></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { active: true }
+    });
+
+    const clone = document.querySelector("#list > input");
+    expect(clone.checked).toBe(true);
   });
 });
 
@@ -180,11 +195,20 @@ describe("attract addon", () => {
     attractive = new Attractive();
   });
 
-  test("activates without error", () => {
+  test("activates without error alongside reactive", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
       extendWith: [reactive, attract]
+    });
+    expect(attractive.active).toBe(true);
+  });
+
+  test("activates standalone without reactive", () => {
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [attract]
     });
     expect(attractive.active).toBe(true);
   });
@@ -203,7 +227,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -231,7 +255,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -261,7 +285,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -291,7 +315,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -302,6 +326,57 @@ describe("attract addon", () => {
     await vi.runAllTimersAsync();
 
     expect(input.validationMessage).toBe("can't be blank");
+  });
+
+  test("clears custom validity on input allowing resubmit after error", async () => {
+    let callCount = 0;
+    const fetchMock = vi.fn().mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return Promise.resolve({
+          ok: false,
+          status: 422,
+          json: () => Promise.resolve({ errors: { body: "can't be blank" } })
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({})
+      });
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages" method="post">
+        <input name="body" value="" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addDirectives: builtinDirectives,
+      extendWith: [attract]
+    });
+
+    const form = document.querySelector("form");
+    const input = document.querySelector("input");
+
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+    expect(input.validationMessage).toBe("can't be blank");
+
+    input.value = "hello";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(input.validationMessage).toBe("");
+
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+    expect(form.getAttribute("data-attract-success")).toBe("true");
   });
 
   test("intercepts form inside container with @attract", async () => {
@@ -323,7 +398,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -364,7 +439,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const form = document.querySelector("form");
@@ -388,7 +463,7 @@ describe("attract addon", () => {
     attractive.activate({
       addActions: allBuiltinActions,
       addDirectives: builtinDirectives,
-      extendWith: [reactive, attract]
+      extendWith: [attract]
     });
 
     const list = document.getElementById("list");

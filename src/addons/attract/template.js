@@ -1,4 +1,3 @@
-import { store } from "../reactive/store.js";
 import Debug from "../../debug.js";
 
 class Template {
@@ -10,35 +9,41 @@ class Template {
     }
   }
 
-  render({ with: data, target, targets: selector, position, remainReactive }) {
+  render({ with: data, target, targets: selector, position }) {
     const targetElements = this.#targets({ target, targets: selector });
-    if (!targetElements.length) return;
+    if (!targetElements.length) return [];
 
     if (position === "remove") {
       targetElements.forEach((element) => element.remove());
 
-      return;
+      return [];
     }
 
-    if (!this.source) return;
+    if (!this.source) return [];
 
     const items = Array.isArray(data) ? data : [data];
+    const results = [];
+
     targetElements.forEach((targetElement) => {
       items.forEach((item) =>
-        this.#renderIn({
-          target: targetElement,
-          item,
-          position,
-          remainReactive
-        })
+        results.push(
+          this.#renderIn({
+            target: targetElement,
+            item,
+            position
+          })
+        )
       );
     });
+
+    return results;
   }
 
   // private
 
   #targets({ target, targets: selector }) {
     if (selector) return Array.from(document.querySelectorAll(selector));
+
     if (target) {
       const element = document.getElementById(target);
 
@@ -48,42 +53,42 @@ class Template {
     return [];
   }
 
-  #renderIn({ target, item, position, remainReactive }) {
-    this.#setStore({ with: item });
+  #renderIn({ target, item, position }) {
     const template = this.source.content.cloneNode(true).firstElementChild;
 
-    if (!remainReactive) {
-      this.#snapshot({ template, with: item });
-    }
+    this.#snapshot({ template, with: item });
 
     this.#insert({ template, target, at: position });
-  }
 
-  #setStore({ with: data }) {
-    if (!data) return;
-
-    for (const [key, value] of Object.entries(data)) {
-      store.set(key, { with: value });
-    }
+    return template;
   }
 
   #snapshot({ template, with: data }) {
     if (!data) return;
 
     for (const [key, value] of Object.entries(data)) {
-      const clonedTemplate =
-        template.getAttribute("@text") === key
+      const element =
+        template.getAttribute("attract-field") === key
           ? template
-          : template.querySelector(`[\\@text="${key}"]`);
+          : template.querySelector(`[attract-field="${key}"]`);
 
-      if (clonedTemplate) {
-        clonedTemplate.textContent = value == null ? "" : value;
-      }
-    }
+      if (!element) continue;
 
-    template.removeAttribute("@text");
-    for (const child of template.querySelectorAll("[\\@text]")) {
-      child.removeAttribute("@text");
+      const tag = element.tagName;
+      const type = (element.getAttribute("type") || "").toLowerCase();
+
+      const set =
+        {
+          checkbox: (element, { with: value }) => (element.checked = !!value),
+          radio: (element, { with: value }) => (element.checked = !!value),
+          INPUT: (element, { with: value }) => (element.value = value ?? ""),
+          TEXTAREA: (element, { with: value }) => (element.value = value ?? ""),
+          SELECT: (element, { with: value }) => (element.value = value ?? ""),
+          OPTION: (element, { with: value }) => (element.selected = !!value)
+        }[type === "checkbox" || type === "radio" ? type : tag] ??
+        ((element, { with: value }) => (element.textContent = value ?? ""));
+
+      set(element, { with: value });
     }
   }
 
