@@ -1,7 +1,6 @@
 @import "./components/content.css";
 @import "./components/navigation.css";
 @import "./components/pagination.css";
-@import "./components/action-preview.css";
 
 @layer components {
   .page {

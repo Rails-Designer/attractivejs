@@ -9,13 +9,22 @@
 
     > * { min-width: 0; }
 
-    .code pre {
-      padding: var(--spacing-2) calc(var(--spacing) * 1.5);
-      border-radius: .375rem;
-      overflow: auto;
+    .code {
+      pre {
+        margin: 0;
+        padding-inline: var(--spacing-3);
+        border-radius: .375rem;
+        overflow: auto;
+        background: #1f2224;
+        line-height: 1.5;
 
-      @media (width >= 40rem) {
-        padding: var(--spacing-3) var(--spacing-2);
+        code {
+          .live-line {
+            &.added    { --hl: oklch(0.5 0.2 145 / 0.4); animation: pulse 1.5s ease-out forwards; }
+            &.removed  { --hl: oklch(0.5 0.2 30 / 0.4); text-decoration: line-through; animation: pulse 1.5s ease-out forwards; }
+            &.modified { --hl: oklch(0.6 0.2 95 / 0.4); animation: pulse 1.5s ease-out forwards; }
+          }
+        }
       }
     }
 
@@ -126,4 +135,10 @@
       }
     }
   }
+}
+
+@keyframes pulse {
+  0%   { background: var(--hl); }
+  50%  { background: var(--hl); }
+  100% { background: transparent; }
 }

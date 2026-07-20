@@ -16,12 +16,12 @@
   </dl>
 </article>
 
-<div class="action-preview">
+<div @action="livePreview:mounted" @target="live-preview-example" class="action-preview">
   <div class="code">
     <%= markdownify @resource.code_preview %>
   </div>
 
-  <div class="example">
+  <div class="example" id="live-preview-example">
     <%== @resource.content %>
   </div>
 </div>

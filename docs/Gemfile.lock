@@ -121,6 +121,10 @@ GEM
       concurrent-ruby (~> 1.0)
     icons (0.9.0)
       nokogiri (~> 1.16, >= 1.16.4)
+    importmap-rails (2.2.3)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.8.2)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -276,6 +280,7 @@ PLATFORMS
 DEPENDENCIES
   commonmarker (~> 2.8.2)
   debug
+  importmap-rails (~> 2.2.3)
   perron!
   propshaft (~> 1.3.2)
   puma (~> 8.0.2)
@@ -325,6 +330,7 @@ CHECKSUMS
   globalid (1.4.0) sha256=037f12fbf1d9d7a014d501c2d5c77356fd4ddd96d7a7991d6700bba96706f427
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   icons (0.9.0) sha256=128365c3414a1b76de4ea1913ef9190163fec1f8c701fa9a37fa301c04f4c9dc
+  importmap-rails (2.2.3) sha256=7101be2a4dc97cf1558fb8f573a718404c5f6bcfe94f304bf1f39e444feeb16a
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   json (2.20.0) sha256=9362bc6e55a952b056abf9167cf053358181c904cb70cd6eee0808ea830fc32b
