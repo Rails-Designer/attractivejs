@@ -138,5 +138,22 @@ export default [
     }
   }),
 
+  defineConfig({
+    input: "src/addons/validate/index.js",
+    output: {
+      file: "dist/validate.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/validate/index.js",
+    output: {
+      file: "dist/validate.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
   ...actionConfigs
 ];
