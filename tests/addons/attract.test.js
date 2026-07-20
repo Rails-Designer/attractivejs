@@ -218,6 +218,37 @@ describe("attract addon", () => {
     expect(attractive.active).toBe(true);
   });
 
+  test("renders attract-field from form data optimistically", () => {
+    const fetchMock = vi.fn().mockReturnValue(new Promise(() => {}));
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <form @attract action="/messages" method="post"
+            data-attract-template="card" data-attract-target="list">
+        <input name="title" value="Hello" />
+        <button>Submit</button>
+      </form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("Hello");
+  });
+
   test("sets busy on form submit before fetch resolves", () => {
     const fetchMock = vi.fn().mockReturnValue(new Promise(() => {}));
     globalThis.fetch = fetchMock;
@@ -470,6 +501,97 @@ describe("attract addon", () => {
     const list = document.getElementById("list");
     expect(list.children).toHaveLength(1);
     expect(list.children[0].textContent).toBe("dynamic");
+  });
+
+  test("processes actions with attract-field from response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: { title: "Hello" }
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <form @attract action="/messages" method="post">
+        <input name="title" value="Hello" />
+        <button>Submit</button>
+      </form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("Hello");
+  });
+
+  test("processes actions with array data and attract-field from response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: [{ title: "First" }, { title: "Second" }]
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <form @attract action="/messages" method="post">
+        <input name="title" value="" />
+        <button>Submit</button>
+      </form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(2);
+    expect(list.children[0].textContent).toBe("First");
+    expect(list.children[1].textContent).toBe("Second");
   });
 
   test("registers append action accessible via @action", () => {
