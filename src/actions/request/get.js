@@ -64,7 +64,10 @@ export default class Get {
     return fetch(this.#url, {
       method: "GET",
       signal: controller.signal,
-      headers: { Attract: "true" }
+      headers: {
+        Accept: "application/vnd.attract+json",
+        Attract: "true"
+      }
     });
   }
 
@@ -72,7 +75,7 @@ export default class Get {
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const contentType = response.headers.get("content-type");
-    if (contentType?.includes("application/json")) {
+    if (contentType?.includes("json")) {
       const json = await response.json();
 
       if (this.#onJSON) this.#onJSON(json);

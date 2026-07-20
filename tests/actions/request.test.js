@@ -262,6 +262,7 @@ describe("Request Actions", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Accept: "application/vnd.attract+json",
             Attract: "true"
           },
           body: JSON.stringify({ name: "John", email: "john@example.com" })
@@ -293,6 +294,7 @@ describe("Request Actions", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Accept: "application/vnd.attract+json",
             Attract: "true"
           },
           body: JSON.stringify({ message: "Hello" })
@@ -461,6 +463,7 @@ describe("Request Actions", () => {
         expect.objectContaining({
           headers: {
             "Content-Type": "application/json",
+            Accept: "application/vnd.attract+json",
             Attract: "true"
           }
         })
@@ -496,6 +499,7 @@ describe("Request Actions", () => {
           headers: {
             "Content-Type": "application/json",
             "X-CSRF-Token": "abc123",
+            Accept: "application/vnd.attract+json",
             Attract: "true"
           }
         })
@@ -531,6 +535,7 @@ describe("Request Actions", () => {
           headers: {
             "Content-Type": "application/json",
             "X-CSRF-Token": "dynamic-token",
+            Accept: "application/vnd.attract+json",
             Attract: "true"
           }
         })

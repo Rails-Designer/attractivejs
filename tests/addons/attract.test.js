@@ -247,6 +247,7 @@ describe("attract addon", () => {
   test("sets success on ok response", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
       json: () => Promise.resolve({})
     });
     globalThis.fetch = fetchMock;
@@ -278,6 +279,7 @@ describe("attract addon", () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 422,
+      headers: new Headers({ "Content-Type": "application/json" }),
       json: () => Promise.resolve({ errors: { body: "can't be blank" } })
     });
     globalThis.fetch = fetchMock;
@@ -309,6 +311,7 @@ describe("attract addon", () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 422,
+      headers: new Headers({ "Content-Type": "application/json" }),
       json: () => Promise.resolve({ errors: { body: "can't be blank" } })
     });
     globalThis.fetch = fetchMock;
@@ -345,11 +348,13 @@ describe("attract addon", () => {
         return Promise.resolve({
           ok: false,
           status: 422,
+          headers: new Headers({ "Content-Type": "application/json" }),
           json: () => Promise.resolve({ errors: { body: "can't be blank" } })
         });
       }
       return Promise.resolve({
         ok: true,
+        headers: new Headers({ "Content-Type": "application/json" }),
         json: () => Promise.resolve({})
       });
     });
@@ -392,6 +397,7 @@ describe("attract addon", () => {
   test("intercepts form inside container with @attract", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
       json: () => Promise.resolve({})
     });
     globalThis.fetch = fetchMock;
@@ -424,6 +430,7 @@ describe("attract addon", () => {
   test("processes actions from response", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
       json: () =>
         Promise.resolve({
           actions: [

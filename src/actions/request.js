@@ -61,6 +61,7 @@ class Request extends ActionBase {
 
     const headers = {
       "Content-Type": "application/json",
+      Accept: "application/vnd.attract+json",
       Attract: "true"
     };
 
@@ -81,7 +82,7 @@ class Request extends ActionBase {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const contentType = response.headers.get("content-type");
-        if (contentType?.includes("application/json") && this.options.onJSON) {
+        if (contentType?.includes("json") && this.options.onJSON) {
           const json = await response.json();
 
           this.options.onJSON(json);
