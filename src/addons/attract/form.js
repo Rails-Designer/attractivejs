@@ -103,6 +103,7 @@ class Form {
   async #fetch({ action, method, body }) {
     const headers = {
       "Content-Type": "application/json",
+      Accept: "application/vnd.attract+json",
       Attract: "true"
     };
 
@@ -116,6 +117,9 @@ class Form {
       headers,
       body: method === "GET" ? undefined : JSON.stringify(body)
     });
+
+    const contentType = response.headers.get("content-type");
+    if (!contentType?.includes("json")) return null;
 
     let json;
     try {

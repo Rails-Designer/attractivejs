@@ -9,5 +9,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
-  }
+  },
+
+  "ignorePatterns": ["dist", "docs"]
 }

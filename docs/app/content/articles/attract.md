@@ -123,11 +123,15 @@ For validation errors, the server returns an `errors` object. Each key maps to a
 ```
 
 
-## Attract request header
+## Attract request headers
 
-Every attract request sends an `Attract: true` header. The server can check for this header to know the request came from an attract client and return JSON instead of HTML.
+Every attract request sends two headers:
+- `Attract: true` — identifies the request as coming from an attract client
+- `Accept: application/vnd.attract+json` — signals the expected JSON response format
 
-The header is sent on three request paths:
+The client validates the response `Content-Type` contains `json` before processing. Non-JSON responses are treated as errors.
+
+The headers are sent on three request paths:
 - **Form submissions** via `@attract`
 - **Generic request actions** (`post`, `patch`, `put`)
 - **GET request action** (`get`)
