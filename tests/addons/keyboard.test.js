@@ -7,6 +7,7 @@ import {
 } from "../../src/core/builtin_directives.js";
 import { keyboard } from "../../src/addons/keyboard/index.js";
 import { hotkey } from "../../src/addons/keyboard/hotkey.js";
+import { Normalize } from "../../src/addons/keyboard/normalize.js";
 
 globalThis.Node = globalThis.Node || { ELEMENT_NODE: 1 };
 
@@ -504,5 +505,212 @@ describe("Keyboard addon", () => {
 
     expect(seqTarget.classList.contains("seq")).toBe(false);
     expect(comboTarget.classList.contains("combo")).toBe(true);
+  });
+
+  describe("Normalize.normalize", () => {
+    test("replaces Mod with Meta on Mac", () => {
+      expect(Normalize.normalize("Mod+k", "MacIntel")).toBe("Meta+k");
+    });
+
+    test("replaces mod with Meta on Mac (lowercase)", () => {
+      expect(Normalize.normalize("mod+k", "MacIntel")).toBe("Meta+k");
+    });
+
+    test("replaces Mod with Control on Linux", () => {
+      expect(Normalize.normalize("Mod+s", "Linux x86_64")).toBe("Control+s");
+    });
+
+    test("sorts modifiers in canonical order", () => {
+      expect(Normalize.normalize("Shift+Control+Alt+Meta+k")).toBe(
+        "Control+Alt+Meta+Shift+k"
+      );
+    });
+
+    test("passes through single key unchanged", () => {
+      expect(Normalize.normalize("k")).toBe("k");
+    });
+
+    test("passes through named key unchanged", () => {
+      expect(Normalize.normalize("Escape")).toBe("Escape");
+    });
+  });
+
+  describe("Normalize.match", () => {
+    test("matches single key for unmodified keydown", () => {
+      const event = new KeyboardEvent("keydown", { key: "k" });
+
+      expect(Normalize.match(event, { with: "k" })).toBe(true);
+    });
+
+    test("does not match different key", () => {
+      const event = new KeyboardEvent("keydown", { key: "a" });
+
+      expect(Normalize.match(event, { with: "b" })).toBe(false);
+    });
+
+    test("includes modifier names for combo", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        ctrlKey: true,
+        bubbles: true
+      });
+
+      expect(Normalize.match(event, { with: "Control+k" })).toBe(true);
+    });
+
+    test("does not match when modifier missing", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        ctrlKey: false
+      });
+
+      expect(Normalize.match(event, { with: "Control+k" })).toBe(false);
+    });
+
+    test("includes multiple modifiers", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        ctrlKey: true,
+        altKey: true,
+        bubbles: true
+      });
+
+      expect(Normalize.match(event, { with: "Control+Alt+k" })).toBe(true);
+    });
+
+    test("maps macOS Alt+key symbols back to base key", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "å",
+        altKey: true,
+        bubbles: true
+      });
+
+      expect(Normalize.match(event, { with: "Alt+a", on: "MacIntel" })).toBe(
+        true
+      );
+    });
+
+    test("maps macOS Meta+Shift+lowercase to uppercase key", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "a",
+        metaKey: true,
+        shiftKey: true,
+        bubbles: true
+      });
+
+      expect(
+        Normalize.match(event, { with: "Meta+Shift+A", on: "MacIntel" })
+      ).toBe(true);
+    });
+
+    test("maps space key to Space", () => {
+      const event = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+
+      expect(Normalize.match(event, { with: "Space" })).toBe(true);
+    });
+
+    test("maps plus key to Plus even when Shift is held", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "+",
+        shiftKey: true,
+        bubbles: true
+      });
+
+      expect(Normalize.match(event, { with: "Plus" })).toBe(true);
+    });
+
+    test("matches uppercase key against lowercased event", () => {
+      const event = new KeyboardEvent("keydown", {
+        key: "A",
+        shiftKey: true,
+        bubbles: true
+      });
+
+      expect(Normalize.match(event, { with: "a" })).toBe(true);
+    });
+  });
+
+  describe("Normalize.sequence", () => {
+    test("normalizes each part of a space-separated sequence", () => {
+      const result = Normalize.sequence("Mod+a Control+b", "MacIntel");
+
+      expect(result).toBe("Meta+a Control+b");
+    });
+  });
+
+  describe("@hotkey with normalized matching", () => {
+    beforeEach(() => {
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
+        extendWith: [keyboard]
+      });
+    });
+
+    test("@hotkey.Space matches space key press", async () => {
+      document.body.innerHTML = `
+        <div @hotkey.Space="addClass#fired" @target="target"></div>
+        <span id="target">Target</span>
+      `;
+
+      await vi.runAllTimersAsync();
+
+      const target = document.getElementById("target");
+
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: " ", bubbles: true })
+      );
+
+      expect(target.classList.contains("fired")).toBe(true);
+    });
+
+    test("@hotkey.Plus matches plus key press", async () => {
+      document.body.innerHTML = `
+        <div @hotkey.Plus="addClass#fired" @target="target"></div>
+        <span id="target">Target</span>
+      `;
+
+      await vi.runAllTimersAsync();
+
+      const target = document.getElementById("target");
+
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "+",
+          shiftKey: true,
+          bubbles: true
+        })
+      );
+
+      expect(target.classList.contains("fired")).toBe(true);
+    });
+
+    test("@hotkey.g.Space matches g then space sequence", async () => {
+      document.body.innerHTML = `
+        <div @hotkey.g.Space="addClass#fired" @target="target"></div>
+        <span id="target">Target</span>
+      `;
+
+      await vi.runAllTimersAsync();
+
+      const target = document.getElementById("target");
+
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "g", bubbles: true })
+      );
+
+      document.dispatchEvent(
+        new KeyboardEvent("keyup", { key: "g", bubbles: true })
+      );
+
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: " ", bubbles: true })
+      );
+
+      await vi.runAllTimersAsync();
+
+      expect(target.classList.contains("fired")).toBe(true);
+    });
   });
 });

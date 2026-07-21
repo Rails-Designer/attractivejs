@@ -1,14 +1,16 @@
+import { Normalize } from "./normalize.js";
 import activeEditableElement, {
   editableElement
 } from "./active_editable_element.js";
 import Debug from "./../../debug";
 
 const HOTKEY_PREFIX = "@hotkey.";
+const KEY_NAME_TRANSLATIONS = { Space: " ", Plus: "+" };
 
 class Hotkey {
   #elements = new Set();
   #sequenceState = new Map();
-  #modifierKeys = new Set(["ctrl", "alt", "shift", "meta"]);
+  #modifierKeys = new Set(["ctrl", "alt", "shift", "meta", "mod"]);
   #heldKeys = new Set();
   #sequenceTimeout = 1500;
   #listening = false;
@@ -76,14 +78,14 @@ class Hotkey {
     if (!hotkey) return false;
 
     const { modifiers, value } = hotkey;
-    const combo = modifiers.some((part) => part.includes("+"));
+    const combination = modifiers.some((part) => part.includes("+"));
 
-    if (combo) {
+    if (combination) {
       const keys = modifiers.flatMap((part) => part.split("+"));
-      const systemKeys = keys.filter((key) => this.#modifierKeys.has(key));
-      const triggerKeys = keys.filter((key) => !this.#modifierKeys.has(key));
+      const modifierCodes = keys.filter((key) => this.#modifierKeys.has(key));
+      const triggerCodes = keys.filter((key) => !modifierCodes.includes(key));
 
-      if (this.#matches({ for: event }, { systemKeys, triggerKeys })) {
+      if (this.#matches(event, { with: modifierCodes, and: triggerCodes })) {
         Debug.log("hotkey combo →", element);
         this.#activate({ on: element, with: value, path: modifiers });
 
@@ -102,7 +104,7 @@ class Hotkey {
       });
     }
 
-    if (event.key.toLowerCase() === modifiers[0].toLowerCase()) {
+    if (this.#keyMatch(event, { with: modifiers[0] })) {
       this.#activate({ on: element, with: value, path: modifiers });
 
       return true;
@@ -124,11 +126,15 @@ class Hotkey {
     };
   }
 
+  #keyMatch(event, { with: keyString }) {
+    return Normalize.match(event, { with: keyString });
+  }
+
   #matchSequence({ for: event, on: element, sequence, with: value }) {
     const step = this.#sequenceState.get(element);
-    const expected = step ? sequence[step.position] : sequence[0];
+    const expectedKey = step ? sequence[step.position] : sequence[0];
 
-    if (event.key.toLowerCase() !== expected) {
+    if (!this.#keyMatch(event, { with: expectedKey })) {
       this.#resetSequence({ on: element });
 
       return false;
@@ -155,14 +161,28 @@ class Hotkey {
     });
   }
 
-  #matches({ for: event }, { systemKeys, triggerKeys }) {
-    if (systemKeys.includes("ctrl") && !event.ctrlKey) return false;
-    if (systemKeys.includes("alt") && !event.altKey) return false;
-    if (systemKeys.includes("shift") && !event.shiftKey) return false;
-    if (systemKeys.includes("meta") && !event.metaKey) return false;
-    if (triggerKeys.some((key) => !this.#heldKeys.has(key))) return false;
+  #matches(event, { with: modifierCodes, and: triggerCodes }) {
+    const platformModifierCodes = modifierCodes.map((code) =>
+      code === "mod" ? this.#platformModifierCode : code
+    );
+
+    if (platformModifierCodes.includes("ctrl") && !event.ctrlKey) return false;
+    if (platformModifierCodes.includes("alt") && !event.altKey) return false;
+    if (platformModifierCodes.includes("shift") && !event.shiftKey)
+      return false;
+    if (platformModifierCodes.includes("meta") && !event.metaKey) return false;
+
+    const eventTriggerCodes = triggerCodes.map(
+      (code) => KEY_NAME_TRANSLATIONS[code] ?? code
+    );
+    if (eventTriggerCodes.some((code) => !this.#heldKeys.has(code)))
+      return false;
 
     return true;
+  }
+
+  get #platformModifierCode() {
+    return /Mac|iPod|iPhone|iPad/i.test(navigator.userAgent) ? "meta" : "ctrl";
   }
 
   #activate({ on: element, with: value, path = [] }) {
