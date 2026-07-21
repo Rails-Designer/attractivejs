@@ -87,6 +87,9 @@
     },
     "./attract": {
       "import": "./dist/attract.js"
+    },
+    "./validate": {
+      "import": "./dist/validate.js"
     }
   },
   "files": [

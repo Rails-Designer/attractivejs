@@ -25,6 +25,7 @@
   a:not([class]) {
     color: var(--brand-500);
     text-decoration: underline;
+    text-decoration-color: currentColor;
 
     &:hover {
       text-decoration: none;
