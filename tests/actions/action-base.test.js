@@ -9,7 +9,7 @@ describe("Action base class", () => {
     document.body.appendChild(element);
 
     const instance = new Action(element, { value: "hello", ...options });
-    instance.currentElement = element;
+    instance.element = element;
     instance.options = { value: "hello", ...options };
 
     return { instance, element };
@@ -26,7 +26,7 @@ describe("Action base class", () => {
     expect(instance.dataset.color).toBe("blue");
   });
 
-  test("dispatchEvent fires a CustomEvent on currentElement", () => {
+  test("dispatchEvent fires a CustomEvent on element", () => {
     const { instance, element } = createAction();
 
     const listener = vi.fn();

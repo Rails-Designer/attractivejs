@@ -37,8 +37,8 @@ const dataAttributeOperations = {
 };
 
 class DOMAttribute extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     const [attribute, value] = options.value.split("=");
 

@@ -27,7 +27,7 @@ describe("Class actions", () => {
       }
 
       run() {
-        run(this.currentElement, this.options);
+        run(this.element, this.options);
       }
     }
 

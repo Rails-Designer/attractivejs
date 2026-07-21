@@ -28,7 +28,7 @@ export default class LivePreview extends Action {
     this.#exampleContainer = this.targets[0];
     if (!this.#exampleContainer) return;
 
-    this.#codeContainer = this.currentElement.querySelector(".code");
+    this.#codeContainer = this.element.querySelector(".code");
     if (!this.#codeContainer) return;
 
     this.#previousHTML = this.#serializer.format(this.#exampleContainer);

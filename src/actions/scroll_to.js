@@ -1,8 +1,8 @@
 import ActionBase from "./base";
 
 class ScrollTo extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     const validBehaviors = ["auto", "instant", "smooth"];
     const behavior = options.value;

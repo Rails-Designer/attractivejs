@@ -9,10 +9,10 @@ export default class ActionBase {
     };
   }
 
-  constructor(currentElement, options = {}) {
-    if (!currentElement) throw new Error("Current element is required");
+  constructor(element, options = {}) {
+    if (!element) throw new Error("Current element is required");
 
-    this.currentElement = currentElement;
+    this.element = element;
     this.target = options.target;
     this.targetsSelector = options.targets;
     this.options = options;
@@ -24,16 +24,16 @@ export default class ActionBase {
     }
 
     if (this.target) {
-      const element = document.getElementById(this.target);
+      const target = document.getElementById(this.target);
 
-      if (!element) {
+      if (!target) {
         Debug.warn(`Target "#${this.target}" not found`);
       }
 
-      return element ? [element] : [];
+      return target ? [target] : [];
     }
 
-    return [this.currentElement];
+    return [this.element];
   }
 
   cycledValue(currentValue, nextValues) {

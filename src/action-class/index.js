@@ -6,11 +6,11 @@ export default class Action extends ActionBase {
   }
 
   get dataset() {
-    return this.currentElement.dataset;
+    return this.element.dataset;
   }
 
   dispatchEvent(name, detail = {}) {
-    this.currentElement.dispatchEvent(
+    this.element.dispatchEvent(
       new CustomEvent(name, { bubbles: true, detail })
     );
   }

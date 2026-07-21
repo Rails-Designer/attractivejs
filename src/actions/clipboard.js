@@ -4,8 +4,8 @@ import delay from "./helpers/delay";
 const clearFeedback = delay();
 
 class Clipboard extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     this.value = options.value;
   }
@@ -28,7 +28,7 @@ class Clipboard extends ActionBase {
   // private
 
   #setFeedback(succeeded) {
-    const delay = parseInt(this.currentElement.dataset.copyFeedback);
+    const delay = parseInt(this.element.dataset.copyFeedback);
 
     this.targets.forEach((target) =>
       target.setAttribute(this.#attributeName, succeeded)

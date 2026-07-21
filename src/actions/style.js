@@ -1,8 +1,8 @@
 import ActionBase from "./base";
 
 class Style extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     const [prop, value] = (options.value || "").split("=");
 
