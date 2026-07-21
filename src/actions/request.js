@@ -5,15 +5,15 @@ import Get from "./request/get";
 import { activeRequests, crossingOrigin, setFeedback } from "./request/helpers";
 
 class Request extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     this.value = options.value;
   }
 
   async get() {
     return new Get(
-      this.currentElement,
+      this.element,
       this.value,
       this.targets,
       this.options.onJSON
@@ -51,13 +51,13 @@ class Request extends ActionBase {
       );
     }
 
-    const previous = activeRequests.get({ on: this.currentElement });
+    const previous = activeRequests.get({ on: this.element });
     if (previous) previous.abort();
 
     const controller = new AbortController();
-    activeRequests.set({ on: this.currentElement, with: controller });
+    activeRequests.set({ on: this.element, with: controller });
 
-    setFeedback("busy", { on: this.currentElement, for: this.targets });
+    setFeedback("busy", { on: this.element, for: this.targets });
 
     const headers = {
       "Content-Type": "application/json",
@@ -88,16 +88,16 @@ class Request extends ActionBase {
           this.options.onJSON(json);
         }
 
-        setFeedback("success", { on: this.currentElement, for: this.targets });
-        activeRequests.delete({ on: this.currentElement });
+        setFeedback("success", { on: this.element, for: this.targets });
+        activeRequests.delete({ on: this.element });
 
         return response;
       })
       .catch((error) => {
         if (error.name === "AbortError") return;
 
-        activeRequests.delete({ on: this.currentElement });
-        setFeedback("error", { on: this.currentElement, for: this.targets });
+        activeRequests.delete({ on: this.element });
+        setFeedback("error", { on: this.element, for: this.targets });
 
         throw error;
       });
@@ -118,8 +118,8 @@ class Request extends ActionBase {
     }
 
     if (this.#inputField) {
-      const key = this.currentElement.name;
-      const value = this.currentElement.value;
+      const key = this.element.name;
+      const value = this.element.value;
 
       body[key] = value;
     }
@@ -129,10 +129,9 @@ class Request extends ActionBase {
 
   get #inputField() {
     return (
-      this.currentElement instanceof HTMLInputElement ||
-      this.currentElement instanceof HTMLSelectElement ||
-      (this.currentElement instanceof HTMLTextAreaElement &&
-        this.currentElement.name)
+      this.element instanceof HTMLInputElement ||
+      this.element instanceof HTMLSelectElement ||
+      (this.element instanceof HTMLTextAreaElement && this.element.name)
     );
   }
 }

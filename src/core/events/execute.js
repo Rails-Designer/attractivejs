@@ -128,7 +128,7 @@ class Execute {
       if (typeof Action === "function" && Action.prototype?.run) {
         const instance = new Action(element, context);
 
-        instance.currentElement = element;
+        instance.element = element;
         instance.options = context;
 
         return await instance.run();

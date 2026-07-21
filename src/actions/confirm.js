@@ -5,8 +5,7 @@ const clearFeedback = delay();
 
 class Confirm extends ActionBase {
   confirm() {
-    const message =
-      this.currentElement.dataset.confirmMessage || "Are you sure?";
+    const message = this.element.dataset.confirmMessage || "Are you sure?";
     const confirmed = window.confirm(message);
 
     this.#setFeedback(confirmed);
@@ -15,14 +14,14 @@ class Confirm extends ActionBase {
   }
 
   #setFeedback(confirmed) {
-    this.currentElement.setAttribute("data-confirm-success", confirmed);
+    this.element.setAttribute("data-confirm-success", confirmed);
 
-    const duration = this.currentElement.dataset.confirmFeedback;
+    const duration = this.element.dataset.confirmFeedback;
 
     if (!duration) return;
 
     clearFeedback(
-      () => this.currentElement.removeAttribute("data-confirm-success"),
+      () => this.element.removeAttribute("data-confirm-success"),
       parseInt(duration)
     );
   }

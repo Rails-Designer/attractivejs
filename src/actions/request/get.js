@@ -7,8 +7,8 @@ export default class Get {
   #targets;
   #onJSON;
 
-  constructor(currentElement, url, targets, onJSON) {
-    this.#element = currentElement;
+  constructor(element, url, targets, onJSON) {
+    this.#element = element;
     this.#url = url;
     this.#targets = targets;
     this.#onJSON = onJSON;

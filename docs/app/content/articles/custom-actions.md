@@ -66,7 +66,7 @@ A class action is any class with a `run` method:
 ```js
 class Reorder {
   run() {
-    this.currentElement  // the element with @action
+    this.element  // the element with @action
     this.options  // { value, target, targets, event, dataset, … }
   }
 }

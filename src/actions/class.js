@@ -2,8 +2,8 @@ import ActionBase from "./base";
 import { sanitize } from "./helpers/sanitize";
 
 class Class extends ActionBase {
-  constructor(currentElement, options = {}) {
-    super(currentElement, options);
+  constructor(element, options = {}) {
+    super(element, options);
 
     this.value = sanitize(options.value);
   }
