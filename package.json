@@ -1,6 +1,6 @@
 {
   "name": "attractivejs",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "type": "module",
   "description": "A light-weight library for declarative DOM actions using data attributes",
   "scripts": {
