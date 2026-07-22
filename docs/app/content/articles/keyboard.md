@@ -114,18 +114,6 @@ With a value, `@hotkey` dispatches a synthetic `hotkey` event through the action
 | Sequence   | `@hotkey.g.i`       | `G` is pressed, released, then ``I`` pressed |
 
 
-### Cancellable event
-
-Before the action runs, `@hotkey` dispatches a cancellable `attractive:hotkey` CustomEvent on the element. Call `preventDefault()` to stop the action:
-```js
-element.addEventListener("attractive:hotkey", (event) => {
-  if (someCondition) event.preventDefault();
-});
-```
-
-The event `detail` includes the matched key `path` array.
-
-
 ### Focus vs click
 
 Hotkeys on form elements (input, textarea, select, contenteditable) focus the element instead of clicking it.
