@@ -87,7 +87,7 @@ class Hotkey {
 
       if (this.#matches(event, { with: modifierCodes, and: triggerCodes })) {
         Debug.log("hotkey combo →", element);
-        this.#activate({ on: element, with: value, path: modifiers });
+        this.#activate({ on: element, with: value });
 
         return true;
       }
@@ -105,7 +105,7 @@ class Hotkey {
     }
 
     if (this.#keyMatch(event, { with: modifiers[0] })) {
-      this.#activate({ on: element, with: value, path: modifiers });
+      this.#activate({ on: element, with: value });
 
       return true;
     }
@@ -185,16 +185,9 @@ class Hotkey {
     return /Mac|iPod|iPhone|iPad/i.test(navigator.userAgent) ? "meta" : "ctrl";
   }
 
-  #activate({ on: element, with: value, path = [] }) {
+  #activate({ on: element, with: value }) {
     const tag = element.tagName.toLowerCase();
     const id = element.id ? `#${element.id}` : "";
-
-    const delegateEvent = new CustomEvent("attractive:hotkey", {
-      cancelable: true,
-      detail: { path }
-    });
-
-    if (!element.dispatchEvent(delegateEvent)) return;
 
     if (editableElement(element)) {
       Debug.log(`hotkey → ${tag}${id} [focus]`);
@@ -242,7 +235,7 @@ class Hotkey {
 
       Debug.log(`hotkey sequence complete → ${tag}${id}`);
       this.#sequenceState.delete(element);
-      this.#activate({ on: element, with: value, path: sequence });
+      this.#activate({ on: element, with: value });
 
       return true;
     }
