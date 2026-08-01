@@ -38,4 +38,3 @@ const actions = { append, prepend, replace, before, after, remove };
 
 export { append, prepend, replace, before, after, remove };
 export default actions;
-export const attractActions = { name: "attract", actions };

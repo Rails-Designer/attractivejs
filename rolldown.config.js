@@ -139,6 +139,23 @@ export default [
   }),
 
   defineConfig({
+    input: "src/addons/attract/actions.js",
+    output: {
+      file: "dist/attract/actions.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/addons/attract/actions.js",
+    output: {
+      file: "dist/attract/actions.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
+  defineConfig({
     input: "src/addons/validate/index.js",
     output: {
       file: "dist/validate.js",
