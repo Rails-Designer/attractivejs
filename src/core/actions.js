@@ -53,71 +53,14 @@ class Actions {
 
     if (!this.#scope.contains(element)) return;
 
-    const delay = this.#debounceDelay(element);
+    this.#debounced(
+      () => this.#execute({ event, with: context, on: element }),
 
-    if (delay > 0) {
-      let timer = debounceTimers.get(element);
-
-      if (!timer) {
-        timer = debounce();
-        debounceTimers.set(element, timer);
-      }
-
-      timer(() => this.#execute({ event, with: context, on: element }), delay);
-
-      return;
-    }
-
-    this.#execute({ event, with: context, on: element });
-  }
-
-  #debounceDelay(element) {
-    return parseInt(
-      element.dataset.debounce ??
-        element.dataset.formDebounce ??
-        element.dataset.requestDebounce ??
-        0
+      element
     );
   }
 
-  #execute({ event, with: context, on: element }) {
-    if (!this.#scope.contains(element)) return;
-
-    const defaultEventType = context
-      ? context.eventType
-      : this.#defaultEventType({ for: element });
-
-    const attributes = getActionAttributes({ on: element });
-
-    for (const { event: eventName, modifiers, value } of attributes) {
-      const eventType = eventName !== null ? eventName : defaultEventType;
-
-      if (eventType !== event.type) continue;
-
-      if (this.#blockedByEventModifiers({ for: event, on: element, modifiers }))
-        continue;
-
-      this.#events.process(event, {
-        on: element,
-        using: defaultEventType,
-        with: value
-      });
-    }
-  }
-
   // private
-
-  #blockedByEventModifiers({ for: event, on: element, modifiers }) {
-    return modifiers.some((name) => {
-      const eventModifier = this.#registry.getEventModifier(name);
-
-      if (eventModifier) return eventModifier(event, element) === false;
-
-      if (event.key === undefined) return false;
-
-      return event.key.toLowerCase() !== name.toLowerCase();
-    });
-  }
 
   #registerDirectListeners({ on: element, from: attributes }) {
     for (const { event: eventName, modifiers, value } of attributes) {
@@ -187,19 +130,88 @@ class Actions {
         for: name,
         on: element,
         trigger: () => {
-          attributes.forEach(({ value }) => {
-            this.#events.process(
-              { type: name },
-              {
-                on: element,
-                using: defaultEventType,
-                triggeredBy: name,
-                with: value
-              }
-            );
-          });
+          const run = () => {
+            attributes.forEach(({ value }) => {
+              this.#events.process(
+                { type: name },
+                {
+                  on: element,
+                  using: defaultEventType,
+                  triggeredBy: name,
+                  with: value
+                }
+              );
+            });
+          };
+
+          this.#debounced(run, element);
         }
       });
+    });
+  }
+
+  #debounced(run, element) {
+    const delay = this.#debounceDelay(element);
+
+    if (delay > 0) {
+      let timer = debounceTimers.get(element);
+
+      if (!timer) {
+        timer = debounce();
+        debounceTimers.set(element, timer);
+      }
+
+      timer(run, delay);
+
+      return;
+    }
+
+    run();
+  }
+
+  #debounceDelay(element) {
+    return parseInt(
+      element.dataset.debounce ??
+        element.dataset.formDebounce ??
+        element.dataset.requestDebounce ??
+        0
+    );
+  }
+
+  #execute({ event, with: context, on: element }) {
+    if (!this.#scope.contains(element)) return;
+
+    const defaultEventType = context
+      ? context.eventType
+      : this.#defaultEventType({ for: element });
+
+    const attributes = getActionAttributes({ on: element });
+
+    for (const { event: eventName, modifiers, value } of attributes) {
+      const eventType = eventName !== null ? eventName : defaultEventType;
+
+      if (eventType !== event.type) continue;
+
+      if (this.#blockedByEventModifiers({ for: event, on: element, modifiers }))
+        continue;
+
+      this.#events.process(event, {
+        on: element,
+        using: defaultEventType,
+        with: value
+      });
+    }
+  }
+
+  #blockedByEventModifiers({ for: event, on: element, modifiers }) {
+    return modifiers.some((name) => {
+      const eventModifier = this.#registry.getEventModifier(name);
+
+      if (eventModifier) return eventModifier(event, element) === false;
+
+      if (event.key === undefined) return false;
+
+      return event.key.toLowerCase() !== name.toLowerCase();
     });
   }
 

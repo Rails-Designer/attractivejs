@@ -150,6 +150,20 @@ These actions work from both `@action="…"` in HTML and from JSON responses:
 | `after` | Clone template, insert after target |
 | `remove` | Remove target element(s) |
 
+The actions can be imported individually and used without the full addon. Register the ones you need via `addActions`:
+```js
+import Attractive from "attractivejs";
+import { append, remove } from "attractivejs/attract/actions";
+
+Attractive.activate({ addActions: { append, remove } });
+```
+Or register all of them via the default export:
+```js
+import actions from "attractivejs/attract/actions";
+
+Attractive.activate({ addActions: actions });
+```
+
 ```html
 <ul id="messages"></ul>
 

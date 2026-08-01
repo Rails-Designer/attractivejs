@@ -88,6 +88,9 @@
     "./attract": {
       "import": "./dist/attract.js"
     },
+    "./attract/actions": {
+      "import": "./dist/attract/actions.js"
+    },
     "./validate": {
       "import": "./dist/validate.js"
     }

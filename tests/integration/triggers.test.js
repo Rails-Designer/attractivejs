@@ -39,6 +39,31 @@ test("mounted trigger runs addClass immediately when element is added to DOM", a
   expect(target.classList.contains("loaded")).toBe(true);
 });
 
+test("mounted trigger honors data-debounce", async () => {
+  attractive.activate({
+    addActions: allBuiltinActions,
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
+  });
+
+  document.body.innerHTML = `
+    <div @action="addClass#loaded:mounted" @target="target" data-debounce="200">
+      <span id="target">Target element</span>
+    </div>
+  `;
+
+  expect(document.getElementById("target").classList.contains("loaded")).toBe(
+    false
+  );
+
+  await vi.advanceTimersByTimeAsync(200);
+  await vi.runAllTimersAsync();
+
+  expect(document.getElementById("target").classList.contains("loaded")).toBe(
+    true
+  );
+});
+
 test("custom event types", async () => {
   attractive.activate({
     addActions: allBuiltinActions,
