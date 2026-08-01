@@ -678,5 +678,15 @@ describe("actions", () => {
 
       expect(document.getElementById("gone")).toBeNull();
     });
+
+    test("removes the host element when no target is given", async () => {
+      const { remove } = await import("../../src/addons/attract/actions.js");
+
+      document.body.innerHTML = `<li id="flash">message</li>`;
+
+      remove(document.getElementById("flash"), {});
+
+      expect(document.getElementById("flash")).toBeNull();
+    });
   });
 });

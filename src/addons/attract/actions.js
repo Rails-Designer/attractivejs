@@ -20,12 +20,18 @@ const before = positionAction("before");
 const after = positionAction("after");
 
 function remove(element, { target, targets }) {
-  new Template(null).render({
-    target,
-    targets,
-    position: "remove",
-    with: {}
-  });
+  if (target || targets) {
+    new Template(null).render({
+      target,
+      targets,
+      position: "remove",
+      with: {}
+    });
+
+    return;
+  }
+
+  element?.remove();
 }
 
 const actions = { append, prepend, replace, before, after, remove };
