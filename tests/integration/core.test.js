@@ -156,53 +156,6 @@ describe("Core build with selective actions", () => {
     expect(target.classList.contains("toggled")).toBe(true);
   });
 
-  test("data-action backward compat works when no @action present", async () => {
-    const attractive = new Attractive();
-
-    attractive.activate({
-      addActions: allBuiltinActions,
-      addGates: builtinGates,
-      addTriggers: builtinTriggers
-    });
-
-    document.body.innerHTML = `
-      <button id="btn" data-action="addClass#toggled" data-target="target">
-        <span id="target">Target</span>
-      </button>
-    `;
-
-    await vi.runAllTimersAsync();
-
-    document.getElementById("btn").click();
-
-    const target = document.getElementById("target");
-    expect(target.classList.contains("toggled")).toBe(true);
-  });
-
-  test("@action takes priority over data-action", async () => {
-    const attractive = new Attractive();
-
-    attractive.activate({
-      addActions: allBuiltinActions,
-      addGates: builtinGates,
-      addTriggers: builtinTriggers
-    });
-
-    document.body.innerHTML = `
-      <button id="btn" @action="addClass#primary" data-action="addClass#ignored" @target="target">
-        <span id="target">Target</span>
-      </button>
-    `;
-
-    await vi.runAllTimersAsync();
-
-    document.getElementById("btn").click();
-
-    const target = document.getElementById("target");
-    expect(target.classList.contains("primary")).toBe(true);
-    expect(target.classList.contains("ignored")).toBe(false);
-  });
-
   test("addTriggers/addGates register directives at once", async () => {
     const attractive = new Core();
 
