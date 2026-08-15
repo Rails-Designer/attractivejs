@@ -11,8 +11,8 @@ A `js:` value prefix on event attributes evaluates a JavaScript expression. For 
 ## Syntax
 
 ```html
-<button @click="js:this.textContent = $store.get('count')" @target="counter" data-debounce="200">
-  Update
+<button @click="js:this.classList.toggle('active')">
+  Toggle
 </button>
 ```
 
@@ -67,11 +67,13 @@ Attractive.activate({
 });
 ```
 
-The reactive addon also registers `js` with `$store` access. When using the reactive addon, you do not need to import `js` separately:
+The reactive addon exposes the store as `$store` in `js:` expressions. Pair it with the action to read and write the store from HTML:
 ```js
+import { js } from "attractivejs/actions/inline";
 import { reactive } from "attractivejs/reactive";
 
 Attractive.activate({
+  addActions: { js },
   extendWith: [reactive]
 });
 ```

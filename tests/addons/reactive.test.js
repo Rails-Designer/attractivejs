@@ -8,6 +8,7 @@ import {
 } from "../../src/core/builtin_directives.js";
 import { reactive } from "../../src/addons/reactive/index.js";
 import { store, subscribe } from "../../src/addons/reactive/store.js";
+import { js } from "../../src/actions/inline.js";
 
 const allBuiltinActions = builtinActions;
 
@@ -19,6 +20,7 @@ describe("Reactive addon", () => {
     document.body.innerHTML = "";
     vi.clearAllTimers();
     vi.useFakeTimers();
+    delete globalThis.$store;
 
     attractive = new Attractive();
   });
@@ -557,6 +559,50 @@ describe("Reactive addon", () => {
       expect(document.getElementById("el").classList.contains("fired")).toBe(
         true
       );
+    });
+  });
+
+  describe("js with $store", () => {
+    test("exposes the store as $store when js is registered", async () => {
+      store.set("js-count", { with: 1 });
+
+      attractive.activate({
+        addActions: { ...allBuiltinActions, js },
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `
+        <button id="btn" @click="js:$store.set('js-count', { with: $store.get('js-count') + 1 })">+1</button>
+      `;
+      await vi.runAllTimersAsync();
+
+      document.getElementById("btn").click();
+      await vi.runAllTimersAsync();
+
+      expect(store.get("js-count")).toBe(2);
+    });
+
+    test("does not register the js action itself", async () => {
+      const onError = vi.fn();
+      attractive.onError(onError);
+
+      attractive.activate({
+        addActions: allBuiltinActions,
+        addGates: builtinGates,
+        addTriggers: builtinTriggers,
+        extendWith: [reactive]
+      });
+
+      document.body.innerHTML = `<button id="btn" @click="js:globalThis.ran = true">go</button>`;
+      await vi.runAllTimersAsync();
+
+      document.getElementById("btn").click();
+      await vi.runAllTimersAsync();
+
+      expect(globalThis.ran).toBeUndefined();
+      expect(onError).toHaveBeenCalled();
     });
   });
 });

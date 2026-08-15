@@ -27,6 +27,11 @@ store.set("name", { with: "Cameron" });
 store.get("name"); // => "Alice"
 ```
 
+When the `js` action is registered, it can read and write the store from HTML via the global `$store`:
+```html
+<input @input="js:$store.set('name', { with: this.value })" data-debounce="300" />
+```
+
 
 ## `@text` bindings
 

@@ -7,6 +7,10 @@
     <%= @resource.description %>
   </p>
 
+  <% if @resource.metadata.note.present? %>
+    <%= markdownify @resource.metadata.note %>
+  <% end %>
+
   <p>
     <%= @resource.metadata.alias %>
   </p>
