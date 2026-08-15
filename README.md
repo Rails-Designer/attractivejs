@@ -1,12 +1,14 @@
-> [!NOTE]
-> Attractive.js 1.0.0 is in the works. Have your say: https://github.com/Rails-Designer/attractivejs/milestone/2
+<div align="center">
+   🧲
 
-# Attractive.js
+  <h1>
+    Attractive.js
+  </h1>
 
-A light-weight library for declarative DOM actions using data attributes.
+  <p>A light-weight library for declarative DOM actions using data attributes.</p>
+</div>
 
 Quick example:
-
 ```html
 <button @action="toggleClass#active" @target="content">Toggle</button>
 
