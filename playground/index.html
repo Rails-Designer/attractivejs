@@ -8,6 +8,36 @@
     />
     <script type="module">
       import Attractive from "../dist/attractive.min.js";
+      import { AttractiveElement } from "../dist/element.min.js";
+
+      class Tabs extends AttractiveElement {
+        connect() {
+          this.#show("details");
+        }
+
+        select(element, { dataset }) {
+          this.#show(dataset.panel);
+        }
+
+        #show(name) {
+          this.targets(".panel").forEach((panel) => (panel.hidden = true));
+          this.target(name).hidden = false;
+        }
+      }
+
+      customElements.define("ui-tabs", Tabs);
+
+      class Counter extends AttractiveElement {
+        connect() {
+          this.count = 0;
+        }
+
+        increment() {
+          this.target("count").textContent = ++this.count;
+        }
+      }
+
+      customElements.define("ui-counter", Counter);
 
       Attractive.activate({ debug: true });
     </script>
@@ -21,6 +51,34 @@
     <button @action="copy" @target="source">Copy</button>
     <input id="source" value="copied text" readonly />
 
+    <h2>Tabs</h2>
+    <p>
+      A <code>&lt;ui-tabs&gt;</code> component: HTML actions call the class
+      methods, <code>target()</code>/<code>targets()</code> stay scoped.
+    </p>
+
+    <ui-tabs>
+      <nav>
+        <button @click="select" data-panel="details">Details</button>
+        <button @click="select" data-panel="settings">Settings</button>
+      </nav>
+
+      <div id="details" class="panel">Details content</div>
+      <div id="settings" class="panel" hidden>Settings content</div>
+    </ui-tabs>
+
+    <h2>Counter</h2>
+    <p>
+      A <code>&lt;ui-counter&gt;</code> component: state in
+      <code>connect()</code>, HTML actions call methods, and
+      <code>target("count")</code> stays scoped.
+    </p>
+
+    <ui-counter>
+      <button @click="increment">+</button>
+      <output id="count">0</output>
+    </ui-counter>
+
     <style>
       .active {
         color: red;
@@ -29,6 +87,31 @@
 
       [data-copy-success="true"] {
         border-color: aqua;
+      }
+
+      ui-tabs nav {
+        display: flex;
+        gap: 0.25rem;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 0.75rem;
+
+        button {
+          margin-block-end: -1px;
+          padding: 0.4rem 0.75rem;
+          background: none;
+          border: 0;
+          border-bottom: 2px solid transparent;
+          cursor: pointer;
+
+          &:hover {
+            background: #eef;
+          }
+        }
+      }
+
+      ui-counter output {
+        margin-inline-start: 0.75rem;
+        font-weight: 600;
       }
     </style>
   </body>

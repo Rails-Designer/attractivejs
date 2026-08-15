@@ -172,5 +172,22 @@ export default [
     }
   }),
 
+  defineConfig({
+    input: "src/element.js",
+    output: {
+      file: "dist/element.js",
+      format: "es"
+    }
+  }),
+
+  defineConfig({
+    input: "src/element.js",
+    output: {
+      file: "dist/element.min.js",
+      format: "es",
+      minify: true
+    }
+  }),
+
   ...actionConfigs
 ];

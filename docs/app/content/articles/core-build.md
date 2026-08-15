@@ -1,11 +1,11 @@
 ---
 title: Core build
-description: Use the core engine (~10 kB) and compose only the actions you need
+description: Use the core engine kB) and compose only the actions you need
 category: advanced
 position: 3
 ---
 
-The full Attractive.js build includes all built-in actions at ~20 kB (6.6 kB gzipped). The core build strips out all actions, only the engine at ~10 kB (~3.5 kB gzipped).
+The full Attractive.js build includes all built-in actions, you can also just use the core and compose actions as you need.
 ```js
 import Attractive from "attractivejs/core";
 ```

@@ -2,6 +2,7 @@ import Actions from "./actions";
 import EventListeners from "./event_listeners";
 import Observer from "./observer";
 import Debug from "./../debug";
+import { registerScope, unregisterScope, insideNestedScope } from "./scopes";
 
 class Activation {
   #registry;
@@ -67,6 +68,7 @@ class Activation {
       this.#registry.addTrigger(name, action);
 
     this.#scope = on;
+    registerScope(on);
     this.#subscriptions.setScope(on);
 
     this.#actions = new Actions(
@@ -82,26 +84,28 @@ class Activation {
       (element) => {
         this.#actions.prepare(element);
 
-        this.#elementLifecycle.runAdded(element);
+        this.#elementLifecycle.notifyAdded(element);
+        this.#elementLifecycle.notifyTargetAdded(element);
       },
 
       (element) => {
         this.#listeners.cleanup(element);
 
-        this.#elementLifecycle.runRemoved(element);
+        this.#elementLifecycle.notifyRemoved(element);
+        this.#elementLifecycle.notifyTargetRemoved(element);
       },
 
       on,
       (element) => {
-        this.#elementLifecycle.runBeforeRemove(element);
+        this.#elementLifecycle.notifyBeforeRemove(element);
       }
     );
 
-    const elements = on.querySelectorAll("*");
+    const elements = [on, ...on.querySelectorAll("*")];
     const actionElements = [];
 
     for (const element of elements) {
-      if (this.#attributePrefixes.matches(element)) {
+      if (this.#shouldPrepare(element)) {
         actionElements.push(element);
       }
     }
@@ -114,10 +118,11 @@ class Activation {
       this.#actions.prepare(element);
     });
 
-    this.#observe.start((element) => this.#attributePrefixes.matches(element));
+    this.#observe.start((element) => this.#shouldPrepare(element));
 
     actionElements.forEach((element) => {
-      this.#elementLifecycle.runAdded(element);
+      this.#elementLifecycle.notifyAdded(element);
+      this.#elementLifecycle.notifyTargetAdded(element);
     });
 
     this.#initialized = true;
@@ -134,6 +139,7 @@ class Activation {
   deactivate() {
     if (!this.#initialized) return this;
 
+    unregisterScope(this.#scope);
     this.#listeners.removeAll();
 
     if (this.#observe) {
@@ -149,6 +155,24 @@ class Activation {
     Debug.log("deactivated");
 
     return this;
+  }
+
+  notifyExistingTargets(id) {
+    if (!this.#scope) return this;
+
+    this.#scope.querySelectorAll(`[id="${id}"]`).forEach((element) => {
+      this.#elementLifecycle.notifyTargetAdded(element);
+    });
+
+    return this;
+  }
+
+  #shouldPrepare(element) {
+    return (
+      (this.#attributePrefixes.matches(element) ||
+        this.#elementLifecycle.hasTarget(element.id)) &&
+      !insideNestedScope(element, this.#scope)
+    );
   }
 }
 

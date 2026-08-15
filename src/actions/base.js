@@ -1,4 +1,5 @@
 import Debug from "./../debug";
+import { scopeOf } from "../core/scopes";
 
 export default class ActionBase {
   static actionFor(method) {
@@ -19,12 +20,14 @@ export default class ActionBase {
   }
 
   get targets() {
+    const scope = scopeOf(this.element);
+
     if (this.targetsSelector) {
-      return Array.from(document.querySelectorAll(this.targetsSelector));
+      return Array.from(scope.querySelectorAll(this.targetsSelector));
     }
 
     if (this.target) {
-      const target = document.getElementById(this.target);
+      const target = scope.querySelector(`[id="${this.target}"]`);
 
       if (!target) {
         Debug.warn(`Target "#${this.target}" not found`);

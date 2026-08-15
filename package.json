@@ -37,6 +37,9 @@
     "./core": {
       "import": "./dist/attractive.core.js"
     },
+    "./element": {
+      "import": "./dist/element.js"
+    },
     "./actions": {
       "import": "./dist/actions/index.js"
     },
