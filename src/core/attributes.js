@@ -1,11 +1,4 @@
-import deprecation from "./deprecation";
-
-const RESERVED = new Set([
-  "@target",
-  "@targets",
-  "data-target",
-  "data-targets"
-]);
+const RESERVED = new Set(["@target", "@targets"]);
 
 export function actionAttributes(element) {
   if (!element || !element.attributes) return false;
@@ -15,7 +8,7 @@ export function actionAttributes(element) {
     if (attribute.name.startsWith("@")) return true;
   }
 
-  return element.hasAttribute("data-action");
+  return false;
 }
 
 export function getActionAttributes({ on: element }) {
@@ -26,15 +19,6 @@ export function getActionAttributes({ on: element }) {
 
     if (attribute.name.startsWith("@")) {
       attributes.push(parseAttribute(attribute.name, attribute.value));
-    }
-  }
-
-  if (attributes.length === 0 && element.hasAttribute("data-action")) {
-    const value = element.getAttribute("data-action");
-    if (value !== null) {
-      deprecation.warn("`data-action` is deprecated, use `@action` instead.");
-
-      attributes.push({ event: null, modifiers: [], value });
     }
   }
 
@@ -54,25 +38,9 @@ function parseAttribute(name, value) {
 }
 
 export function getTargetValue(element) {
-  const value = element.getAttribute("@target");
-  if (value !== null) return value;
-
-  const legacy = element.getAttribute("data-target");
-  if (legacy !== null) {
-    deprecation.warn("`data-target` is deprecated, use `@target` instead.");
-  }
-
-  return legacy;
+  return element.getAttribute("@target");
 }
 
 export function getTargetsValue(element) {
-  const value = element.getAttribute("@targets");
-  if (value !== null) return value;
-
-  const legacy = element.getAttribute("data-targets");
-  if (legacy !== null) {
-    deprecation.warn("`data-targets` is deprecated, use `@targets` instead.");
-  }
-
-  return legacy;
+  return element.getAttribute("@targets");
 }
