@@ -203,6 +203,19 @@ class Attractive {
     return this;
   }
 
+  onTargetConnected(id, callback) {
+    this.#elementLifecycle.onTargetAdded(id, callback);
+    this.#activation.notifyExistingTargets(id);
+
+    return this;
+  }
+
+  onTargetDisconnected(id, callback) {
+    this.#elementLifecycle.onTargetRemoved(id, callback);
+
+    return this;
+  }
+
   addEventListener(type, callback) {
     this.#subscriptions.add(type, callback);
 

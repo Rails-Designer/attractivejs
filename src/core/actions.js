@@ -1,5 +1,6 @@
 import debounce from "./helpers/debounce";
 import { actionAttributes, getActionAttributes } from "./attributes";
+import { insideNestedScope } from "./scopes";
 
 const debounceTimers = new WeakMap();
 
@@ -53,6 +54,8 @@ class Actions {
 
     if (!this.#scope.contains(element)) return;
 
+    if (insideNestedScope(element, this.#scope)) return;
+
     this.#debounced(
       () => this.#execute({ event, with: context, on: element }),
 
@@ -79,13 +82,15 @@ class Actions {
       }
 
       if (Actions.#nonBubblingEvents.has(eventType)) {
-        element.addEventListener(eventType, (event) =>
+        element.addEventListener(eventType, (event) => {
+          if (insideNestedScope(element, this.#scope)) return;
+
           this.#events.process(event, {
             on: element,
             using: this.#defaultEventType({ for: element }),
             with: value
-          })
-        );
+          });
+        });
       }
     }
   }
@@ -180,6 +185,8 @@ class Actions {
 
   #execute({ event, with: context, on: element }) {
     if (!this.#scope.contains(element)) return;
+
+    if (insideNestedScope(element, this.#scope)) return;
 
     const defaultEventType = context
       ? context.eventType
