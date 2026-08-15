@@ -2,7 +2,7 @@
   "name": "attractivejs",
   "version": "1.0.0-alpha.6",
   "type": "module",
-  "description": "A light-weight library for declarative DOM actions using data attributes",
+  "description": "A humble set of declarative HTML actions. Extensible when you need more.",
   "scripts": {
     "build": "rolldown -c",
     "dev": "npm-run-all --parallel dev:*",
