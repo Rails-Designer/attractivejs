@@ -1,0 +1,50 @@
+@layer components {
+  .quick-links {
+    list-style: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-4);
+    max-width: 56rem;
+    margin-block-start: var(--spacing-8);
+    padding-inline-start: 0;
+
+    @media (width >= 640px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .quick-link {
+    display: block;
+
+    a {
+      display: block;
+      height: 100%;
+      padding-inline: var(--spacing-4);
+      padding-block: var(--spacing-8);
+      text-decoration: none;
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      border-radius: var(--spacing-2);
+
+      &:hover {
+        background: var(--gray-800);
+        border-color: var(--gray-700);
+      }
+    }
+
+    * { margin: 0; }
+
+    h3 {
+      color: var(--gray-200);
+      font-size: 1.125rem;
+      font-weight: 450;
+    }
+
+    p {
+      margin-block-start: var(--spacing-2);
+      color: var(--gray-400);
+      font-size: .875rem;
+      font-weight: 300;
+    }
+  }
+}

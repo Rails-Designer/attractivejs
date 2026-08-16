@@ -1,0 +1,191 @@
+@layer components {
+  .sections{
+    .section {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+
+      &:not(:first-child) { border-block-start: 1px solid rgb(0 0 0 / .1); }
+
+      @media (width >= 1024px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .copy {
+        padding-block: var(--spacing-8);
+        padding-inline: var(--spacing-4);
+        background: var(--gray-950);
+
+        @media (width >= 1024px) {
+          padding-block: var(--spacing-16);
+          padding-inline: var(--spacing-8);
+        }
+
+        h1,
+        h2 {
+          margin-block: 0;
+          font-weight: 500;
+          letter-spacing: -.025em;
+          color: var(--gray-100);
+        }
+
+        h1 {
+          font-size: clamp(3rem, 6vw, 5rem);
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          color: var(--gray-50);
+        }
+
+        h2 {
+          font-size: 1.75rem;
+          line-height: 1.15;
+        }
+
+        .tagline {
+          margin-block-start: .5rem;
+          margin-block-end: 0;
+          font-size: 1.75rem;
+          line-height: 2.5rem;
+          font-weight: 200;
+          text-wrap: balance;
+          color: var(--gray-200);
+        }
+
+        p,
+        ul {
+          margin-block-start: var(--spacing-4);
+          margin-block-end: 0;
+        }
+
+        p {
+          font-size: 1.375rem;
+          line-height: 2rem;
+          font-weight: 200;
+          color: var(--gray-200);
+
+          code {
+            padding: calc(var(--spacing) * .5);
+            font-size: .875em;
+            font-weight: 500;
+            background-color: color-mix(in srgb, var(--gray-800) 70%, transparent);
+            color: var(--gray-200);
+            border-radius: .25rem;
+            overflow: clip;
+          }
+        }
+
+        ul {
+          padding-inline-start: var(--spacing-6);
+          list-style-position: outside;
+
+          li {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 300;
+            color: var(--gray-400);
+
+            &::marker { color: var(--brand-400); }
+
+            a {
+              color: var(--gray-200);
+              text-decoration: underline;
+
+              &:hover {
+                color: var(--brand-400);
+                text-decoration: none;
+              }
+            }
+          }
+        }
+
+        > a:not(.cta) {
+          display: inline-grid;
+          grid-template-columns: 1fr 1rem;
+          align-items: center;
+          gap: var(--spacing-2);
+          margin-block-start: var(--spacing-10);
+          font-size: 1.25rem;
+          font-weight: 400;
+          color: var(--brand-400);
+          text-decoration: none;
+
+          svg {
+            width: 1rem; aspect-ratio: 1;
+          }
+
+          &:hover { color: var(--brand-400); }
+        }
+
+        .cta {
+          justify-self: start;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin-block-start: var(--spacing-12);
+          padding-block: var(--spacing-3);
+          padding-inline: var(--spacing-8);
+          font-size: 1.25rem;
+          font-weight: 300;
+          color: var(--gray-100);
+          background: var(--brand-500);
+          border: 3px solid rgb(255 255 255 / .1);
+          border-radius: var(--spacing-1);
+          text-decoration: none;
+
+          &:hover {
+            background: var(--brand-500);
+            border-color: var(--brand-500);
+          }
+
+          &:focus-visible {
+            outline: 2px solid var(--brand-400);
+            outline-offset: 2px;
+          }
+        }
+      }
+
+      .hero {
+        @media (width >= 1024px) {
+          padding-block: var(--spacing-24);
+        }
+      }
+
+      .code,
+      .action-preview {
+        margin: var(--spacing-4);
+        background: var(--gray-950);
+        border-radius: var(--spacing-2);
+        box-shadow: 0 0 0 2px rgb(255 255 255 / .4),
+                    0 0 0 5px rgb(255 255 255 / .3);
+
+        @media (width >= 1024px) {
+          margin: var(--spacing-16);
+        }
+      }
+
+      .action-preview {
+        grid-template-columns: 1fr;
+
+        .example { border-radius: var(--spacing-1); }
+      }
+
+      .code {
+        pre {
+          margin: 0;
+          padding: min(var(--spacing-3), var(--spacing-6));
+          overflow-x: auto;
+          background: transparent;
+          border-radius: var(--spacing-4);
+        }
+
+        code {
+          font-size: 1.125rem;
+          line-height: 1.75rem;
+          font-weight: 400;
+          color: var(--gray-300);
+          background: transparent;
+        }
+      }
+    }
+  }
+}

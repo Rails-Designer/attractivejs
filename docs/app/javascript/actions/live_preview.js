@@ -109,7 +109,7 @@ class Serializer {
     container.childNodes.forEach((node) => {
       const serializedNode = this.#serialize(node, 0);
 
-      if (serializedNode.trim()) html += serializedNode + "\n";
+      if (serializedNode) html += serializedNode;
     });
 
     return html.trim();
@@ -126,7 +126,10 @@ class Serializer {
     const indent = "  ".repeat(depth);
     const text = node.textContent.replace(/\s+/g, " ").trim();
 
-    return text ? indent + this.#encodeHTML(text) + "\n" : "";
+    if (text) return indent + this.#encodeHTML(text) + "\n";
+    if (/\n\s*\n/.test(node.textContent)) return "\n";
+
+    return "";
   }
 
   #element(node, depth) {

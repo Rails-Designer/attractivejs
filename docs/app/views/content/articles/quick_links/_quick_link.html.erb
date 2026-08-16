@@ -1,0 +1,8 @@
+<%# locals: (quick_link:) %>
+<li class="quick-link">
+  <%= link_to quick_link.href do %>
+    <%= tag.h3 quick_link.title %>
+
+    <%= tag.p quick_link.description %>
+  <% end %>
+</li>

@@ -1,5 +1,5 @@
 class Content::Action < Perron::Resource
-  GROUPS = %w[class attribute data_attribute clipboard confirm dialog element focus form reload request style scroll_to]
+  GROUPS = %w[class attribute data_attribute clipboard confirm dialog element focus form reload style scroll_to]
 
   delegate :position, :group, :title, :description, to: :metadata
 

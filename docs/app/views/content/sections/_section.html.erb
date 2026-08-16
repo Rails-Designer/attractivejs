@@ -1,0 +1,20 @@
+<%# locals: (section:) %>
+<section class="section">
+  <div class="copy">
+    <h2><%= section.heading %></h2>
+
+    <p><%== section.copy %></p>
+
+    <%= tag.ul do %>
+      <% section.bullets.each do |bullet| %>
+        <li><%= bullet %></li>
+      <% end %>
+    <% end if section.respond_to? :bullets %>
+
+    <%= link_to safe_join([section.link_text, icon("arrow-right")]), article_path(section.link_path) %>
+  </div>
+
+  <div class="code">
+    <pre><code><%= section.code %></code></pre>
+  </div>
+</section>

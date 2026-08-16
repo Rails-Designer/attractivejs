@@ -5,6 +5,44 @@ description: Set a CSS property or custom property on target elements
 position: 1
 ---
 
-<button @action="setStyle#--bg=blue" @target="card">Set</button>
+<div id="carousel" class="demo-carousel" style="--index: 0;">
+  <div class="demo-track">
+    <div class="demo-slide">
+      <div class="demo-cover">R</div>
 
-<div id="card" style="background: var(--bg); padding: var(--spacing-4); border: 1px solid var(--gray-700); border-radius: var(--spacing-2); transition: background .3s;">Content</div>
+      <div class="demo-slide-label">
+        Riley's Studio
+        <span>24 pieces</span>
+      </div>
+    </div>
+
+    <div class="demo-slide">
+      <div class="demo-cover cover-2">J</div>
+
+      <div class="demo-slide-label">
+        Jordan's Sketchbook
+        <span>12 pieces</span>
+      </div>
+    </div>
+
+    <div class="demo-slide">
+      <div class="demo-cover cover-3">A</div>
+
+      <div class="demo-slide-label">
+        Avery's Portfolio
+        <span>32 pieces</span>
+      </div>
+    </div>
+
+    <div class="demo-slide">
+      <div class="demo-cover cover-4">C</div>
+
+      <div class="demo-slide-label">
+        Circle of Prints
+        <span>8 pieces</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button @action="setStyle#--index=2" @target="carousel" class="demo-btn ghost">Slide 3</button>

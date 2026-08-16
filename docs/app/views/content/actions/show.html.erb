@@ -11,9 +11,12 @@
     <%= markdownify @resource.metadata.note %>
   <% end %>
 
-  <p>
-    <%= @resource.metadata.alias %>
-  </p>
+  <% if @resource.metadata.aliases.present? %>
+    <p>
+      <strong>Aliases:</strong>
+      <%= @resource.metadata.aliases.join(", ") %>
+    </p>
+  <% end %>
 
   <dl>
     <%= @resource.metadata.options %>

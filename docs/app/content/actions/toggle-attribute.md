@@ -5,5 +5,8 @@ description: Toggle an HTML attribute on or off
 position: 1
 ---
 
-<button @action="toggleAttribute#disabled" @target="submit-btn">Toggle disabled</button>
-<button id="submit-btn">Submit</button>
+<button @action="toggleAttribute#hidden" @target="details" class="demo-btn ghost" aria-controls="details">Show details</button>
+
+<section id="details" class="demo-banner" hidden>
+  <p><strong>Trial</strong> — your free plan ends in 3 days.</p>
+</section>

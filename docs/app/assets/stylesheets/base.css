@@ -23,7 +23,7 @@
   }
 
   a:not([class]) {
-    color: var(--brand-500);
+    color: var(--brand-400);
     text-decoration: underline;
     text-decoration-color: currentColor;
 

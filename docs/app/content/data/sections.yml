@@ -1,0 +1,84 @@
+- heading: Included actions
+  copy: |-
+    Bundled actions cover the common cases without any JavaScript. Toggle, set and cycle classes, attributes, styles and data attributes. Copy to the clipboard, confirm before destructive actions, focus elements, open dialogs, submit forms and reset the page.
+  bullets:
+    - Classes, attributes, styles and data attributes
+    - Clipboard, confirm, focus and scroll
+    - Dialogs, submit, reset and refresh
+    - HTTP actions like get, post, put and patch when you need them
+  link_text: Browse all actions
+  link_path: actions
+  code: |-
+    <button
+      @action="toggleClass#active"
+      @target="panel"
+    >
+      Toggle
+    </button>
+
+    <div id="panel">Content</div>
+
+- heading: Custom actions
+  copy: |-
+    Attractive is made to be extended. Write an action once and use it declaratively everywhere. Start with an inline expression, then grow to a function or a full class as the behavior matures.
+  bullets:
+    - Inline actions for quick expressions
+    - Functions for a little more logic
+    - Classes for actions that deserve a home
+    - The same interface as the bundled actions
+  link_text: Write your own
+  link_path: custom-actions
+  code: |-
+    const sharePage = (element, { dataset }) => {
+      navigator.share({ title: dataset.title, url: dataset.url });
+    };
+
+    Attractive.activate({ addActions: { sharePage } })
+
+    <button
+      @action="sharePage"
+      data-title="Hello"
+    >
+      Share
+    </button>
+
+- heading: Keyboard
+  copy: |-
+    Filter <code>@keydown</code> with dot modifiers like <code>.enter</code> or global <code>@hotkey</code> shortcuts such as <code>mod+k</code>.
+  link_text: Read the Keyboard addon
+  link_path: keyboard
+  code: |-
+    <input
+      @keydown.enter="submit"
+      placeholder="Press enter"
+    >
+
+    <button @hotkey="mod+s">Save</button>
+
+- heading: Reactive
+  copy: |-
+    A shared key value store with DOM bindings. Set values from actions and text content updates itself.
+  link_text: Read the Reactive addon
+  link_path: reactive
+  code: |-
+    <button
+      @action="setStore#count"
+      @value="1"
+    >
+      Increment
+    </button>
+
+    <div @text="count">0</div>
+
+- heading: Attract
+  copy: |-
+    Optimistic UI from a cached <code>&lt;template&gt;</code>. Intercept the form submit, send the request, render the preview immediately.
+  link_text: Read the Attract addon
+  link_path: attract
+  code: |-
+    <form
+      @attract="/items"
+      @template="item-template"
+    >
+      <input name="title" placeholder="New item">
+    </form>

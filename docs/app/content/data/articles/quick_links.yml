@@ -1,0 +1,12 @@
+- title: What is Attractive.js
+  description: Why would you want to use Attractive.js?
+  href: <%= article_path("why-attractive") %>
+- title: Quick-start guide
+  description: How to get started with Attractive.js witohut installing a thing
+  href: <%= article_path("quickstart") %>
+- title: Explore all bundled actions
+  description: Attractive.js comes default with common actions, ready to go
+  href: <%= article_path("actions") %>
+- title: CMS for Static Sites
+  description: Have a SSG and need a CMS? Check out Spinal.
+  href: "https://spinalcms.com/"

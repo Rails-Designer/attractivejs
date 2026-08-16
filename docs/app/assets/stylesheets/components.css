@@ -1,6 +1,8 @@
 @import "./components/content.css";
 @import "./components/navigation.css";
 @import "./components/pagination.css";
+@import "./components/quick-links.css";
+@import "./components/sections.css";
 
 @layer components {
   .page {
@@ -8,7 +10,7 @@
     width: 100%;
     max-width: var(--container-width);
     margin-inline: auto;
-    border-inline: 1px solid oklch(from var(--gray-950) l c h / .3);
+    border-inline: 1px solid rgb(0 0 0 / .1);
 
     &:has(.sidebar) .navigation .icon {
       display: inline-flex;
@@ -72,7 +74,7 @@
       }
 
       * { margin: 0; }
-      *
+
       h3 {
         color: var(--gray-200);
         font-size: 1rem;
@@ -87,5 +89,4 @@
       }
     }
   }
-
 }

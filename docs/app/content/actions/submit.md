@@ -9,6 +9,12 @@ options:
     type: number
 ---
 
-<button @action="submit" @target="my-form">Submit</button>
+<form id="invite" class="demo-form">
+  <div class="demo-input-group">
+    <label for="invite-email">Email</label>
 
-<form id="my-form"><input name="email"></form>
+    <input id="invite-email" class="demo-input" name="email" type="email" placeholder="riley@studio.app">
+  </div>
+</form>
+
+<button @action="submit" @target="invite" class="demo-btn">Send invite</button>

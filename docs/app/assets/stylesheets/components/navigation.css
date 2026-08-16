@@ -1,5 +1,7 @@
 @layer components {
   .navigation {
+    display: flex;
+    justify-content: space-between;
     position: sticky;
     top: 0;
     width: 100%; height: var(--navigation-height);
@@ -16,15 +18,29 @@
       display: flex;
       align-items: center;
       gap: var(--spacing-2);
+      color: var(--gray-200);
     }
 
     .logo {
-      font-size: 1rem;
-      font-weight: 650;
-      color: var(--gray-200);
+      letter-spacing: -.025em;
       text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-200);
 
       &:hover { color: var(--gray-400) };
+    }
+
+    .badge {
+      font-size: .75rem;
+      font-weight: 300;
+      color: var(--gray-400);
+    }
+
+    .link {
+      font-size: .875rem;
+      font-weight: 500;
+      text-decoration: none;
     }
 
     .icon {

@@ -5,10 +5,24 @@ description: Cycle a data attribute through comma-separated values
 position: 5
 ---
 
-<button @action="cycleDataAttribute#state=one,two,three" @target="page">Cycle state</button>
+<div id="tabs" class="demo-tabs" data-tab="explore">
+  <button @action="cycleDataAttribute#tab=explore,studio,circles" @target="tabs" class="demo-btn ghost">Next tab</button>
 
-<div id="page" data-state="one">
-  <span data-content="one">First content</span>
-  <span data-content="two">Second content</span>
-  <span data-content="three">Third content</span>
+  <section class="demo-tab-panel" data-content="explore">
+    <h3>Explore</h3>
+
+    <p>New pieces from people you follow.</p>
+  </section>
+
+  <section class="demo-tab-panel" data-content="studio">
+    <h3>Studio</h3>
+
+    <p>Your recent uploads and drafts.</p>
+  </section>
+
+  <section class="demo-tab-panel" data-content="circles">
+    <h3>Circles</h3>
+
+    <p>Collections shared with your inner circle.</p>
+  </section>
 </div>

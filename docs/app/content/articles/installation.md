@@ -3,6 +3,7 @@ title: Installation
 description: Install Attractive.js via pnpm, npm or your favorite package manager.
 category: get-started
 position: 3
+erb: true
 ---
 
 Install Attractive.js via pnpm or your package manager of choice.
@@ -33,7 +34,7 @@ Attractive.activate();
 
 ```html
 <script type="module">
-  import Attractive from "//unpkg.com/attractivejs@latest/dist/attractive.min.js";
+  import Attractive from "//unpkg.com/attractivejs@<%= attractivejs_version %>/dist/attractive.min.js";
 
   Attractive.activate();
 </script>

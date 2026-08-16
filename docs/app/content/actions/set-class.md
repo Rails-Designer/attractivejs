@@ -5,6 +5,9 @@ description: Replace all classes on target with the given ones
 position: 4
 ---
 
-<button @action="setClass#highlighted" @target="card">Highlight</button>
+<button @action="setClass#demo-badge" @target="badge" class="demo-btn ghost">Reset badge</button>
 
-<div id="card">Content</div>
+<span id="badge" class="demo-badge published">
+  <span class="dot"></span>
+  Status
+</span>

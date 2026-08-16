@@ -1,4 +1,4 @@
-// attractivejs@1.0.0 downloaded from https://unpkg.com/attractivejs@1.0.0-alpha.4/dist/attractive.js
+// attractivejs@1.0.0 downloaded from https://unpkg.com/attractivejs@1.0.0-alpha.6/dist/attractive.js
 
 //#region src/core/hooks.js
 var Hooks = class {
@@ -323,7 +323,7 @@ var Execute = class {
 			const Action = this.#registry.getAction(name);
 			if (typeof Action === "function" && Action.prototype?.run) {
 				const instance = new Action(element, context);
-				instance.currentElement = element;
+				instance.element = element;
 				instance.options = context;
 				return await instance.run();
 			}
@@ -558,54 +558,11 @@ var Actions = class Actions {
 		const element = context ? context.element : this.#actionElement(event.target);
 		if (!element) return;
 		if (!this.#scope.contains(element)) return;
-		const delay = this.#debounceDelay(element);
-		if (delay > 0) {
-			let timer = debounceTimers.get(element);
-			if (!timer) {
-				timer = debounce();
-				debounceTimers.set(element, timer);
-			}
-			timer(() => this.#execute({
-				event,
-				with: context,
-				on: element
-			}), delay);
-			return;
-		}
-		this.#execute({
+		this.#debounced(() => this.#execute({
 			event,
 			with: context,
 			on: element
-		});
-	}
-	#debounceDelay(element) {
-		return parseInt(element.dataset.debounce ?? element.dataset.formDebounce ?? element.dataset.requestDebounce ?? 0);
-	}
-	#execute({ event, with: context, on: element }) {
-		if (!this.#scope.contains(element)) return;
-		const defaultEventType = context ? context.eventType : this.#defaultEventType({ for: element });
-		const attributes = getActionAttributes({ on: element });
-		for (const { event: eventName, modifiers, value } of attributes) {
-			if ((eventName !== null ? eventName : defaultEventType) !== event.type) continue;
-			if (this.#blockedByEventModifiers({
-				for: event,
-				on: element,
-				modifiers
-			})) continue;
-			this.#events.process(event, {
-				on: element,
-				using: defaultEventType,
-				with: value
-			});
-		}
-	}
-	#blockedByEventModifiers({ for: event, on: element, modifiers }) {
-		return modifiers.some((name) => {
-			const eventModifier = this.#registry.getEventModifier(name);
-			if (eventModifier) return eventModifier(event, element) === false;
-			if (event.key === void 0) return false;
-			return event.key.toLowerCase() !== name.toLowerCase();
-		});
+		}), element);
 	}
 	#registerDirectListeners({ on: element, from: attributes }) {
 		for (const { event: eventName, modifiers, value } of attributes) {
@@ -649,16 +606,61 @@ var Actions = class Actions {
 				for: name,
 				on: element,
 				trigger: () => {
-					attributes.forEach(({ value }) => {
-						this.#events.process({ type: name }, {
-							on: element,
-							using: defaultEventType,
-							triggeredBy: name,
-							with: value
+					const run = () => {
+						attributes.forEach(({ value }) => {
+							this.#events.process({ type: name }, {
+								on: element,
+								using: defaultEventType,
+								triggeredBy: name,
+								with: value
+							});
 						});
-					});
+					};
+					this.#debounced(run, element);
 				}
 			});
+		});
+	}
+	#debounced(run, element) {
+		const delay = this.#debounceDelay(element);
+		if (delay > 0) {
+			let timer = debounceTimers.get(element);
+			if (!timer) {
+				timer = debounce();
+				debounceTimers.set(element, timer);
+			}
+			timer(run, delay);
+			return;
+		}
+		run();
+	}
+	#debounceDelay(element) {
+		return parseInt(element.dataset.debounce ?? element.dataset.formDebounce ?? element.dataset.requestDebounce ?? 0);
+	}
+	#execute({ event, with: context, on: element }) {
+		if (!this.#scope.contains(element)) return;
+		const defaultEventType = context ? context.eventType : this.#defaultEventType({ for: element });
+		const attributes = getActionAttributes({ on: element });
+		for (const { event: eventName, modifiers, value } of attributes) {
+			if ((eventName !== null ? eventName : defaultEventType) !== event.type) continue;
+			if (this.#blockedByEventModifiers({
+				for: event,
+				on: element,
+				modifiers
+			})) continue;
+			this.#events.process(event, {
+				on: element,
+				using: defaultEventType,
+				with: value
+			});
+		}
+	}
+	#blockedByEventModifiers({ for: event, on: element, modifiers }) {
+		return modifiers.some((name) => {
+			const eventModifier = this.#registry.getEventModifier(name);
+			if (eventModifier) return eventModifier(event, element) === false;
+			if (event.key === void 0) return false;
+			return event.key.toLowerCase() !== name.toLowerCase();
 		});
 	}
 	#defaultEventType({ for: element }) {
@@ -1088,9 +1090,9 @@ var ActionBase = class {
 			return new this(element, options)[method]();
 		};
 	}
-	constructor(currentElement, options = {}) {
-		if (!currentElement) throw new Error("Current element is required");
-		this.currentElement = currentElement;
+	constructor(element, options = {}) {
+		if (!element) throw new Error("Current element is required");
+		this.element = element;
 		this.target = options.target;
 		this.targetsSelector = options.targets;
 		this.options = options;
@@ -1098,11 +1100,11 @@ var ActionBase = class {
 	get targets() {
 		if (this.targetsSelector) return Array.from(document.querySelectorAll(this.targetsSelector));
 		if (this.target) {
-			const element = document.getElementById(this.target);
-			if (!element) Debug.warn(`Target "#${this.target}" not found`);
-			return element ? [element] : [];
+			const target = document.getElementById(this.target);
+			if (!target) Debug.warn(`Target "#${this.target}" not found`);
+			return target ? [target] : [];
 		}
-		return [this.currentElement];
+		return [this.element];
 	}
 	cycledValue(currentValue, nextValues) {
 		const values = Array.isArray(nextValues) ? nextValues : nextValues.split(",").map((value) => value.trim());
@@ -1116,10 +1118,10 @@ var Action = class extends ActionBase {
 		return this.options.value;
 	}
 	get dataset() {
-		return this.currentElement.dataset;
+		return this.element.dataset;
 	}
 	dispatchEvent(name, detail = {}) {
-		this.currentElement.dispatchEvent(new CustomEvent(name, {
+		this.element.dispatchEvent(new CustomEvent(name, {
 			bubbles: true,
 			detail
 		}));
@@ -1133,8 +1135,8 @@ const sanitize = (value) => {
 //#endregion
 //#region src/actions/class.js
 var Class = class extends ActionBase {
-	constructor(currentElement, options = {}) {
-		super(currentElement, options);
+	constructor(element, options = {}) {
+		super(element, options);
 		this.value = sanitize(options.value);
 	}
 	toggle() {
@@ -1190,8 +1192,8 @@ const delay = () => {
 //#region src/actions/clipboard.js
 const clearFeedback$1 = delay();
 var Clipboard = class extends ActionBase {
-	constructor(currentElement, options = {}) {
-		super(currentElement, options);
+	constructor(element, options = {}) {
+		super(element, options);
 		this.value = options.value;
 	}
 	async copy() {
@@ -1205,7 +1207,7 @@ var Clipboard = class extends ActionBase {
 		}
 	}
 	#setFeedback(succeeded) {
-		const delay = parseInt(this.currentElement.dataset.copyFeedback);
+		const delay = parseInt(this.element.dataset.copyFeedback);
 		this.targets.forEach((target) => target.setAttribute(this.#attributeName, succeeded));
 		if (!delay) return;
 		clearFeedback$1(() => this.targets.forEach((target) => target.removeAttribute(this.#attributeName)), delay);
@@ -1220,16 +1222,16 @@ const actions$8 = { copy: Clipboard.actionFor("copy") };
 const clearFeedback = delay();
 var Confirm = class extends ActionBase {
 	confirm() {
-		const message = this.currentElement.dataset.confirmMessage || "Are you sure?";
+		const message = this.element.dataset.confirmMessage || "Are you sure?";
 		const confirmed = window.confirm(message);
 		this.#setFeedback(confirmed);
 		return confirmed;
 	}
 	#setFeedback(confirmed) {
-		this.currentElement.setAttribute("data-confirm-success", confirmed);
-		const duration = this.currentElement.dataset.confirmFeedback;
+		this.element.setAttribute("data-confirm-success", confirmed);
+		const duration = this.element.dataset.confirmFeedback;
 		if (!duration) return;
-		clearFeedback(() => this.currentElement.removeAttribute("data-confirm-success"), parseInt(duration));
+		clearFeedback(() => this.element.removeAttribute("data-confirm-success"), parseInt(duration));
 	}
 };
 const actions$7 = { confirm: Confirm.actionFor("confirm") };
@@ -1264,8 +1266,8 @@ const dataAttributeOperations = {
 	}
 };
 var DOMAttribute = class extends ActionBase {
-	constructor(currentElement, options = {}) {
-		super(currentElement, options);
+	constructor(element, options = {}) {
+		super(element, options);
 		const [attribute, value] = options.value.split("=");
 		this.attribute = attribute;
 		this.value = value;
@@ -1395,8 +1397,8 @@ const actions$3 = {
 //#endregion
 //#region src/actions/scroll_to.js
 var ScrollTo = class extends ActionBase {
-	constructor(currentElement, options = {}) {
-		super(currentElement, options);
+	constructor(element, options = {}) {
+		super(element, options);
 		const validBehaviors = [
 			"auto",
 			"instant",
@@ -1413,8 +1415,8 @@ const actions$2 = { scrollTo: ScrollTo.actionFor("scroll") };
 //#endregion
 //#region src/actions/style.js
 var Style = class extends ActionBase {
-	constructor(currentElement, options = {}) {
-		super(currentElement, options);
+	constructor(element, options = {}) {
+		super(element, options);
 		const [prop, value] = (options.value || "").split("=");
 		this.styleProperty = prop;
 		this.styleValue = value;
