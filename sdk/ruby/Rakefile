@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+require "rake"
+
+desc "Build the gem"
+task :build do
+  sh "gem build attractive-rails.gemspec"
+end
