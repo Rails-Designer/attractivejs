@@ -10,9 +10,11 @@
     > * { min-width: 0; }
 
     .code {
+      background: var(--gray-900);
+      padding-inline: var(--spacing-2);
+
       pre {
         margin: 0;
-        /* padding-inline: var(--spacing-3); */
         border-radius: .375rem;
         overflow: auto;
         line-height: 1.5;

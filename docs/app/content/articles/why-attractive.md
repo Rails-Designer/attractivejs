@@ -49,6 +49,8 @@ When behavior grows beyond that, the same system composes:
 - [Keyboard](/docs/keyboard/) adds `@keydown.enter` and global `@hotkey` shortcuts
 - [Reactive](/docs/reactive/) adds a shared store with DOM bindings that update text automatically
 - [Attract](/docs/attract/) gives optimistic UI from a cached `<template>`, no page reload
+- [Validate](/docs/validate/) add client-side validation using the native Constraint Validation API
+- [Attractive Element](/docs/element/) is a base class for Custom Elements
 
 ## One script tag, or exactly what you need
 

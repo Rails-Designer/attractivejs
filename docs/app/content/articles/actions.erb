@@ -10,7 +10,13 @@ markdownify: false
   Actions are declared via the `@action` attribute (or `@` for short):
 
   ```html
-  <button @action="toggleClass#active" @target="panel">Toggle</button>
+  <button
+    @action="toggleClass#active"
+    @target="panel"
+  >
+    Toggle
+  </button>
+
   <div id="panel">Content</div>
   ```
 

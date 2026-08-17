@@ -3,10 +3,6 @@ title: submit
 group: form
 description: Programmatically submit a form
 position: 1
-options:
-  - attribute: data-debounce
-    description: Debounce delay in ms before submitting
-    type: number
 ---
 
 <form id="invite" class="demo-form">

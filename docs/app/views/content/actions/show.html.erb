@@ -7,20 +7,13 @@
     <%= @resource.description %>
   </p>
 
-  <% if @resource.metadata.note.present? %>
-    <%= markdownify @resource.metadata.note %>
-  <% end %>
+  <%= markdownify @resource.metadata.note if @resource.metadata.note.present? %>
 
-  <% if @resource.metadata.aliases.present? %>
-    <p>
-      <strong>Aliases:</strong>
-      <%= @resource.metadata.aliases.join(", ") %>
-    </p>
-  <% end %>
+  <%= tag.p do %>
+    <strong>Aliases:</strong>
 
-  <dl>
-    <%= @resource.metadata.options %>
-  </dl>
+    <%= @resource.metadata.aliases.to_sentence %>
+  <% end if @resource.metadata.aliases.present? %>
 </article>
 
 <div @action="livePreview:mounted" @target="live-preview-example" class="action-preview">

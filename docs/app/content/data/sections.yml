@@ -5,7 +5,6 @@
     - Classes, attributes, styles and data attributes
     - Clipboard, confirm, focus and scroll
     - Dialogs, submit, reset and refresh
-    - HTTP actions like get, post, put and patch when you need them
   link_text: Browse all actions
   link_path: actions
   code: |-

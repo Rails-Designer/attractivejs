@@ -48,7 +48,7 @@ attractive.onError(({ name, element, options, event, error }) => {
 Set a fallback for all instances:
 ```js
 Attractive.onError = (error, message, detail) => {
-  Sentry.captureException(error, { extra: detail });
+  ErrorTracker.captureException(error, { extra: detail });
 };
 ```
 
@@ -60,6 +60,6 @@ By default it logs to console and delegates to `window.onerror`.
 When an action throws, Attractive catches it and forwards to two layers:
 
 1. Instance `onError` hooks (per-component UI feedback)
-2. Global `Attractive.onError` fallback (monitoring services like Sentry, Rollbar)
+2. Global `Attractive.onError` fallback (monitoring services like Appsignal, Honeybadger)
 
 The error is contained. No unhandled rejection. Remaining actions in a chain still run.
