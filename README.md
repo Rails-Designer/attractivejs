@@ -19,7 +19,7 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addEl
 
 ## Documentation
 
-📑 [See documentation](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
+📑 [See documentation](https://attractivejs.railsdesigner.com/docs/quickstart/) ([built with Perron](https://perron.railsdesigner.com))
 
 
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
