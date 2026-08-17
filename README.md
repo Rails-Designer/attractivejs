@@ -15,7 +15,7 @@ Quick example:
 <p id="content">This element should toggle the `active` class.</p>
 ```
 
-There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addElement` and `removeElement`.
+There are many more actions, like: `addAttribute`, `copy` (to clipboard), `openModal` and `setStyle`.
 
 ## Documentation
 
