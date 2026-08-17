@@ -17,6 +17,11 @@ Quick example:
 
 There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addElement` and `removeElement`.
 
+## Documentation
+
+📑 [See documentation](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
+
+
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
 <a href="https://railsdesigner.com/" target="_blank">
@@ -27,9 +32,6 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `addEl
   </picture>
 </a>
 
-## Documentation
-
-📑 [See documentation](https://attractivejs.railsdesigner.com/#get-started) ([built with Perron](https://perron.railsdesigner.com))
 
 ## Release
 
