@@ -76,8 +76,15 @@
   link_path: attract
   code: |-
     <form
-      @attract="/items"
-      @template="item-template"
+      action="/messages"
+      method="post"
+      @attract
+      data-attract-template="message"
+      data-attract-target="messages"
     >
       <input name="title" placeholder="New item">
     </form>
+
+    <template id="message">…</template>
+
+    <ul id="messages">…</ul>
