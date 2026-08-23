@@ -59,10 +59,13 @@ Place `attract-field="key"` on elements inside an attract `<template>`. When the
 
 | Element | Behavior |
 |---|---|
-| `<input type="checkbox">` / `<input type="radio">` | `element.checked = !!value` |
+| `<input type="checkbox">` | `element.checked = value` when `value` is a boolean; otherwise `element.value = value` |
+| `<input type="radio">` | `element.value = value` (sets the option's value so a group becomes selectable; `checked` is set only when `value` is a boolean) |
+| `<option>` | `element.selected = value` when `value` is a boolean; otherwise `element.value = value` |
 | `<input>` / `<textarea>` / `<select>` | `element.value = value` |
-| `<option>` | `element.selected = !!value` |
 | Everything else (div, span, h1, p, etc.) | `element.textContent = value` |
+
+Multiple elements may share the same `attract-field` key: every matching element inside the clone receives the value.
 
 ```html
 <template id="message">

@@ -186,6 +186,119 @@ describe("Template", () => {
     const clone = document.querySelector("#list > input");
     expect(clone.checked).toBe(true);
   });
+
+  test("sets option selected via boolean attract-field", () => {
+    document.body.innerHTML = `
+      <template id="card">
+        <select>
+          <option value="Perron">Perron</option>
+          <option value="hugo" attract-field="framework"></option>
+        </select>
+      </template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { framework: true }
+    });
+
+    const clone = document.querySelector("#list > select");
+    expect(clone.options[1].selected).toBe(true);
+  });
+
+  test("sets option value via string attract-field", () => {
+    document.body.innerHTML = `
+      <template id="card"><option attract-field="framework"></option></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { framework: "Perron" }
+    });
+
+    const clone = document.querySelector("#list > option");
+    expect(clone.value).toBe("Perron");
+    expect(clone.selected).toBe(false);
+  });
+
+  test("sets radio value via attract-field (not checked)", () => {
+    document.body.innerHTML = `
+      <template id="card"><input type="radio" name="repo_name" attract-field="repo_name" /></template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { repo_name: "owner/repo1" }
+    });
+
+    const clone = document.querySelector("#list > input");
+    expect(clone.value).toBe("owner/repo1");
+    expect(clone.checked).toBe(false);
+  });
+
+  test("renders array data into multiple clones with distinct radio values", () => {
+    document.body.innerHTML = `
+      <template id="repo">
+        <li>
+          <label>
+            <input type="radio" name="repo_name" attract-field="repo_name" />
+            <span attract-field="full_name"></span>
+          </label>
+        </li>
+      </template>
+      <ul id="repos"></ul>
+    `;
+
+    new Template("repo").render({
+      target: "repos",
+      position: "append",
+      with: [
+        { full_name: "owner/repo1", repo_name: "owner/repo1" },
+        { full_name: "owner/repo2", repo_name: "owner/repo2" }
+      ]
+    });
+
+    const items = document.querySelectorAll("#repos > li");
+    expect(items).toHaveLength(2);
+
+    const [first, second] = items;
+    expect(first.querySelector("span").textContent).toBe("owner/repo1");
+    expect(first.querySelector("input").value).toBe("owner/repo1");
+    expect(first.querySelector("input").checked).toBe(false);
+
+    expect(second.querySelector("span").textContent).toBe("owner/repo2");
+    expect(second.querySelector("input").value).toBe("owner/repo2");
+    expect(second.querySelector("input").checked).toBe(false);
+  });
+
+  test("injects value into multiple elements sharing an attract-field key", () => {
+    document.body.innerHTML = `
+      <template id="card">
+        <div>
+          <div attract-field="name"></div>
+          <div attract-field="name"></div>
+        </div>
+      </template>
+      <div id="list"></div>
+    `;
+
+    new Template("card").render({
+      target: "list",
+      position: "append",
+      with: { name: "Alice" }
+    });
+
+    const clone = document.querySelector("#list > div");
+    const fields = clone.querySelectorAll('[attract-field="name"]');
+    expect(fields).toHaveLength(2);
+    fields.forEach((field) => expect(field.textContent).toBe("Alice"));
+  });
 });
 
 describe("attract addon", () => {
@@ -614,6 +727,147 @@ describe("attract addon", () => {
 
     expect(list.children).toHaveLength(1);
     expect(list.children[0].textContent).toBe("registered");
+  });
+
+  test("submit:mounted is intercepted by attract (no native navigation)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: { title: "Hello" }
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <form @attract action="/repositories" method="get"
+            @action="submit:mounted"
+            data-attract-template="card" data-attract-target="list"></form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).toHaveBeenCalled();
+    const [url, options] = fetchMock.mock.calls[0];
+    expect(url).toBe("/repositories");
+    expect(options.headers.Accept).toBe("application/vnd.attract+json");
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("Hello");
+  });
+
+  test("submit:mounted on a child input resolves the @attract form (no closest crash)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: { title: "Hello" }
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <form @attract action="/repositories" method="get"
+            data-attract-template="card" data-attract-target="list">
+        <input id="setup_collection" @action="submit:mounted" />
+      </form>
+      <div id="list"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).toHaveBeenCalled();
+    expect(fetchMock.mock.calls[0][0]).toBe("/repositories");
+    expect(fetchMock.mock.calls[0][1].headers.Accept).toBe(
+      "application/vnd.attract+json"
+    );
+  });
+
+  test("intercepts submit:mounted when the form is added after activation", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () =>
+        Promise.resolve({
+          actions: [
+            {
+              action: "append",
+              template: "card",
+              target: "list",
+              data: { title: "Hello" }
+            }
+          ]
+        })
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <template id="card"><div attract-field="title"></div></template>
+      <div id="list"></div>
+      <div id="swap"></div>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    document.getElementById("swap").innerHTML = `
+      <form @attract action="/repositories" method="get"
+            @action="submit:mounted"
+            data-attract-template="card" data-attract-target="list">
+        <input id="setup_collection" />
+        <button type="submit">Load</button>
+      </form>
+    `;
+
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).toHaveBeenCalled();
+    expect(fetchMock.mock.calls[0][0]).toBe("/repositories");
+    expect(fetchMock.mock.calls[0][1].headers.Accept).toBe(
+      "application/vnd.attract+json"
+    );
+
+    const list = document.getElementById("list");
+    expect(list.children).toHaveLength(1);
+    expect(list.children[0].textContent).toBe("Hello");
   });
 });
 
