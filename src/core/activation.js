@@ -82,10 +82,10 @@ class Activation {
 
     this.#observe = new Observer(
       (element) => {
-        this.#actions.prepare(element);
-
         this.#elementLifecycle.notifyAdded(element);
         this.#elementLifecycle.notifyTargetAdded(element);
+
+        this.#actions.prepare(element);
       },
 
       (element) => {
@@ -115,15 +115,15 @@ class Activation {
     }
 
     actionElements.forEach((element) => {
+      this.#elementLifecycle.notifyAdded(element);
+      this.#elementLifecycle.notifyTargetAdded(element);
+    });
+
+    actionElements.forEach((element) => {
       this.#actions.prepare(element);
     });
 
     this.#observe.start((element) => this.#shouldPrepare(element));
-
-    actionElements.forEach((element) => {
-      this.#elementLifecycle.notifyAdded(element);
-      this.#elementLifecycle.notifyTargetAdded(element);
-    });
 
     this.#initialized = true;
 

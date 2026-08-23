@@ -9,6 +9,7 @@
 </div>
 
 Quick example:
+
 ```html
 <button @action="toggleClass#active" @target="content">Toggle</button>
 
@@ -21,7 +22,6 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `openM
 
 📑 [See documentation](https://attractivejs.railsdesigner.com/docs/quickstart/) ([built with Perron](https://perron.railsdesigner.com))
 
-
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
 <a href="https://railsdesigner.com/" target="_blank">
@@ -31,7 +31,6 @@ There are many more actions, like: `addAttribute`, `copy` (to clipboard), `openM
     <img alt="Rails Designer" src="https://raw.githubusercontent.com/Rails-Designer/rails_icons/HEAD/.github/logo-light.svg" width="240" style="max-width: 100%;">
   </picture>
 </a>
-
 
 ## Release
 

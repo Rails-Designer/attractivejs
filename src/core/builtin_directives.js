@@ -18,7 +18,7 @@ const whenIntersecting = (check) => (element, trigger) => {
 
 export const builtinTriggers = {
   mounted: (_, trigger) => {
-    trigger();
+    queueMicrotask(trigger);
   },
   now: (_, trigger) => {
     trigger();

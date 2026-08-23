@@ -67,29 +67,45 @@ class Template {
     if (!data) return;
 
     for (const [key, value] of Object.entries(data)) {
-      const element =
-        template.getAttribute("attract-field") === key
-          ? template
-          : template.querySelector(`[attract-field="${key}"]`);
+      const elements = [];
 
-      if (!element) continue;
+      if (template.getAttribute("attract-field") === key) {
+        elements.push(template);
+      }
 
-      const tag = element.tagName;
-      const type = (element.getAttribute("type") || "").toLowerCase();
+      elements.push(...template.querySelectorAll(`[attract-field="${key}"]`));
 
-      const set =
-        {
-          checkbox: (element, { with: value }) => (element.checked = !!value),
-          radio: (element, { with: value }) => (element.checked = !!value),
-          INPUT: (element, { with: value }) => (element.value = value ?? ""),
-          TEXTAREA: (element, { with: value }) => (element.value = value ?? ""),
-          SELECT: (element, { with: value }) => (element.value = value ?? ""),
-          OPTION: (element, { with: value }) => (element.selected = !!value)
-        }[type === "checkbox" || type === "radio" ? type : tag] ??
-        ((element, { with: value }) => (element.textContent = value ?? ""));
-
-      set(element, { with: value });
+      for (const element of elements) {
+        this.#setValue(element, value);
+      }
     }
+  }
+
+  #setValue(element, value) {
+    const tag = element.tagName;
+    const type = (element.getAttribute("type") || "").toLowerCase();
+
+    if (type === "checkbox" || type === "radio" || tag === "OPTION") {
+      if (typeof value === "boolean") {
+        if (tag === "OPTION") {
+          element.selected = value;
+        } else {
+          element.checked = value;
+        }
+      } else {
+        element.value = value ?? "";
+      }
+
+      return;
+    }
+
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+      element.value = value ?? "";
+
+      return;
+    }
+
+    element.textContent = value ?? "";
   }
 
   #insert({ template, target, at: position }) {

@@ -2,9 +2,12 @@ import ActionBase from "./base";
 
 class Form extends ActionBase {
   requestSubmit() {
-    this.targets.forEach(
-      (target) => target instanceof HTMLFormElement && target.requestSubmit()
-    );
+    this.targets.forEach((target) => {
+      const form =
+        target instanceof HTMLFormElement ? target : target.form || null;
+
+      if (form) form.requestSubmit();
+    });
   }
 
   reset() {
