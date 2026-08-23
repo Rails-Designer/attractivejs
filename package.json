@@ -1,6 +1,6 @@
 {
   "name": "attractivejs",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "type": "module",
   "description": "A humble set of declarative HTML actions. Extensible when you need more.",
   "scripts": {
