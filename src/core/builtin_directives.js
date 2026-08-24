@@ -1,17 +1,22 @@
 const onceTracker = new WeakSet();
+const intersectionObservers = new WeakMap();
 
 const whenIntersecting = (check) => (element, trigger) => {
-  let done = false;
+  let observers = intersectionObservers.get(element);
+
+  if (!observers) {
+    observers = new Map();
+
+    intersectionObservers.set(element, observers);
+  }
+
+  observers.get(check)?.disconnect();
 
   const observer = new IntersectionObserver((entries) => {
-    if (check(entries) && !done) {
-      done = true;
-
-      observer.disconnect();
-
-      trigger();
-    }
+    if (check(entries)) trigger();
   });
+
+  observers.set(check, observer);
 
   observer.observe(element);
 };
