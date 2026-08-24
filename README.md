@@ -5,7 +5,7 @@
     Attractive.js
   </h1>
 
-  <p>A light-weight library for declarative DOM actions using data attributes.</p>
+  <p>A humble set of declarative HTML actions. Extensible when you need more.</p>
 </div>
 
 Quick example:
