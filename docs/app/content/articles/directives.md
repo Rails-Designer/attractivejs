@@ -21,7 +21,7 @@ Triggers run the action when a condition is met, rather than on a user event.
 | ------------- | ------------------------------------------------------------------------ |
 | `:mounted`    | Runs immediately when the element is added to the DOM                   |
 | `:now`        | Alias for `:mounted`                                                     |
-| `:whenVisible`| Fires once when the element scrolls into view (via IntersectionObserver) |
+| `:whenVisible`| Fires every time the element enters view (via IntersectionObserver)      |
 | `:whenInView` | Alias for `:whenVisible`                                                 |
 
 ```html

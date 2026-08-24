@@ -136,6 +136,112 @@ test("whenInView trigger runs when element becomes visible", async () => {
   expect(target.classList.contains("visible")).toBe(true);
 });
 
+test("whenInView trigger runs on every observation", async () => {
+  let observerCallback;
+  let runs = 0;
+
+  global.IntersectionObserver = vi.fn().mockImplementation((callback) => {
+    observerCallback = callback;
+
+    return { observe: vi.fn(), disconnect: vi.fn() };
+  });
+
+  attractive.activate({
+    addActions: {
+      track: () => {
+        runs += 1;
+      }
+    },
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
+  });
+
+  document.body.innerHTML = `
+    <div @action="track:whenInView">
+      <span>Target</span>
+    </div>
+  `;
+
+  await vi.runAllTimersAsync();
+
+  if (observerCallback) {
+    observerCallback([{ isIntersecting: true }]);
+    await vi.runAllTimersAsync();
+
+    observerCallback([{ isIntersecting: false }]);
+    await vi.runAllTimersAsync();
+
+    observerCallback([{ isIntersecting: true }]);
+    await vi.runAllTimersAsync();
+  }
+
+  expect(runs).toBe(2);
+});
+
+test("whenInView trigger runs only once with the once gate", async () => {
+  let observerCallback;
+  let runs = 0;
+
+  global.IntersectionObserver = vi.fn().mockImplementation((callback) => {
+    observerCallback = callback;
+
+    return { observe: vi.fn(), disconnect: vi.fn() };
+  });
+
+  attractive.activate({
+    addActions: {
+      track: () => {
+        runs += 1;
+      }
+    },
+    addGates: builtinGates,
+    addTriggers: builtinTriggers
+  });
+
+  document.body.innerHTML = `
+    <div @action="track:whenInView:once">
+      <span>Target</span>
+    </div>
+  `;
+
+  await vi.runAllTimersAsync();
+
+  if (observerCallback) {
+    observerCallback([{ isIntersecting: true }]);
+    await vi.runAllTimersAsync();
+
+    observerCallback([{ isIntersecting: true }]);
+    await vi.runAllTimersAsync();
+  }
+
+  expect(runs).toBe(1);
+});
+
+test("whenInView replaces its observer when set up again", () => {
+  const observers = [];
+
+  global.IntersectionObserver = vi.fn().mockImplementation(() => {
+    const observer = { observe: vi.fn(), disconnect: vi.fn() };
+
+    observers.push(observer);
+
+    return observer;
+  });
+
+  const element = document.createElement("div");
+  const trigger = vi.fn();
+
+  builtinTriggers.whenInView(element, trigger);
+  builtinTriggers.whenVisible(element, trigger);
+  builtinTriggers.whenInView(element, trigger);
+
+  expect(observers.length).toBe(3);
+  expect(observers[0].disconnect).toHaveBeenCalledTimes(1);
+  expect(observers[0].observe).toHaveBeenCalledWith(element);
+  expect(observers[1].disconnect).not.toHaveBeenCalled();
+  expect(observers[2].observe).toHaveBeenCalledWith(element);
+});
+
 test("focus action focuses the target element", async () => {
   attractive.activate({
     addActions: allBuiltinActions,

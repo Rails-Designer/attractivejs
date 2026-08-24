@@ -1486,15 +1486,20 @@ var actions_default = availableActions([]);
 //#endregion
 //#region src/core/builtin_directives.js
 const onceTracker = /* @__PURE__ */ new WeakSet();
+const intersectionObservers = /* @__PURE__ */ new WeakMap();
 const whenIntersecting = (check) => (element, trigger) => {
-	let done = false;
+	let observers = intersectionObservers.get(element);
+	if (!observers) {
+		observers = /* @__PURE__ */ new Map();
+		intersectionObservers.set(element, observers);
+	}
+	observers.get(check)?.disconnect();
 	const observer = new IntersectionObserver((entries) => {
-		if (check(entries) && !done) {
-			done = true;
-			observer.disconnect();
+		if (check(entries)) {
 			trigger();
 		}
 	});
+	observers.set(check, observer);
 	observer.observe(element);
 };
 const builtinTriggers = {
