@@ -8,13 +8,11 @@ export function bindText({ on: element, with: key }) {
   } else {
     const value = element.textContent;
 
-    if (value) store.set(key, { with: value });
+    if (value) store.set(key, value);
   }
 
-  const remove = subscribe(key, {
-    with: (value) => {
-      element.textContent = value === null || value === undefined ? "" : value;
-    }
+  const remove = subscribe(key, (value) => {
+    element.textContent = value === null || value === undefined ? "" : value;
   });
 
   bindings.set(element, remove);

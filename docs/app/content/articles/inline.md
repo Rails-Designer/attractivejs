@@ -30,9 +30,9 @@ The `js:` prefix works on any event attribute like `@click`, `@mouseenter`, `@in
 
 When the reactive addon is loaded, `$store` is also available:
 ```html
-<input @input="js:$store.set('name', { with: this.value })" data-debounce="300" />
+<input @input="js:$store.set('name', this.value)" data-debounce="300" />
 
-<button @click="js:$store.set('count', { with: ($store.get('count') || 0) + 1 })">+1</button>
+<button @click="js:$store.set('count', ($store.get('count') || 0) + 1)">+1</button>
 ```
 
 

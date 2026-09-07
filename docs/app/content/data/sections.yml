@@ -56,15 +56,12 @@
 
 - heading: Reactive
   copy: |-
-    A shared key value store with DOM bindings. Set values from actions and text content updates itself.
+    A shared JSON store with <code>@text</code> DOM bindings. Set values from actions and text content updates itself.
   link_text: Read the Reactive addon
   link_path: reactive
   code: |-
-    <button
-      @action="setStore#count"
-      @value="1"
-    >
-      Increment
+    <button @click="setStore#count=1">
+      Set count
     </button>
 
     <div @text="count">0</div>

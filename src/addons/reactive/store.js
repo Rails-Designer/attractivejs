@@ -1,48 +1,97 @@
-const data = new Map();
+const root = {};
 const subscriptions = new Map();
 const all = new Set();
 
+function splitPath(key) {
+  return key.split(".");
+}
+
+function read(key) {
+  let current = root;
+
+  for (const segment of splitPath(key)) {
+    if (current == null || typeof current !== "object") return undefined;
+
+    current = current[segment];
+  }
+
+  return current;
+}
+
+function write(key, value) {
+  const segments = splitPath(key);
+  let current = root;
+
+  for (const segment of segments.slice(0, -1)) {
+    if (typeof current[segment] !== "object" || current[segment] === null)
+      current[segment] = {};
+
+    current = current[segment];
+  }
+
+  current[segments[segments.length - 1]] = value;
+}
+
+function exists(key) {
+  let current = root;
+
+  for (const segment of splitPath(key)) {
+    if (current == null || typeof current !== "object" || !(segment in current))
+      return false;
+
+    current = current[segment];
+  }
+
+  return true;
+}
+
+function notify(key) {
+  const segments = splitPath(key);
+  let path = "";
+
+  for (const segment of segments) {
+    path = path ? `${path}.${segment}` : segment;
+
+    const listeners = subscriptions.get(path);
+    if (listeners) listeners.forEach((listener) => listener(read(path)));
+  }
+}
+
 export const store = {
-  set(key, { with: value }) {
-    data.set(key, value);
-
-    const trackedSubscriptions = subscriptions.get(key);
-    if (!trackedSubscriptions) return;
-
-    for (const listener of trackedSubscriptions) {
-      listener(value);
-    }
+  set(key, value) {
+    write(key, value);
+    notify(key);
   },
 
   get(key) {
-    return data.get(key);
+    return read(key);
   },
 
-  /**
-   * Remove all keys from the store.
-   * All subscribers are notified with undefined so bound elements clear their content.
-   */
+  has(key) {
+    return exists(key);
+  },
+
   clear() {
     all.forEach((listener) => listener(undefined));
 
-    data.clear();
+    for (const key of Object.keys(root)) delete root[key];
   }
 };
 
-export function has(key) {
-  return data.has(key);
-}
+export function subscribe(key, listener) {
+  if (!subscriptions.has(key)) subscriptions.set(key, new Set());
 
-export function subscribe(key, { with: listener }) {
-  if (!subscriptions.has(key)) {
-    subscriptions.set(key, new Set());
-  }
-
-  subscriptions.get(key).add(listener);
+  const listeners = subscriptions.get(key);
+  listeners.add(listener);
   all.add(listener);
 
   return () => {
-    subscriptions.get(key)?.delete(listener);
+    listeners.delete(listener);
+
     all.delete(listener);
   };
+}
+
+export function has(key) {
+  return exists(key);
 }
