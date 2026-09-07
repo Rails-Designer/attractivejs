@@ -23,7 +23,8 @@ class Events {
       on: element,
       using: defaultEventType,
       triggeredBy: directive,
-      with: actionValue
+      with: actionValue,
+      state
     }
   ) {
     if (!element || !actionValue) return;
@@ -35,7 +36,8 @@ class Events {
           for: event,
           on: element,
           using: defaultEventType,
-          triggeredBy: directive
+          triggeredBy: directive,
+          state
         },
         { execute: (action, context) => this.#execute.run(action, context) }
       );

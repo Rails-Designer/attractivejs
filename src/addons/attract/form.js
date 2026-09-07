@@ -1,6 +1,6 @@
 import { csrf } from "../../actions/request/csrf.js";
 import { Template } from "./template.js";
-import Debug from "../../debug.js";
+import { respond } from "../response.js";
 
 class Form {
   #optimisticElements = [];
@@ -24,6 +24,7 @@ class Form {
 
     const action = this.form.getAttribute("action");
     const method = (this.form.getAttribute("method") || "post").toUpperCase();
+
     if (!action) return;
 
     const body = this.#data();
@@ -52,6 +53,7 @@ class Form {
       this.#actions(request.json);
     } catch {
       this.#clear({ error: true });
+
       this.#removeOptimistic();
     }
   }
@@ -155,43 +157,7 @@ class Form {
   }
 
   #actions(json) {
-    const actions = json.actions ? json.actions : [json];
-
-    for (const item of actions) {
-      const [actionName, ...rest] = item.action.split("#");
-      const actionValue = rest.join("#");
-
-      if (item.data) {
-        new Template(item.template).render({
-          with: item.data,
-          target: item.target,
-          targets: item.targets,
-          position: actionName
-        });
-
-        continue;
-      }
-
-      const action = this.registry?.getAction(actionName);
-      if (!action) {
-        Debug.warn(`Attract: unknown action "${actionName}"`);
-
-        continue;
-      }
-
-      const targetElement = item.target
-        ? document.getElementById(item.target)
-        : item.targets
-          ? document.querySelector(item.targets)
-          : null;
-
-      action(targetElement, {
-        value: actionValue || item.value || null,
-        target: item.target,
-        targets: item.targets,
-        dataset: {}
-      });
-    }
+    respond(json, { registry: this.registry });
   }
 }
 

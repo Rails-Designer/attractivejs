@@ -17,7 +17,7 @@ class Execute {
 
   async run(
     action,
-    { with: { on: element, for: event, triggeredBy: directive } }
+    { with: { on: element, for: event, triggeredBy: directive, state } }
   ) {
     const resolved = this.#resolve({ from: action });
     if (resolved === undefined) return;
@@ -42,7 +42,8 @@ class Execute {
       for: event,
       target,
       targets,
-      triggeredBy: directive
+      triggeredBy: directive,
+      state
     });
 
     if (this.#hooks?.runBefore(hookContext) === false) {
@@ -108,7 +109,8 @@ class Execute {
     for: event,
     target,
     targets,
-    triggeredBy: directive
+    triggeredBy: directive,
+    state
   }) {
     return {
       value,
@@ -117,6 +119,7 @@ class Execute {
       event: event || null,
       actionName: name,
       triggeredBy: directive || null,
+      state,
       dataset: element.dataset
     };
   }

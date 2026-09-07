@@ -11,13 +11,19 @@ class Evaluate {
       for: event,
       on: element,
       using: defaultEventType,
-      triggeredBy: directive
+      triggeredBy: directive,
+      state
     },
     { execute }
   ) {
     if (action.startsWith("js:")) {
       return await execute(action, {
-        with: { on: element, for: event, triggeredBy: directive || null }
+        with: {
+          on: element,
+          for: event,
+          triggeredBy: directive || null,
+          state
+        }
       });
     }
 
@@ -29,7 +35,12 @@ class Evaluate {
     if (action === undefined) return;
 
     return await execute(action, {
-      with: { on: element, for: event, triggeredBy: directive || null }
+      with: {
+        on: element,
+        for: event,
+        triggeredBy: directive || null,
+        state
+      }
     });
   }
 

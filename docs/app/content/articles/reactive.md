@@ -5,14 +5,14 @@ category: extensions
 position: 2
 ---
 
-Reactive adds a shared key-value store with `@text` DOM bindings, `setStore` action and `whenTrue`/`whenFalse` triggers.
+Reactive adds a shared JSON store with `@text` DOM bindings, the `setStore` action and the `inStore` trigger that drives value-aware actions (`setClass`, `setAttribute`) from store state.
 
 
 ## Usage
 
 ```js
 import Attractive from "attractivejs";
-import { reactive, store } from "attractivejs/reactive";
+import { reactive } from "attractivejs/reactive";
 
 Attractive.activate({ extendWith: [reactive] });
 ```
@@ -20,72 +20,89 @@ Attractive.activate({ extendWith: [reactive] });
 
 ## Store API
 
-The store is a singleton shared by all instances. Write from JavaScript via `store.set()` or from HTML via `setStore`, all subscribers react regardless of source.
-```js
-store.set("name", { with: "Cameron" });
+The store is a JSON tree shared by all instances. Write from JavaScript via `store.set()` or from HTML via `setStore`, every subscriber reacts regardless of the source. Dot-paths create nested objects automatically.
 
-store.get("name"); // => "Alice"
+```js
+store.set("user.name", "Cameron");
+
+store.get("user.name");  // => "Cameron"
+store.has("user.name");  // => true
+
+store.clear();  // empties the tree, notifies all subscribers
 ```
 
-When the `js` action is registered, it can read and write the store from HTML via the global `$store`:
+When the `js` action is registered, the store is available in `js:` expressions through the global `$store` (see [Inline JS](/docs/inline/)).
+
+
+## Hydration
+
+Seed the store from the server by dropping a JSON blob in the page. It is read automatically at activation.
+
 ```html
-<input @input="js:$store.set('name', { with: this.value })" data-debounce="300" />
+<script type="application/json" data-store>
+  { "user": { "online": true }, "unread": 2 }
+</script>
 ```
 
 
 ## `@text` bindings
 
+Bind an element's `textContent` to a store value. It updates automatically whenever the value changes and renders an empty string for `null` or `undefined`.
+
 ```html
 <p @text="greeting"></p>
 ```
 
-The element's `textContent` updates automatically whenever the store value changes. Shows empty string for `null` or `undefined`.
-
 
 ## `setStore` action
 
-Write the element's `value` to the store:
+Write the element's own `value` to the store:
+
 ```html
 <input @input="setStore#search" />
 ```
 
-Sets the store key to `true`:
+Set a key to `true` with no value:
+
 ```html
 <button @click="setStore#active">Activate</button>
 ```
 
+Coerce literals with `key=value`. `true`, `false`, `null` and numbers are parsed; everything else stays a string:
 
-## `:whenTrue` / `:whenFalse` triggers
-
-React to store changes by firing actions when a value enters a specific state. Both read the store key from `data-store`.
-
-Truthy values are anything not `false`, `null`, `undefined`, `0`, `""` or `NaN`.
-
-
-### `:whenTrue`
-
-Fires the action when the store value is truthy:
 ```html
-<div @action="addClass#visible:whenTrue" data-store="loaded"></div>
+<button @click="setStore#flag=true">Enable</button>
+<button @click="setStore#unread=0">Reset</button>
+```
+
+Server replies merge a value through `data` (used by [Attract](/docs/attract/) responses):
+
+```json
+{ "action": "setStore#unread", "data": 0 }
 ```
 
 
-### `:whenFalse`
+## `inStore` trigger
 
-Fires the action when the store value is falsy:
+React to store changes by firing an action whenever the value changes. The key is read from `data-store`, and the current value is applied when the element is first bound, so elements reflect hydrated state on load.
+
+Pair it with the store-aware actions `setClass` and `setAttribute`: when the element carries `data-store`, those actions read the store value and toggle by its truthiness instead of using a fixed value.
+
 ```html
-<div @action="removeClass#visible:whenFalse" data-store="loaded"></div>
+<span
+  @action="setClass#online:inStore"
+  data-store="user.online"
+  class="dot"
+>
+  ●
+</span>
+
+<span
+  @action="setAttribute#data-online:inStore"
+  data-store="user.online"
+>
+  online
+</span>
 ```
 
-
-### Paired pattern
-
-The common use case is pairing both to handle truthy/falsy transitions:
-```html
-<div
-  @action="addAttribute#open:whenTrue removeAttribute#open:whenFalse"
-  data-store="open"
-></div>
-```
-
-On `store.set("open", { with: true })` the attribute is added. On `store.set("open", { with: false })` it is removed.
+When `user.online` is truthy the dot gets the `online` class and the pill gets the `data-online` attribute; when it flips to falsy both are removed. Updating the store (from a button, an input or a server reply) updates every bound element.

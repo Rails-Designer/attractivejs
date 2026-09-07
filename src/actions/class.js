@@ -27,6 +27,18 @@ class Class extends ActionBase {
   }
 
   set() {
+    const key = this.element.dataset.store;
+    if (key) {
+      const value = globalThis.$store?.get(key);
+      if (value === undefined) return;
+
+      this.targets.forEach((target) =>
+        target.classList.toggle(...this.value, !!value)
+      );
+
+      return;
+    }
+
     if (!this.value) return;
 
     this.targets.forEach((target) => {

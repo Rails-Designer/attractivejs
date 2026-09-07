@@ -134,22 +134,21 @@ class Actions {
       this.#triggers.setup({
         for: name,
         on: element,
-        trigger: () => {
-          const run = () => {
-            attributes.forEach(({ value }) => {
+        trigger: (state) => {
+          this.#debounced(() => {
+            attributes.forEach(({ value: actionValue }) => {
               this.#events.process(
                 { type: name },
                 {
                   on: element,
                   using: defaultEventType,
                   triggeredBy: name,
-                  with: value
+                  with: actionValue,
+                  state
                 }
               );
             });
-          };
-
-          this.#debounced(run, element);
+          }, element);
         }
       });
     });

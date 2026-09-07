@@ -71,6 +71,20 @@ class DOMAttribute extends ActionBase {
   }
 
   set() {
+    const key = this.element.dataset.store;
+    if (key) {
+      const value = globalThis.$store?.get(key);
+      if (value === undefined) return;
+
+      this.targets.forEach((target) =>
+        value
+          ? this.operations.set(target, this.attribute, this.value || "")
+          : this.operations.remove(target, this.attribute)
+      );
+
+      return;
+    }
+
     return this.add();
   }
 
