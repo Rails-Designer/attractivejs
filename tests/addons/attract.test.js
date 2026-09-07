@@ -571,6 +571,42 @@ describe("attract addon", () => {
     expect(fetchMock).toHaveBeenCalled();
   });
 
+  test("honors a _method override field (PATCH/PUT/DELETE tunneling)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      headers: new Headers({ "Content-Type": "application/json" }),
+      json: () => Promise.resolve({})
+    });
+    globalThis.fetch = fetchMock;
+
+    document.body.innerHTML = `
+      <form @attract action="/messages/1" method="post">
+        <input type="hidden" name="_method" value="patch" />
+        <input name="body" value="updated" />
+        <button>Submit</button>
+      </form>
+    `;
+
+    attractive.activate({
+      addActions: allBuiltinActions,
+      addGates: builtinGates,
+      addTriggers: builtinTriggers,
+      extendWith: [attract]
+    });
+
+    const form = document.querySelector("form");
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).toHaveBeenCalled();
+    const [url, options] = fetchMock.mock.calls[0];
+    expect(url).toBe("/messages/1");
+    expect(options.method).toBe("PATCH");
+    expect(JSON.parse(options.body)).not.toHaveProperty("_method");
+  });
+
   test("processes actions from response", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
