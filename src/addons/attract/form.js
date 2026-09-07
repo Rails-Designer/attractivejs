@@ -23,8 +23,12 @@ class Form {
     event.preventDefault();
 
     const action = this.form.getAttribute("action");
-    const method = (this.form.getAttribute("method") || "post").toUpperCase();
-
+    const override = this.form.querySelector('input[name="_method"]');
+    const method = (
+      override?.value ||
+      this.form.getAttribute("method") ||
+      "post"
+    ).toUpperCase();
     if (!action) return;
 
     const body = this.#data();
@@ -63,6 +67,8 @@ class Form {
     const body = {};
 
     for (const [key, value] of formData.entries()) {
+      if (key === "_method") continue;
+
       body[key] = value;
     }
 
