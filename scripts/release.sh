@@ -18,6 +18,6 @@ if [[ "$VERSION" == *-* ]]; then
   PUBLISH_TAG="${PUBLISH_TAG%.*}"
 fi
 
-npm publish --tag "$PUBLISH_TAG"
+npm publish ./dist --tag "$PUBLISH_TAG"
 git push
 git push origin "v${VERSION}"

@@ -34,7 +34,7 @@ Attractive.activate();
 
 ```html
 <script type="module">
-  import Attractive from "//unpkg.com/attractivejs@<%= attractivejs_version %>/dist/attractive.min.js";
+  import Attractive from "//unpkg.com/attractivejs@<%= attractivejs_version %>/attractive.min.js";
 
   Attractive.activate();
 </script>

@@ -5,6 +5,7 @@
   "description": "A humble set of declarative HTML actions. Extensible when you need more.",
   "scripts": {
     "build": "rolldown -c",
+    "postbuild": "node scripts/prepare-dist.js",
     "dev": "npm-run-all --parallel dev:*",
     "dev:watch": "rolldown -c -w",
     "dev:serve": "npx http-server . -p 8080",
@@ -15,7 +16,7 @@
     "docs": "cd ./docs/ && bin/dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "if [ -z \"$PUBLISH\" ]; then echo '\n🛑 ERROR: This package must be published via `npm publish ./dist` (or `pnpm release`)\n' && exit 1; fi",
     "release": "bash scripts/release.sh"
   },
   "author": "Rails Designer",
@@ -99,8 +100,7 @@
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "license": "MIT",
   "packageManager": "pnpm@11.9.0",
